@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
                 startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
 
         bindSwitch(R.id.sw_instagram, BlockerService.KEY_IG);
+        bindSwitch(R.id.sw_instagram_feed, BlockerService.KEY_IG_FEED);
         bindSwitch(R.id.sw_youtube, BlockerService.KEY_YT);
         bindSwitch(R.id.sw_tiktok, BlockerService.KEY_TT);
     }

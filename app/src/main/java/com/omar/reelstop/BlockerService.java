@@ -22,6 +22,7 @@ public class BlockerService extends AccessibilityService {
     static final String KEY_IG = "instagram";
     static final String KEY_YT = "youtube";
     static final String KEY_TT = "tiktok";
+    static final String KEY_IG_FEED = "instagram_feed";
     static final String KEY_COUNT = "count";
 
     private static final String IG = "com.instagram.android";
@@ -73,6 +74,27 @@ public class BlockerService extends AccessibilityService {
         boolean isYt = YT.equals(pkg) && sp.getBoolean(KEY_YT, true);
         if (!isIg && !isYt) return;
 
+        // Instagram Accueil: ila nzel l ta7t men stories (scroll f l feed), nrj3o l fo9
+        if (IG.equals(pkg) && sp.getBoolean(KEY_IG_FEED, true)
+                && event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED
+                && event.getFromIndex() >= 1) {
+            AccessibilityNodeInfo r = getRootInActiveWindow();
+            if (r != null && isSelectedId(r, IG + ":id/feed_tab")
+                    && !hasAnyId(r, IG, IG_REELS_IDS)) {
+                AccessibilityNodeInfo src = event.getSource();
+                boolean done = false;
+                if (src != null) {
+                    // nrj3o l fo9 (stories)
+                    for (int i = 0; i < 15 && src.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD); i++) {
+                        done = true;
+                    }
+                }
+                if (!done) clickId(r, IG + ":id/feed_tab");
+                counted("Posts dyal Accueil", sp);
+                return;
+            }
+        }
+
         AccessibilityNodeInfo root = getRootInActiveWindow();
         if (root == null) return;
         if (root.getPackageName() == null || !pkg.equals(root.getPackageName().toString())) return;
@@ -97,6 +119,15 @@ public class BlockerService extends AccessibilityService {
                     if (n.isVisibleToUser()) return true;
                 }
             }
+        }
+        return false;
+    }
+
+    private boolean isSelectedId(AccessibilityNodeInfo root, String fullId) {
+        List<AccessibilityNodeInfo> found = root.findAccessibilityNodeInfosByViewId(fullId);
+        if (found == null) return false;
+        for (AccessibilityNodeInfo n : found) {
+            if (n.isSelected()) return true;
         }
         return false;
     }
