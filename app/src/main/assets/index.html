@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ar-MA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e1716">
+<title>Nghma</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: night, warm, like a café radio in the medina
+   IDEA: a zellige-tiled record shelf
+   PICTURE: the list itself + spinning disc in now playing
+   COLOUR/TYPE: deep teal-black, zellige teal, coral accent; Outfit
+   LAYOUT: header, view, player bar, tab bar */
+:root{--bg:#0e1716;--bg2:#15211f;--bg3:#1d2d2a;--ink:#eef5f3;--mute:#8fa8a3;--acc:#1fb6a6;--hot:#ff7a59}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 Outfit,system-ui,sans-serif;overflow:hidden;display:flex;flex-direction:column}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+header{display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top) + 14px) 18px 10px}
+.logo{font-weight:800;font-size:26px;letter-spacing:-.5px;flex:1}
+.logo b{color:var(--acc)}
+.ib{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none}
+.ib:active{background:var(--bg3)}
+.ib svg{width:24px;height:24px;fill:currentColor}
+main{flex:1;overflow-y:auto;padding:0 14px 16px}
+.view{display:none}.view.on{display:block}
+h2{font-size:22px;margin:8px 4px 12px}
+.sbox{display:flex;gap:8px;position:sticky;top:0;background:var(--bg);padding:6px 0 12px;z-index:2}
+.sbox input{flex:1;height:48px;border-radius:24px;border:0;background:var(--bg3);color:var(--ink);padding:0 20px;font:16px Outfit,sans-serif}
+.sbox button{height:48px;padding:0 20px;border-radius:24px;background:var(--acc);color:#04201d;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 2px 14px}
+.chip{background:var(--bg2);border-radius:18px;padding:8px 14px;font-size:14px;color:var(--mute)}
+.row{display:flex;align-items:center;gap:12px;padding:8px;border-radius:12px;width:100%;text-align:start}
+.row:active,.row.cur{background:var(--bg2)}
+.row.cur .t{color:var(--acc)}
+.th{width:56px;height:56px;border-radius:8px;flex:none;object-fit:cover;background:var(--bg3);display:grid;place-items:center}
+.th svg{width:26px;fill:var(--acc)}
+.meta{flex:1;overflow:hidden}
+.t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s{font-size:13px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{color:var(--mute);text-align:center;padding:48px 20px}
+.empty .disc{width:120px;height:120px;margin:0 auto 18px;border-radius:50%;background:repeating-radial-gradient(circle,#1d2d2a 0 3px,#15211f 3px 6px);position:relative}
+.empty .disc::after{content:"";position:absolute;inset:40px;border-radius:50%;background:var(--hot);box-shadow:0 0 0 10px var(--acc)}
+.add{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:14px;border:2px dashed var(--bg3);color:var(--acc);font-weight:600;margin-bottom:12px;cursor:pointer}
+.add input{display:none}
+.msg{color:var(--hot);padding:12px 6px;font-size:14px}
+#bar{background:var(--bg2);margin:0 8px;border-radius:14px;padding:8px;display:none;gap:10px;align-items:center;position:relative;overflow:hidden}
+#bar.on{display:flex}
+#vid{width:112px;height:63px;border-radius:8px;overflow:hidden;flex:none;background:#000;display:none}
+#vid.on{display:block}
+#vid iframe{width:100%;height:100%;border:0}
+#cov{width:56px;height:56px;border-radius:8px;flex:none;background:repeating-radial-gradient(circle,#1d2d2a 0 2px,#0e1716 2px 4px);position:relative}
+#cov::after{content:"";position:absolute;inset:20px;border-radius:50%;background:var(--hot)}
+#cov.spin{animation:sp 3s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){#cov.spin{animation:none}}
+.ctl{display:flex;align-items:center}
+#pp{background:var(--ink);color:var(--bg)}
+#prog{position:absolute;left:0;right:0;bottom:0;height:4px;-webkit-appearance:none;appearance:none;background:transparent;margin:0}
+#prog::-webkit-slider-runnable-track{height:4px;background:linear-gradient(var(--acc),var(--acc)) 0/var(--p,0%) 100% no-repeat,#2a3d39}
+#prog::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--acc);margin-top:-4px}
+#prog::-moz-range-track{height:4px;background:#2a3d39}
+#prog::-moz-range-progress{height:4px;background:var(--acc)}
+nav{display:flex;padding:6px 8px calc(env(safe-area-inset-bottom) + 6px)}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:var(--mute);padding:6px 0;min-height:52px}
+nav button svg{width:24px;height:24px;fill:currentColor}
+nav button.on{color:var(--ink)}
+dialog{background:var(--bg2);color:var(--ink);border:0;border-radius:18px;width:min(520px,92vw);padding:22px}
+dialog::backdrop{background:#000a}
+dialog h3{margin:0 0 8px;font-size:20px}
+dialog p,dialog li{color:var(--mute);font-size:14px}
+dialog input{width:100%;height:48px;border-radius:12px;border:0;background:var(--bg3);color:var(--ink);padding:0 14px;font:16px Outfit,sans-serif;margin:8px 0 14px}
+.btns{display:flex;gap:8px;justify-content:flex-end}
+.btn{height:44px;padding:0 18px;border-radius:22px;background:var(--bg3)}
+.btn.p{background:var(--acc);color:#04201d;font-weight:600}
+.fav svg{fill:var(--mute)}.fav.on svg{fill:var(--hot)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Ngh<b>ma</b></div>
+  <button class="ib" id="setBtn" aria-label="Paramètres"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7 7 0 0 0-1.7-1L15 3h-4l-.4 2.9a7 7 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7 7 0 0 0 1.7 1L11 21h4l.4-2.9a7 7 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg></button>
+</header>
+
+<main>
+  <section class="view on" id="v-search">
+    <form class="sbox" id="sForm">
+      <input id="q" type="search" placeholder="9leb 3la ghniya wla artiste…" autocomplete="off" enterkeyhint="search">
+      <button>9leb</button>
+    </form>
+    <div class="chips" id="recent"></div>
+    <div id="results"></div>
+  </section>
+
+  <section class="view" id="v-lib">
+    <h2>Mektaba dyali</h2>
+    <label class="add">+ Zid MP3 mn telephone<input type="file" id="files" accept="audio/*" multiple></label>
+    <div id="lib"></div>
+  </section>
+
+  <section class="view" id="v-fav">
+    <h2>Mfeddlin</h2>
+    <div id="favs"></div>
+  </section>
+</main>
+
+<div id="bar">
+  <div id="vid"><div id="yt"></div></div>
+  <div id="cov"></div>
+  <div class="meta"><div class="t" id="nt">—</div><div class="s" id="ns"></div></div>
+  <div class="ctl">
+    <button class="ib" id="prev" aria-label="Li 9bel"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
+    <button class="ib" id="pp" aria-label="Play/Pause"><svg viewBox="0 0 24 24" id="ppI"><path d="M8 5v14l11-7z"/></svg></button>
+    <button class="ib" id="next" aria-label="Li mn b3d"><svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6zM16 6h2v12h-2z"/></svg></button>
+  </div>
+  <input type="range" id="prog" min="0" max="1000" value="0" aria-label="Position">
+</div>
+
+<nav>
+  <button class="on" data-v="search"><svg viewBox="0 0 24 24"><path d="M10 3a7 7 0 0 1 5.6 11.2l5.1 5.1-1.4 1.4-5.1-5.1A7 7 0 1 1 10 3zm0 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"/></svg>9leb</button>
+  <button data-v="lib"><svg viewBox="0 0 24 24"><path d="M4 4h2v16H4zm4 0h2v16H8zm4.5.4 1.9-.6 5 15.2-1.9.6z"/></svg>Mektaba</button>
+  <button data-v="fav"><svg viewBox="0 0 24 24"><path d="M12 21 10.6 19.7C5.4 15 2 12 2 8.4 2 5.4 4.4 3 7.4 3c1.7 0 3.4.8 4.6 2.1A6.2 6.2 0 0 1 16.6 3C19.6 3 22 5.4 22 8.4c0 3.6-3.4 6.6-8.6 11.3z"/></svg>Mfeddlin</button>
+</nav>
+
+<dialog id="dlg">
+  <h3>YouTube API key</h3>
+  <p>Bach t9leb f YouTube, khassek key bla flouss (mara wa7da):</p>
+  <ol>
+    <li>Sir l console.cloud.google.com w dir projet jdid</li>
+    <li>APIs &amp; Services → Library → "YouTube Data API v3" → Enable</li>
+    <li>Credentials → Create credentials → API key → copy</li>
+  </ol>
+  <p>Kat3tik ~100 recherche f nhar. Key kayb9a ghir f telephone dyalek.</p>
+  <input id="keyIn" placeholder="AIza…" autocomplete="off">
+  <div class="btns"><button class="btn" id="dCancel">Lghi</button><button class="btn p" id="dSave">Sejjel</button></div>
+</dialog>
+
+<audio id="au" preload="metadata"></audio>
+
+<script>
+{
+const $ = s => document.querySelector(s);
+const ls = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const unent = s => { const t = document.createElement('textarea'); t.innerHTML = s; return t.value; };
+const NOTE = '<svg viewBox="0 0 24 24"><path d="M12 3v10.6A4 4 0 1 0 14 17V7h4V3z"/></svg>';
+const HEART = '<svg viewBox="0 0 24 24" width="22"><path d="M12 21 10.6 19.7C5.4 15 2 12 2 8.4 2 5.4 4.4 3 7.4 3c1.7 0 3.4.8 4.6 2.1A6.2 6.2 0 0 1 16.6 3C19.6 3 22 5.4 22 8.4c0 3.6-3.4 6.6-8.6 11.3z"/></svg>';
+const TRASH = '<svg viewBox="0 0 24 24" width="22" style="fill:var(--mute)"><path d="M6 7h12l-1 14H7zm3-4h6l1 2h4v2H4V5h4z"/></svg>';
+
+/* ---------- state ---------- */
+let queue = [], idx = -1, mode = null, ytReady = false, yt = null, pendingYT = null;
+let favs = ls.get('favs', []), recent = ls.get('recent', []), lastResults = [], libItems = [];
+const au = $('#au');
+
+/* ---------- tabs ---------- */
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x === b));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'v-' + b.dataset.v));
+  if (b.dataset.v === 'fav') renderFavs();
+});
+
+/* ---------- settings ---------- */
+const dlg = $('#dlg');
+const openSet = () => { $('#keyIn').value = ls.get('key', ''); dlg.showModal(); };
+$('#setBtn').onclick = openSet;
+$('#dCancel').onclick = () => dlg.close();
+$('#dSave').onclick = () => { ls.set('key', $('#keyIn').value.trim()); dlg.close(); };
+
+/* ---------- rows ---------- */
+const isCur = t => idx >= 0 && queue[idx] && (queue[idx].id || queue[idx].k) === (t.id || t.k);
+const isFav = id => favs.some(f => f.id === id);
+function rowHTML(t, i, list, extra) {
+  const th = t.thumb ? `<img class="th" src="${esc(t.thumb)}" alt="" loading="lazy">` : `<div class="th">${NOTE}</div>`;
+  return `<div class="row ${isCur(t) ? 'cur' : ''}"><button class="row" style="padding:0" data-list="${list}" data-i="${i}">${th}
+    <div class="meta"><div class="t">${esc(t.title)}</div><div class="s">${esc(t.sub || '')}</div></div></button>${extra || ''}</div>`;
+}
+function bindRows(el, arr) {
+  el.querySelectorAll('button[data-i]').forEach(b => b.onclick = () => playList(arr, +b.dataset.i));
+}
+
+/* ---------- search ---------- */
+function renderRecent() {
+  $('#recent').innerHTML = recent.map(r => `<button class="chip">${esc(r)}</button>`).join('');
+  $('#recent').querySelectorAll('.chip').forEach(c => c.onclick = () => { $('#q').value = c.textContent; search(c.textContent); });
+}
+function renderResults() {
+  const el = $('#results');
+  if (!lastResults.length) {
+    el.innerHTML = `<div class="empty"><div class="disc"></div>9leb 3la ay ghniya, w brek 3liha bach tsme3ha.</div>`; return;
+  }
+  el.innerHTML = lastResults.map((t, i) => rowHTML(t, i, 'res',
+    `<button class="ib fav ${isFav(t.id) ? 'on' : ''}" data-f="${i}" aria-label="Mfeddla">${HEART}</button>`)).join('');
+  bindRows(el, lastResults);
+  el.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { toggleFav(lastResults[+b.dataset.f]); renderResults(); });
+}
+async function search(q) {
+  q = q.trim(); if (!q) return;
+  const key = ls.get('key', '');
+  if (!key) { openSet(); return; }
+  recent = [q, ...recent.filter(r => r.toLowerCase() !== q.toLowerCase())].slice(0, 8);
+  ls.set('recent', recent); renderRecent();
+  $('#results').innerHTML = '<div class="empty">Kan9leb…</div>';
+  try {
+    const u = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&maxResults=25&q='
+      + encodeURIComponent(q) + '&key=' + encodeURIComponent(key);
+    const r = await fetch(u); const j = await r.json();
+    if (j.error) throw new Error(j.error.message);
+    lastResults = j.items.map(it => ({
+      type: 'yt', id: it.id.videoId, title: unent(it.snippet.title), sub: unent(it.snippet.channelTitle),
+      thumb: it.snippet.thumbnails.medium?.url || it.snippet.thumbnails.default?.url
+    }));
+    renderResults();
+  } catch (e) {
+    $('#results').innerHTML = `<div class="msg">Mochkil: ${esc(e.message)}. Chouf wach l'API key s7i7 (⚙️) wla wach salat l limite dyal lyoum.</div>`;
+  }
+}
+$('#sForm').onsubmit = e => { e.preventDefault(); $('#q').blur(); search($('#q').value); };
+
+/* ---------- favorites ---------- */
+function toggleFav(t) {
+  favs = isFav(t.id) ? favs.filter(f => f.id !== t.id) : [t, ...favs];
+  ls.set('favs', favs);
+}
+function renderFavs() {
+  const el = $('#favs');
+  if (!favs.length) { el.innerHTML = '<div class="empty">Brek 3la ♥ f chi ghniya bach tban hna.</div>'; return; }
+  el.innerHTML = favs.map((t, i) => rowHTML(t, i, 'fav',
+    `<button class="ib fav on" data-f="${i}" aria-label="7yed">${HEART}</button>`)).join('');
+  bindRows(el, favs);
+  el.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { toggleFav(favs[+b.dataset.f]); renderFavs(); });
+}
+
+/* ---------- local library (IndexedDB) ---------- */
+let dbp = null;
+function db() {
+  if (!dbp) dbp = new Promise((res, rej) => {
+    const r = indexedDB.open('nghma', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('songs', { keyPath: 'k', autoIncrement: true });
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+  return dbp;
+}
+async function tx(mode, fn) {
+  const d = await db();
+  return new Promise((res, rej) => {
+    const t = d.transaction('songs', mode); const st = t.objectStore('songs');
+    const out = fn(st); t.oncomplete = () => res(out && out.result); t.onerror = () => rej(t.error);
+  });
+}
+async function loadLib() {
+  try {
+    const all = await tx('readonly', st => st.getAll());
+    libItems = all.sort((a, b) => b.added - a.added).map(s => ({ type: 'local', k: s.k, title: s.name, sub: 'MP3 · ' + (s.blob.size / 1048576).toFixed(1) + ' MB', blob: s.blob }));
+  } catch { libItems = []; }
+  renderLib();
+}
+function renderLib() {
+  const el = $('#lib');
+  if (!libItems.length) { el.innerHTML = '<div class="empty">Mazal ma zedti 7ta ghniya. Lghani li tzid hna katsme3hom bla internet.</div>'; return; }
+  el.innerHTML = libItems.map((t, i) => rowHTML(t, i, 'lib', `<button class="ib" data-d="${i}" aria-label="Mse7">${TRASH}</button>`)).join('');
+  bindRows(el, libItems);
+  el.querySelectorAll('[data-d]').forEach(b => b.onclick = async () => {
+    const t = libItems[+b.dataset.d]; await tx('readwrite', st => st.delete(t.k)); loadLib();
+  });
+}
+$('#files').onchange = async e => {
+  for (const f of e.target.files) {
+    const name = f.name.replace(/\.[^.]+$/, '').replace(/[_]+/g, ' ');
+    try { await tx('readwrite', st => st.add({ name, blob: f, added: Date.now() })); } catch {}
+  }
+  e.target.value = ''; loadLib();
+};
+
+/* ---------- YouTube player ---------- */
+window.onYouTubeIframeAPIReady = () => {
+  yt = new YT.Player('yt', {
+    width: '100%', height: '100%',
+    playerVars: { playsinline: 1, controls: 0, rel: 0, modestbranding: 1 },
+    events: {
+      onReady: () => { ytReady = true; if (pendingYT) { yt.loadVideoById(pendingYT); pendingYT = null; } },
+      onStateChange: e => {
+        if (e.data === 0) next();
+        if (e.data === 1) setPlaying(true);
+        if (e.data === 2) setPlaying(false);
+      },
+      onError: () => next()
+    }
+  });
+};
+const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; document.body.appendChild(s);
+
+/* ---------- playback ---------- */
+let curURL = null;
+function playList(arr, i) { queue = arr.slice(); idx = i; start(); }
+function start() {
+  const t = queue[idx]; if (!t) return;
+  $('#bar').classList.add('on');
+  $('#nt').textContent = t.title; $('#ns').textContent = t.sub || '';
+  if (t.type === 'yt') {
+    au.pause(); mode = 'yt';
+    $('#vid').classList.add('on'); $('#cov').style.display = 'none';
+    if (ytReady) yt.loadVideoById(t.id); else pendingYT = t.id;
+  } else {
+    if (ytReady) yt.pauseVideo(); mode = 'local';
+    $('#vid').classList.remove('on'); $('#cov').style.display = '';
+    if (curURL) URL.revokeObjectURL(curURL);
+    curURL = URL.createObjectURL(t.blob); au.src = curURL;
+    au.play().catch(() => setPlaying(false));
+  }
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({ title: t.title, artist: t.sub || '', artwork: t.thumb ? [{ src: t.thumb, sizes: '320x180' }] : [{ src: 'icon-512.png', sizes: '512x512', type: 'image/png' }] });
+  }
+  refreshLists();
+}
+function refreshLists() {
+  if ($('#v-search').classList.contains('on')) renderResults();
+  if ($('#v-lib').classList.contains('on')) renderLib();
+  if ($('#v-fav').classList.contains('on')) renderFavs();
+}
+function setPlaying(p) {
+  $('#ppI').innerHTML = p ? '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>' : '<path d="M8 5v14l11-7z"/>';
+  $('#cov').classList.toggle('spin', p && mode === 'local');
+  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = p ? 'playing' : 'paused';
+  try { if (window.NghmaApp) window.NghmaApp.setPlaying(!!p); } catch {}
+}
+function toggle() {
+  if (mode === 'yt' && ytReady) { yt.getPlayerState() === 1 ? yt.pauseVideo() : yt.playVideo(); }
+  else if (mode === 'local') { au.paused ? au.play() : au.pause(); }
+}
+function next() { if (idx < queue.length - 1) { idx++; start(); } else setPlaying(false); }
+function prev() {
+  const cur = mode === 'yt' && ytReady ? yt.getCurrentTime() : au.currentTime;
+  if (cur > 3) { mode === 'yt' ? yt.seekTo(0, true) : (au.currentTime = 0); return; }
+  if (idx > 0) { idx--; start(); }
+}
+$('#pp').onclick = toggle; $('#next').onclick = next; $('#prev').onclick = prev;
+au.onplay = () => setPlaying(true); au.onpause = () => setPlaying(false); au.onended = next;
+if ('mediaSession' in navigator) {
+  const ms = navigator.mediaSession;
+  ms.setActionHandler('play', toggle); ms.setActionHandler('pause', toggle);
+  ms.setActionHandler('nexttrack', next); ms.setActionHandler('previoustrack', prev);
+}
+
+/* ---------- progress ---------- */
+const prog = $('#prog'); let dragging = false;
+prog.oninput = () => { dragging = true; prog.style.setProperty('--p', prog.value / 10 + '%'); };
+prog.onchange = () => {
+  dragging = false; const f = prog.value / 1000;
+  if (mode === 'yt' && ytReady) yt.seekTo(f * (yt.getDuration() || 0), true);
+  else if (mode === 'local' && au.duration) au.currentTime = f * au.duration;
+};
+setInterval(() => {
+  if (dragging || !mode) return;
+  let c = 0, d = 0;
+  if (mode === 'yt' && ytReady && yt.getDuration) { c = yt.getCurrentTime() || 0; d = yt.getDuration() || 0; }
+  else { c = au.currentTime; d = au.duration || 0; }
+  const v = d ? Math.round(c / d * 1000) : 0;
+  prog.value = v; prog.style.setProperty('--p', v / 10 + '%');
+}, 500);
+
+/* ---------- init ---------- */
+renderRecent(); renderResults(); loadLib();
+if (!window.NghmaApp && 'serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
