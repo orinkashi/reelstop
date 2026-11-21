@@ -10,11 +10,23 @@ android {
         applicationId 'com.omar.dftar'
         minSdk 24
         targetSdk 34
-        versionCode 3
-        versionName '1.2'
+        versionCode 4
+        versionName '1.3'
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('dftar.keystore')
+            storePassword 'dftar123'
+            keyAlias 'dftar'
+            keyPassword 'dftar123'
+        }
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
         }

@@ -296,7 +296,10 @@ function toast(msg){const t=document.getElementById('toast');
 const cur=()=>S.projects.find(x=>x.id===view.pid);
 const norm=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
 function importPlan(raw){let d;try{d=JSON.parse(raw.slice(raw.indexOf('{'),raw.lastIndexOf('}')+1))}catch(e){return'Code ghalet. Copy l-code kaml mn Claude.'}
-  const P=d.project;if(!P||!P.name)return'Code ghalet: ma fih ta projet.';
+  const list=d.projects||(d.project?[d.project]:[]);if(!list.length||!list.every(x=>x&&x.name))return'Code ghalet: ma fih ta projet.';
+  let tot=0,p;for(const P of list){const r=importOne(P);tot+=r.n;p=r.p}
+  save();view={tab:'projects',pid:list.length>1?null:p.id};render();scrollTo(0,0);return'Tzadou '+tot+' taches f '+list.length+' projet'+(list.length>1?'s':'');}
+function importOne(P){
   let p=S.projects.find(x=>norm(x.name)===norm(P.name));
   if(!p){p={id:uid(),name:P.name,goal:'',deadline:'',type:'solo',members:[],tasks:[],problems:[],results:[]};S.projects.unshift(p)}
   if(P.goal)p.goal=P.goal;if(P.deadline)p.deadline=P.deadline;if(P.type)p.type=P.type;
@@ -307,7 +310,7 @@ function importPlan(raw){let d;try{d=JSON.parse(raw.slice(raw.indexOf('{'),raw.l
     if(T.date){const arr=S.plan[T.date]||(S.plan[T.date]=[]);if(!arr.some(x=>x.type==='task'&&x.tid===t.id))arr.push({id:uid(),type:'task',pid:p.id,tid:t.id})}}
   for(const Q of P.problems||[]){if(!p.problems.some(x=>norm(x.p)===norm(Q.p)))p.problems.push({id:uid(),p:Q.p,s:Q.s||''})}
   for(const R of P.results||[]){if(!p.results.some(x=>norm(x.t)===norm(R)))p.results.push({id:uid(),t:R})}
-  save();view={tab:'projects',pid:p.id};render();scrollTo(0,0);return'Tzadou '+n+' taches f "'+p.name+'"';}
+  return{n,p};}
 app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   if(b.id==='do-imp'){const msg=importPlan(document.getElementById('i-imp').value);toast2(msg)}
   else if(b.id==='exp'){const p=cur();const out=JSON.stringify({dftar:1,project:{name:p.name,goal:p.goal,deadline:p.deadline,type:p.type||'solo',members:p.members||[],
