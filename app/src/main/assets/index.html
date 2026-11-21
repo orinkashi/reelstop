@@ -161,6 +161,9 @@ function renderHabits(){
 }
 function renderProjects(){
   app.innerHTML=`<div class="top"><div><h1>Projets</h1><div class="sub">${S.projects.length} projet${S.projects.length>1?'s':''}</div></div></div>
+  <details class="card" id="imp-box"><summary style="font-weight:600;cursor:pointer;min-height:28px">Import mn Claude</summary>
+   <textarea id="i-imp" style="margin-top:10px;min-height:120px" placeholder="Lessa9 hna l-code li 3tak Claude"></textarea>
+   <button class="go" id="do-imp" style="margin-top:8px;width:100%">Zid l-plan</button></details>
   <form class="card" id="f-proj"><h3 style="margin-bottom:10px">Projet jdid</h3>
    <input id="i-pname" placeholder="Smiya dial l-projet" maxlength="60" required>
    <div class="grid2" style="margin-top:8px"><input id="i-pgoal" placeholder="L-hadaf dialek" maxlength="140"><input id="i-pdl" type="date" aria-label="Deadline"></div>
@@ -195,6 +198,7 @@ function renderProject(p){
    <div class="card">${p.problems.length?p.problems.map(x=>`<div class="prob"><div class="p"><span class="t" style="overflow-wrap:anywhere">${esc(x.p)}</span><button class="x" data-rm="problems|${x.id}" aria-label="Msse7">×</button></div><label for="s-${x.id}">Solution</label><textarea id="s-${x.id}" data-sol="${x.id}" placeholder="Kifach ghadi t7elha?">${esc(x.s)}</textarea></div>`).join(''):'<div class="empty">Ma kayn ta problème daba.</div>'}</div></div>
   <div class="sec"><h3>Les résultats réels <span class="count">${p.results.length}</span></h3>${list(0,'results','Chno wselti lih b se7')}
    <div class="card">${p.results.length?p.results.map(r=>`<div class="item"><span class="t">${esc(r.t)}</span><button class="x" data-rm="results|${r.id}" aria-label="Msse7">×</button></div>`).join(''):'<div class="empty">Ktb chno tla3 b se7, machi chno kanti baghi.</div>'}</div></div>
+  <div class="sec"><h3>Claude</h3><button id="exp" style="margin-top:8px;width:100%">Copy l Claude</button><textarea id="exp-t" readonly style="display:none;margin-top:8px;min-height:120px"></textarea></div>
   <button id="del-proj" style="margin-top:28px;width:100%;color:var(--hot)">Msse7 had l-projet</button>`;
 }
 const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -290,6 +294,29 @@ function toast(msg){const t=document.getElementById('toast');
   t.innerHTML=`<div class="toast"><span>${msg}</span><button id="undo">Rje3</button></div>`;
   clearTimeout(toast.h);toast.h=setTimeout(()=>{t.innerHTML='';undo=null},5000);}
 const cur=()=>S.projects.find(x=>x.id===view.pid);
+const norm=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
+function importPlan(raw){let d;try{d=JSON.parse(raw.slice(raw.indexOf('{'),raw.lastIndexOf('}')+1))}catch(e){return'Code ghalet. Copy l-code kaml mn Claude.'}
+  const P=d.project;if(!P||!P.name)return'Code ghalet: ma fih ta projet.';
+  let p=S.projects.find(x=>norm(x.name)===norm(P.name));
+  if(!p){p={id:uid(),name:P.name,goal:'',deadline:'',type:'solo',members:[],tasks:[],problems:[],results:[]};S.projects.unshift(p)}
+  if(P.goal)p.goal=P.goal;if(P.deadline)p.deadline=P.deadline;if(P.type)p.type=P.type;
+  p.members=p.members||[];for(const m of P.members||[])if(m&&m!=='Ana'&&!p.members.includes(m))p.members.push(m);
+  for(const c of P.check||[]){const t=p.tasks.find(x=>norm(x.t).includes(norm(c))||norm(c).includes(norm(x.t)));if(t)t.done=1}
+  let n=0;for(const T of P.tasks||[]){let t=p.tasks.find(x=>norm(x.t)===norm(T.t));
+    if(!t){t={id:uid(),t:T.t,done:T.done?1:0,who:T.who==='Ana'?'':(T.who||'')};p.tasks.push(t);n++}
+    if(T.date){const arr=S.plan[T.date]||(S.plan[T.date]=[]);if(!arr.some(x=>x.type==='task'&&x.tid===t.id))arr.push({id:uid(),type:'task',pid:p.id,tid:t.id})}}
+  for(const Q of P.problems||[]){if(!p.problems.some(x=>norm(x.p)===norm(Q.p)))p.problems.push({id:uid(),p:Q.p,s:Q.s||''})}
+  for(const R of P.results||[]){if(!p.results.some(x=>norm(x.t)===norm(R)))p.results.push({id:uid(),t:R})}
+  save();view={tab:'projects',pid:p.id};render();scrollTo(0,0);return'Tzadou '+n+' taches f "'+p.name+'"';}
+app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.id==='do-imp'){const msg=importPlan(document.getElementById('i-imp').value);toast2(msg)}
+  else if(b.id==='exp'){const p=cur();const out=JSON.stringify({dftar:1,project:{name:p.name,goal:p.goal,deadline:p.deadline,type:p.type||'solo',members:p.members||[],
+      tasks:p.tasks.map(t=>({t:t.t,who:t.who||'Ana',done:!!t.done})),problems:p.problems.map(x=>({p:x.p,s:x.s})),results:p.results.map(r=>r.t)}});
+    const ta=document.getElementById('exp-t');ta.style.display='block';ta.value=out;ta.focus();ta.select();
+    let ok=false;try{ok=document.execCommand('copy')}catch(e){}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(()=>toast2('Tcopia! Lesso3 l Claude')).catch(()=>toast2(ok?'Tcopia! Lesso3 l Claude':'Tbe3 3liha w copy'));
+    else toast2(ok?'Tcopia! Lesso3 l Claude':'Tbe3 3liha w copy')}
+});
 
 for(const t of['today','cal','habits','projects','notes'])document.getElementById('tab-'+t).onclick=()=>{view={tab:t,pid:null};render();scrollTo(0,0)};
 const addPlan=(k,item,key)=>{const arr=S.plan[k]||(S.plan[k]=[]);if(key&&arr.some(x=>x.type===item.type&&x[key]===item[key]))return toast2('Deja kayna f had nhar');arr.push({id:uid(),...item});save();render()};
