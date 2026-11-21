@@ -104,6 +104,24 @@ select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:8px 10px;b
 .thx{position:absolute;top:3px;right:3px;min-height:28px;width:28px;padding:0;border-radius:99px;background:rgba(0,0,0,.65);color:#fff;border:0;font-size:16px}
 .addimg{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border-radius:12px;border:1px dashed var(--mute);margin-top:8px;cursor:pointer;font-weight:600}
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:20;padding:12px}#lb.on{display:flex}#lb img{max-width:100%;max-height:100%;border-radius:8px}
+@media(min-width:900px){
+  body{padding-bottom:0;padding-left:232px}
+  nav{top:0;bottom:0;right:auto;width:232px;flex-direction:column;justify-content:flex-start;align-items:stretch;border-top:0;border-right:1px solid var(--line);padding:28px 16px;gap:6px}
+  nav::before{content:'Dftar';font:700 28px/1 Outfit,Inter,sans-serif;color:var(--ink);margin:0 10px 22px}
+  nav button{flex:none;max-width:none;width:100%;margin:0;text-align:left;padding:0 16px;font-size:16px;min-height:46px;border-color:transparent;background:none}
+  nav button.act{background:var(--ink);color:var(--bg)}
+  nav button:not(.act):hover{background:var(--paper)}
+  .wrap{max-width:1120px;padding:36px 48px}
+  h1{font-size:40px}
+  .toast{bottom:28px;left:calc(50% + 116px)}
+  .hlist,.plist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+  .hlist .card,.plist .card{margin:0}
+  #nlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;align-items:start}
+  #nlist .card{margin:0}
+  .calsplit{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:36px;align-items:start}
+  .calR .sec{margin-top:0}.cell{min-height:78px}
+  .calR{position:sticky;top:24px}
+}
 @media(prefers-reduced-motion:reduce){.bar i{transition:none}}
 </style>
 </head>
@@ -195,9 +213,9 @@ function renderHabits(){
   <div class="sub" style="margin-top:-8px">+3 kol nhar · +3 bonus kol 3 ayam streak · −1 ila fatek nhar</div>
   <form class="add" id="f-habit"><input id="i-habit" placeholder="Habit jdida, ex: nchreb l-ma" maxlength="60" required><button class="go">Zid</button></form>
   ${S.habits.length?'':'<div class="empty">Ma kayna ta habit. Zid wa7da lfo9.</div>'}
-  ${S.habits.map(h=>`<div class="card hrow"><h3>${esc(h.name)}</h3>
+  <div class="hlist">${S.habits.map(h=>`<div class="card hrow"><h3>${esc(h.name)}</h3>
     <div style="display:flex;align-items:center;gap:4px"><span class="streak"><b>${streak(h)}</b> j · ${hPoints(h)} pts</span><button class="x" data-del-habit="${h.id}" aria-label="Msse7">×</button></div>
-    <div class="days">${k7.map(k=>{const d=new Date(k+'T00:00');return`<button class="day ${h.days[k]?'on':''} ${k===todayK()?'today':''}" data-hd="${h.id}|${k}" aria-pressed="${!!h.days[k]}"><span>${d.toLocaleDateString('fr-FR',{weekday:'short'}).slice(0,3)}</span><b>${d.getDate()}</b></button>`}).join('')}</div></div>`).join('')}`;
+    <div class="days">${k7.map(k=>{const d=new Date(k+'T00:00');return`<button class="day ${h.days[k]?'on':''} ${k===todayK()?'today':''}" data-hd="${h.id}|${k}" aria-pressed="${!!h.days[k]}"><span>${d.toLocaleDateString('fr-FR',{weekday:'short'}).slice(0,3)}</span><b>${d.getDate()}</b></button>`}).join('')}</div></div>`).join('')}</div>`;
 }
 function renderProjects(){
   app.innerHTML=`<div class="top"><div><h1>Projets</h1><div class="sub">${S.projects.length} projet${S.projects.length>1?'s':''}</div></div></div>
@@ -210,8 +228,8 @@ function renderProjects(){
    <select id="i-ptype" style="margin-top:8px" aria-label="Type"><option value="solo">Individuel</option><option value="team">Équipe</option></select>
    <button class="go" style="margin-top:8px;width:100%">Zid l-projet</button></form>
   ${S.projects.length?'':'<div class="empty">Ma kayn ta projet.</div>'}
-  ${S.projects.map(p=>{const pc=pctOf(p);return`<button class="card proj" data-open="${p.id}"><h3>${esc(p.name)}</h3>
-   <div class="bar"><i style="width:${pc}%"></i></div><div class="meta"><span><b style="color:var(--ink)">${pc}%</b></span><span>${p.tasks.filter(t=>t.done).length}/${p.tasks.length} taches</span><span>${dlText(p)}</span></div></button>`}).join('')}`;
+  <div class="plist">${S.projects.map(p=>{const pc=pctOf(p);return`<button class="card proj" data-open="${p.id}"><h3>${esc(p.name)}</h3>
+   <div class="bar"><i style="width:${pc}%"></i></div><div class="meta"><span><b style="color:var(--ink)">${pc}%</b></span><span>${p.tasks.filter(t=>t.done).length}/${p.tasks.length} taches</span><span>${dlText(p)}</span></div></button>`}).join('')}</div>`;
 }
 function renderProject(p){
   const pc=pctOf(p),d=daysLeft(p);
@@ -310,15 +328,15 @@ function renderCal(){const{y,m,sel}=cal;
     return(ts.length?`<optgroup label="${esc(p.name)}: taches">${ts.map(t=>`<option value="task|${p.id}|${t.id}">${esc(t.t)}</option>`).join('')}</optgroup>`:'')+
     (ss.length?`<optgroup label="${esc(p.name)}: solutions">${ss.map(x=>`<option value="sol|${p.id}|${x.id}">${esc(x.s)}</option>`).join('')}</optgroup>`:'')}).join('')+
     (S.habits.length?`<optgroup label="Habits">${S.habits.map(h=>`<option value="habit|${h.id}">${esc(h.name)}</option>`).join('')}</optgroup>`:'');
-  app.innerHTML=`<div class="calhead"><button data-mo="-1" aria-label="Chhar li fat">‹</button><h2>${MOIS[m]} ${y}</h2><button data-mo="1" aria-label="Chhar jay">›</button></div>
+  app.innerHTML=`<div class="calsplit"><div class="calL"><div class="calhead"><button data-mo="-1" aria-label="Chhar li fat">‹</button><h2>${MOIS[m]} ${y}</h2><button data-mo="1" aria-label="Chhar jay">›</button></div>
   <div class="cal">${['L','M','M','J','V','S','D'].map(w=>`<div class="wd">${w}</div>`).join('')}
   ${cells.map(d=>{const k=dkey(d),n=(S.plan[k]||[]).length,dl=deadlinesOn(k).length;
     return`<button class="cell ${d.getMonth()!==m?'out':''} ${k===todayK()?'today':''} ${k===sel?'sel':''}" data-sel="${k}">${d.getDate()}<span class="dots">${'<i></i>'.repeat(Math.min(n,3))}${dl?'<i class="dl"></i>':''}</span></button>`}).join('')}</div>
-  <div class="sec"><h3>${new Date(sel+'T00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</h3>
+  </div><div class="calR"><div class="sec"><h3>${new Date(sel+'T00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</h3>
    ${deadlinesOn(sel).map(p=>`<div class="alert">Deadline: ${esc(p.name)} (${pctOf(p)}%)</div>`).join('')}
    ${opts?`<form class="add" id="f-pick"><select id="i-pick" aria-label="Khtar tache, solution wla habit">${opts}</select><button class="go">Zid</button></form>`:'<div class="empty">Zid projets, taches wla habits bach tkhtarhom hna.</div>'}
    ${freeForm(sel)}
-   <div class="card">${(S.plan[sel]||[]).length?itemsHTML(sel):'<div class="empty">Walou f had nhar.</div>'}</div></div>`;
+   <div class="card">${(S.plan[sel]||[]).length?itemsHTML(sel):'<div class="empty">Walou f had nhar.</div>'}</div></div></div></div>`;
 }
 const NK={formation:{l:'Formation',f:[['majal','Majal (marketing, design, montage...)'],['formation','Smiya dial l-formation'],['ep','Episode']]},
   ecole:{l:'Madrasa',f:[['module','Module'],['chap','Chapitre'],['titre','Titre']]},
