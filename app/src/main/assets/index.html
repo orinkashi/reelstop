@@ -156,7 +156,7 @@ const sample={habits:[
   {id:uid(),type:'habit',hid:sample.habits[0].id},
   {id:uid(),type:'free',t:'Nchri dfater l-fac',done:0}]};}
 let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-if(!S||!S.habits)S=sample;
+if(!S||!S.habits)S=location.protocol==='file:'?sample:{habits:[],projects:[],plan:{},notes:[]};
 if(!S.plan)S.plan={};
 if(!S.notes)S.notes=[
   {id:uid(),kind:'formation',f:{majal:'Marketing',formation:'Facebook Ads mn zero',ep:'3'},text:'Audience sghira w mdi9a kat3ti natija 7sen mn audience kbira.',at:Date.now()-864e5},
