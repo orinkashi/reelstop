@@ -209,7 +209,9 @@ const I18N={
 '+3 kol habit w kol tache f nharha · +3 bonus kol 3 ayam streak · −1 ila fatek nhar':["+3 par habitude et par tâche faite le jour prévu · +3 bonus tous les 3 jours de série · −1 par jour manqué","+3 per habit and per task done on its day · +3 bonus every 3-day streak · −1 per missed day"],
 'Bdit':["Débutant","Starter"],'Wselti l-akhir 🔥':["Niveau max 🔥","Max level 🔥"],'Khtar icon':["Choisir une icône","Pick an icon"],'Sdd':["Fermer","Close"],
 'Sotat dial concentration':["Sons de concentration","Focus sounds"],'Sotat':["Sons","Sounds"],'offline':["hors ligne","offline"],'🌧️ Chta':["🌧️ Pluie","🌧️ Rain"],'🌊 L-b7er':["🌊 Océan","🌊 Ocean"],'🌫️ Hadwa':["🌫️ Calme","🌫️ Calm noise"],'⏹ Wa9ef':["⏹ Arrêter","⏹ Stop"],
-'⏱ Ch7al d l-wa9t?':["⏱ Combien de temps ?","⏱ How long?"],'7iyed l-wa9t':["Retirer le temps","Remove time"],'Wa9t':["Temps","Time"],'⏳ Daba khdam 3la':["⏳ En cours","⏳ Working on"],'Khdemti:':["Temps passé :","Time spent:"],'✓ Salit':["✓ Terminé","✓ Done"],'Mzyan! ✓':["Bien joué ! ✓","Nice! ✓"],'Minuterie':["Minuteur","Timer"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
+'⏱ Ch7al d l-wa9t?':["⏱ Combien de temps ?","⏱ How long?"],'7iyed l-wa9t':["Retirer le temps","Remove time"],'Wa9t':["Temps","Time"],'⏳ Daba khdam 3la':["⏳ En cours","⏳ Working on"],'Khdemti:':["Temps passé :","Time spent:"],'✓ Salit':["✓ Terminé","✓ Done"],'Mzyan! ✓':["Bien joué ! ✓","Nice! ✓"],'Minuterie':["Minuteur","Timer"],'Export kol note':["Exporter chaque note","Export each note"],'Export':["Exporter","Export"],'Sauvegarde f fichier':["Sauvegarde dans un fichier","Backup to a file"],'Export kolchi':["Tout exporter","Export everything"],'Import mn fichier':["Importer un fichier","Import from file"],
+'Fichier wa7d fih kolchi, 7ta tsawer dial notes.':["Un seul fichier avec tout, y compris les photos des notes.","One file with everything, including note photos."],'Fichier ghalet':["Fichier invalide","Invalid file"],'Data rje3at mn fichier ✓':["Données restaurées ✓","Data restored ✓"],
+'Tsauvegarda ✓':["Enregistré ✓","Saved ✓"],'Ma tsauvegardach':["Non enregistré","Not saved"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
 const I18NX=[
 [/^Ba9i (\d+) j$/,"Encore $1 j","$1 d left"],[/^Deadline fatet (\d+) j$/,"Deadline dépassée de $1 j","Deadline passed $1 d ago"],
 [/^Lyoum: (\d+)\/(\d+) kmlti$/,"Aujourd'hui : $1/$2 faites","Today: $1/$2 done"],[/^(\d+) projet(s?)$/,"$1 projet$2","$1 project$2"],
@@ -219,7 +221,7 @@ const I18NX=[
 [/^Deadline fatet! Derti ghir (\d+)% mn l-projet\.$/,"Deadline dépassée ! Tu as fait seulement $1 % du projet.","Deadline passed! You only did $1% of the project."],
 [/^Tzadou (\d+) taches f (\d+) projets?$/,"$1 tâches ajoutées dans $2 projet(s)","$1 tasks added to $2 project(s)"],
 [/^Tzadou (\d+) taches f (\d+) projets? \+ (\d+) habits$/,"$1 tâches ajoutées dans $2 projet(s) + $3 habitudes","$1 tasks added to $2 project(s) + $3 habits"],
-[/^Ba9i (\d+) pts l (.+)$/,"Encore $1 pts pour $2","$1 pts to $2"],[/^⏱ (.+) ba9in lyoum$/,"⏱ $1 restantes aujourd'hui","⏱ $1 left today"],[/^Stage jdid: (.+)$/,"Nouveau niveau : $1","New level: $1"],[/^⏰ Sala l-wa9t dial: (.+)$/,"⏰ Temps écoulé : $1","⏰ Time's up: $1"],[/^(-?\d+) · Bdit$/,"$1 · Débutant","$1 · Starter"],[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
+[/^Ba9i (\d+) pts l (.+)$/,"Encore $1 pts pour $2","$1 pts to $2"],[/^⏱ (.+) ba9in lyoum$/,"⏱ $1 restantes aujourd'hui","⏱ $1 left today"],[/^Stage jdid: (.+)$/,"Nouveau niveau : $1","New level: $1"],[/^⏰ Sala l-wa9t dial: (.+)$/,"⏰ Temps écoulé : $1","⏰ Time's up: $1"],[/^(-?\d+) · Bdit$/,"$1 · Débutant","$1 · Starter"],[/^(\d+) fichiers$/,"$1 fichiers","$1 files"],[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
 [/^(.*): taches$/,"$1 : tâches","$1: tasks"],[/^(.*): solutions$/,"$1 : solutions","$1: solutions"]];
 function tr(s){if(LANG==='dr')return s;const i=LANG==='fr'?0:1,k=s.trim();if(!k)return s;let out=I18N[k]&&I18N[k][i];
   if(out==null){for(const r of I18NX){if(r[0].test(k)){out=k.replace(r[0],r[1+i]);break}}}
@@ -320,8 +322,8 @@ cup:['M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z','M16 10h2a2 2 0 0 1 0 4h-2','M8 
 mountain:['M3 20l7-12 4 6 2-3 5 9z'],bolt:['M13 2L4 14h7l-1 8 9-12h-7z'],users:['c9 8 3.5','M2 20a7 7 0 0 1 14 0','M16 4.5a3.5 3.5 0 0 1 0 7','M22 20a6 6 0 0 0-4-5.6'],
 phone:['r7 2 10 20 2','M11 18h2'],calendar:['r3 5 18 16 2','M3 10h18','M8 3v4','M16 3v4'],folder:['M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],
 edit:['M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6','M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z'],headphones:['M3 18v-6a9 9 0 0 1 18 0v6','r3 14 4 6 1.5','r17 14 4 6 1.5'],
-cloud:['M7 18a5 5 0 0 1-.6-10A7 7 0 0 1 20 10.5 4 4 0 0 1 18 18z'],bed:['M3 18V7','M3 14h18v4','M21 14a4 4 0 0 0-4-4h-7v4','c7 11 1.5']};
-const ICONS=Object.keys(ICO).filter(k=>!['calendar','folder','edit','headphones','cloud'].includes(k)).map(k=>'i:'+k).concat(['i:calendar','i:folder','i:edit']);
+cloud:['M7 18a5 5 0 0 1-.6-10A7 7 0 0 1 20 10.5 4 4 0 0 1 18 18z'],download:['M12 3v12','M7 10l5 5 5-5','M5 21h14'],upload:['M12 21V9','M7 14l5-5 5 5','M5 3h14'],bed:['M3 18V7','M3 14h18v4','M21 14a4 4 0 0 0-4-4h-7v4','c7 11 1.5']};
+const ICONS=Object.keys(ICO).filter(k=>!['calendar','folder','edit','headphones','cloud','download','upload'].includes(k)).map(k=>'i:'+k).concat(['i:calendar','i:folder','i:edit']);
 for(const[t,ic]of[['today','sun'],['cal','calendar'],['habits','flame'],['projects','folder'],['notes','edit']]){const b=document.getElementById('tab-'+t);if(b)b.innerHTML=icHTML('i:'+ic)+'<span>'+b.textContent+'</span>'}
 function icHTML(ic){if(!ic)return'';if(ic.slice(0,2)!=='i:')return esc(ic);const p=ICO[ic.slice(2)];if(!p)return'';
   return`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p.map(s=>{const a=s.slice(1).split(' ');
@@ -429,6 +431,10 @@ function renderAccount(){
   const ago=sync.last?new Date(sync.last).toLocaleTimeString(LOC,{hour:'2-digit',minute:'2-digit'}):'—';
   app.innerHTML=`<button id="back-today" style="margin-bottom:12px">← Lyoum</button><h1>Compte</h1>
   <div class="card"><div class="sub">Lugha · Langue · Language</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">${[['dr','Darija'],['fr','Français'],['en','English']].map(([c,l])=>`<button data-lang="${c}" class="${LANG===c?'act':''}" style="flex:1">${l}</button>`).join('')}</div></div>
+  <div class="card"><div class="sub">Sauvegarde f fichier</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+    <button id="bk-exp" style="flex:1">${icHTML('i:download')} Export kolchi</button>
+    <label class="addimg" style="flex:1;margin:0;border-style:solid">${icHTML('i:upload')}&nbsp;Import mn fichier<input type="file" id="bk-file" accept=".json,application/json,text/plain" hidden></label></div>
+    <div class="sub" style="margin-top:8px">Fichier wa7d fih kolchi, 7ta tsawer dial notes.</div></div>
   ${AUTH?`<div class="card"><div class="sub">Dakhel b</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(AUTH.email||'')}</div>
     <div class="meta" style="margin-top:10px"><span>Akhir sync: <b style="color:var(--ink)">${ago}</b></span><span>${({busy:'Kaysynchroniser…',ok:'Kolchi m7fouda ✓',err:'Mochkil: '+esc(sync.msg),offline:'Bla internet, ghaysync mlli yrje3',idle:'',off:''})[sync.state]||''}</span></div>
     <button class="go" id="acc-sync" style="width:100%;margin-top:12px">Sync daba</button>
@@ -510,11 +516,11 @@ function notesList(){const q=nv.q.toLowerCase();
   const arr=S.notes.filter(n=>(nv.filter==='all'||n.kind===nv.filter)&&(!q||(n.text+' '+Object.values(n.f).join(' ')).toLowerCase().includes(q))).sort((a,b)=>b.at-a.at);
   return arr.length?arr.map(n=>{const K=NK[n.kind],path=K.f.map(([k,l])=>n.f[k]?(k==='ep'?'Ep '+n.f[k]:k==='page'?'p. '+n.f[k]:n.f[k]):'').filter(Boolean).map(esc).join(' › ');
     return`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div>${icBtn('n',n.id,n.ic||'i:pen')}<span class="kind" style="margin:0">${K.l}</span><div style="font-weight:600;margin-top:6px;overflow-wrap:anywhere">${path||'Bla titre'}</div></div>
-    <div style="display:flex;flex:none"><button class="x" data-ned="${n.id}" aria-label="Bddel" style="font-size:15px">✎</button><button class="x" data-nrm="${n.id}" aria-label="Msse7">×</button></div></div>
+    <div style="display:flex;flex:none"><button class="x" data-nexp="${n.id}" aria-label="Export">${icHTML('i:download')}</button><button class="x" data-ned="${n.id}" aria-label="Bddel" style="font-size:15px">✎</button><button class="x" data-nrm="${n.id}" aria-label="Msse7">×</button></div></div>
     ${n.text?`<div style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px">${esc(n.text)}</div>`:''}${(n.imgs||[]).length?`<div class="thumbs">${n.imgs.map(id=>`<button class="th" data-view="${id}" aria-label="Chouf tswira"><img data-img="${id}" alt=""></button>`).join('')}</div>`:''}<div class="tag">${new Date(n.at).toLocaleDateString(LOC,{day:'numeric',month:'short'})}</div></div>`}).join(''):'<div class="empty">Ma kayna ta note hna.</div>'}
 function renderNotes(){const ed=nv.edit&&S.notes.find(n=>n.id===nv.edit),kind=ed?ed.kind:nv.kind,K=NK[kind];
   const vals=k=>[...new Set([...(k==='majal'?MAJAL:[]),...S.notes.filter(n=>n.kind===kind&&n.f[k]).map(n=>n.f[k])])];
-  app.innerHTML=`<div class="top"><div><h1>Notes</h1><div class="sub">${S.notes.length} note${S.notes.length>1?'s':''}</div></div></div>
+  app.innerHTML=`<div class="top"><div><h1>Notes</h1><div class="sub">${S.notes.length} note${S.notes.length>1?'s':''}</div></div>${S.notes.length?`<button id="nexp-all">${icHTML('i:download')} Export kol note</button>`:''}</div>
   <form class="card" id="f-note"><h3>${ed?'Bddel note':'Note jdida'}</h3>
    <div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0">${Object.entries(NK).map(([k,v])=>`<button type="button" data-nk="${k}" class="${k===kind?'act':''}" ${ed?'disabled':''}>${v.l}</button>`).join('')}</div>
    <div class="grid2">${K.f.map(([k,l])=>`<input id="n-${k}" list="dl-${k}" placeholder="${l}" value="${esc(ed?ed.f[k]:'')}" maxlength="80"${k==='ep'||k==='page'?' inputmode="numeric"':''}><datalist id="dl-${k}">${vals(k).map(v=>`<option value="${esc(v)}">`).join('')}</datalist>`).join('')}</div>
@@ -581,6 +587,30 @@ function setMin(ref,m){const[k,a,b]=ref.split('|');m=Math.max(0,Math.min(600,m|0
   if(k==='t'){const p=S.projects.find(x=>x.id===a),t=p&&p.tasks.find(x=>x.id===b);if(t)t.min=m}
   else{const it=(S.plan[a]||[]).find(x=>x.id===b);if(it)it.min=m}save()}
 document.getElementById('sheet').addEventListener('submit',e=>{if(e.target.id!=='f-min')return;e.preventDefault();const v=+document.getElementById('i-min').value;if(v>0){setMin(e.target.dataset.ref,v);closeSheet();render()}});
+function b64utf8(s){return btoa(unescape(encodeURIComponent(s)))}
+function saveOne(f){if(window.DftarAndroid){DftarAndroid.saveFile(f.name,f.mime,b64utf8(f.text));return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([f.text],{type:f.mime}));a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+function saveMany(files){if(window.DftarAndroid){DftarAndroid.saveFiles(JSON.stringify(files.map(f=>({name:f.name,mime:f.mime,b64:b64utf8(f.text)}))));return}
+  files.forEach((f,i)=>setTimeout(()=>saveOne(f),i*500))}
+const clean=s=>String(s).replace(/[\\/:*?"<>|\n\r]/g,'').trim().slice(0,70);
+async function noteFile(n){const K=NK[n.kind]||NK.other;const vals=K.f.map(([k])=>n.f[k]).filter(Boolean),title=vals.join(' - ')||'Note';
+  const meta=K.f.filter(([k])=>n.f[k]).map(([k,l])=>l.split(' (')[0]+': '+n.f[k]);const date=new Date(n.at).toLocaleDateString(LOC);
+  const imgs=[];for(const id of n.imgs||[]){try{const u=await imgGet(id);if(u)imgs.push(u)}catch(e){}}
+  const base=clean(K.l+' - '+title)+' ('+n.id.slice(0,4)+')';
+  if(!imgs.length)return{name:base+'.txt',mime:'text/plain',text:K.l+'\n'+meta.join('\n')+'\n'+date+'\n\n'+n.text+'\n'};
+  return{name:base+'.html',mime:'text/html',text:`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title></head><body style="font-family:system-ui,sans-serif;max-width:720px;margin:24px auto;padding:0 16px;line-height:1.55"><h1>${esc(title)}</h1><p style="color:#666">${esc(K.l)} · ${meta.map(esc).join(' · ')} · ${esc(date)}</p><div style="white-space:pre-wrap">${esc(n.text)}</div>${imgs.map(u=>`<img src="${u}" style="max-width:100%;margin-top:12px;border-radius:8px" alt="">`).join('')}</body></html>`}}
+async function backupFile(){const images={};for(const n of S.notes)for(const id of n.imgs||[]){try{const u=await imgGet(id);if(u)images[id]=u}catch(e){}}
+  return{name:'dftar-sauvegarde-'+todayK()+'.json',mime:'application/json',text:JSON.stringify({dftar_backup:1,at:new Date().toISOString(),data:S,images})}}
+async function restoreBackup(txt){let d;try{d=JSON.parse(txt)}catch(e){return toast2('Fichier ghalet')}
+  const data=d&&d.dftar_backup?d.data:d;if(!data||!Array.isArray(data.habits)||!Array.isArray(data.projects))return toast2('Fichier ghalet');
+  snap();for(const[id,u]of Object.entries(d.images||{})){try{await imgPut(id,u)}catch(e){}}
+  S=data;if(!S.plan)S.plan={};if(!S.notes)S.notes=[];save();view={tab:'today',pid:null};render();toast('Data rje3at mn fichier ✓')}
+window.dftarSaved=ok=>toast2(ok?'Tsauvegarda ✓':'Ma tsauvegardach');
+app.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.nexp){const n=S.notes.find(x=>x.id===b.dataset.nexp);if(n){saveOne(await noteFile(n))}}
+  else if(b.id==='nexp-all'){const fs=[];for(const n of S.notes)fs.push(await noteFile(n));saveMany(fs);if(!window.DftarAndroid)toast2(fs.length+' fichiers')}
+  else if(b.id==='bk-exp'){saveOne(await backupFile())}});
+app.addEventListener('change',e=>{if(e.target.id!=='bk-file')return;const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();r.onload=()=>restoreBackup(String(r.result));r.readAsText(f)});
 let lastStage=null;
 function render(){
   for(const t of['today','cal','habits','projects','notes'])document.getElementById('tab-'+t).className=view.tab===t?'act':'';

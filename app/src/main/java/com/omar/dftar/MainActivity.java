@@ -5,16 +5,68 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.util.Base64;
+import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.OutputStream;
+
 public class MainActivity extends Activity {
     private static final int PICK_FILES = 1;
+    private static final int SAVE_ONE = 2;
+    private static final int SAVE_MANY = 3;
     private WebView web;
     private ValueCallback<Uri[]> fileCallback;
+    private byte[] pendingBytes;
+    private String pendingJson;
+
+    public class Bridge {
+        @JavascriptInterface
+        public void saveFile(final String name, final String mime, final String b64) {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    try {
+                        pendingBytes = Base64.decode(b64, Base64.DEFAULT);
+                        Intent i = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        i.addCategory(Intent.CATEGORY_OPENABLE);
+                        i.setType(mime);
+                        i.putExtra(Intent.EXTRA_TITLE, name);
+                        startActivityForResult(i, SAVE_ONE);
+                    } catch (Exception e) {
+                        notifySaved(false);
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void saveFiles(final String json) {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    try {
+                        pendingJson = json;
+                        startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), SAVE_MANY);
+                    } catch (Exception e) {
+                        notifySaved(false);
+                    }
+                }
+            });
+        }
+    }
+
+    private void notifySaved(boolean ok) {
+        if (web != null) {
+            web.evaluateJavascript("window.dftarSaved&&window.dftarSaved(" + ok + ")", null);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +78,7 @@ public class MainActivity extends Activity {
         s.setDatabaseEnabled(true);
         s.setAllowFileAccess(true);
         web.setWebViewClient(new WebViewClient());
+        web.addJavascriptInterface(new Bridge(), "DftarAndroid");
         web.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback,
@@ -34,12 +87,23 @@ public class MainActivity extends Activity {
                     fileCallback.onReceiveValue(null);
                 }
                 fileCallback = callback;
+                boolean images = false;
+                String[] accept = params.getAcceptTypes();
+                if (accept != null) {
+                    for (String a : accept) {
+                        if (a != null && a.startsWith("image")) {
+                            images = true;
+                        }
+                    }
+                }
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setType(images ? "image/*" : "*/*");
+                if (images) {
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                }
                 try {
-                    startActivityForResult(Intent.createChooser(intent, "Khtar tswira"), PICK_FILES);
+                    startActivityForResult(Intent.createChooser(intent, images ? "Khtar tswira" : "Khtar fichier"), PICK_FILES);
                 } catch (Exception e) {
                     fileCallback = null;
                     return false;
@@ -75,6 +139,48 @@ public class MainActivity extends Activity {
             }
             fileCallback.onReceiveValue(result);
             fileCallback = null;
+            return;
+        }
+        if (requestCode == SAVE_ONE) {
+            boolean ok = false;
+            if (resultCode == RESULT_OK && data != null && data.getData() != null && pendingBytes != null) {
+                try {
+                    OutputStream out = getContentResolver().openOutputStream(data.getData());
+                    out.write(pendingBytes);
+                    out.close();
+                    ok = true;
+                } catch (Exception e) {
+                    ok = false;
+                }
+            }
+            pendingBytes = null;
+            notifySaved(ok);
+            return;
+        }
+        if (requestCode == SAVE_MANY) {
+            boolean ok = false;
+            if (resultCode == RESULT_OK && data != null && data.getData() != null && pendingJson != null) {
+                try {
+                    Uri tree = data.getData();
+                    Uri dir = DocumentsContract.buildDocumentUriUsingTree(tree, DocumentsContract.getTreeDocumentId(tree));
+                    JSONArray files = new JSONArray(pendingJson);
+                    for (int i = 0; i < files.length(); i++) {
+                        JSONObject f = files.getJSONObject(i);
+                        Uri doc = DocumentsContract.createDocument(getContentResolver(), dir, f.getString("mime"), f.getString("name"));
+                        if (doc == null) {
+                            continue;
+                        }
+                        OutputStream out = getContentResolver().openOutputStream(doc);
+                        out.write(Base64.decode(f.getString("b64"), Base64.DEFAULT));
+                        out.close();
+                    }
+                    ok = true;
+                } catch (Exception e) {
+                    ok = false;
+                }
+            }
+            pendingJson = null;
+            notifySaved(ok);
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
