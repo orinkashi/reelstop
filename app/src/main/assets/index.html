@@ -97,6 +97,12 @@ select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:8px 10px;b
 .tag{display:block;font-size:12px;color:var(--mute);margin-top:2px}
 .kind{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--line);color:var(--ink);white-space:nowrap;margin-top:6px}
 .kind.dl{background:var(--hot);color:var(--on)}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px;margin-top:8px}
+.th{position:relative;padding:0;min-height:0;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--bg);display:block;width:100%}
+.th img{width:100%;height:100%;object-fit:cover;display:block}
+.thx{position:absolute;top:3px;right:3px;min-height:28px;width:28px;padding:0;border-radius:99px;background:rgba(0,0,0,.65);color:#fff;border:0;font-size:16px}
+.addimg{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border-radius:12px;border:1px dashed var(--mute);margin-top:8px;cursor:pointer;font-weight:600}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:20;padding:12px}#lb.on{display:flex}#lb img{max-width:100%;max-height:100%;border-radius:8px}
 @media(prefers-reduced-motion:reduce){.bar i{transition:none}}
 </style>
 </head>
@@ -110,6 +116,7 @@ select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:8px 10px;b
   <button id="tab-notes">Notes</button>
 </nav>
 <div id="toast"></div>
+<div id="lb" role="dialog" aria-label="Tswira"><img alt="Tswira"></div>
 <script>
 {
 const KEY='omar-tracker-v1';
@@ -257,38 +264,56 @@ const NK={formation:{l:'Formation',f:[['majal','Majal (marketing, design, montag
   book:{l:'Ktab',f:[['book','Smiya dial l-ktab'],['page','Page']]},
   other:{l:'Other',f:[['cat','Catégorie (li bghiti)'],['titre','Titre']]}};
 const MAJAL=['Marketing','Design','Video editing','Programmation','Langues','Business','Sport'];
-const nv={kind:'formation',filter:'all',q:'',edit:null};
+const nv={kind:'formation',filter:'all',q:'',edit:null,imgs:[]};
+const IMG=new Map();let dbp=null;
+function idb(){if(dbp)return dbp;dbp=new Promise((ok,ko)=>{try{const r=indexedDB.open('dftar-img',1);r.onupgradeneeded=()=>r.result.createObjectStore('img');r.onsuccess=()=>ok(r.result);r.onerror=()=>ko(r.error)}catch(e){ko(e)}});return dbp}
+async function imgPut(id,url){const db=await idb();await new Promise((ok,ko)=>{const t=db.transaction('img','readwrite');t.objectStore('img').put(url,id);t.oncomplete=ok;t.onerror=()=>ko(t.error)});IMG.set(id,url)}
+async function imgGet(id){if(IMG.has(id))return IMG.get(id);const db=await idb();const url=await new Promise(ok=>{const r=db.transaction('img').objectStore('img').get(id);r.onsuccess=()=>ok(r.result||'');r.onerror=()=>ok('')});IMG.set(id,url);return url}
+function loadImgs(){document.querySelectorAll('img[data-img]').forEach(async el=>{if(el.src)return;try{el.src=await imgGet(el.dataset.img)}catch(e){}})}
+const formThumbs=()=>nv.imgs.length?`<div class="thumbs">${nv.imgs.map(id=>`<div class="th"><img data-img="${id}" alt=""><button type="button" class="thx" data-rmimg="${id}" aria-label="7iyed">×</button></div>`).join('')}</div>`:'';
+function shrink(file){return new Promise((ok,ko)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const m=1280,s=Math.min(1,m/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',0.78))};im.onerror=ko;im.src=fr.result};fr.onerror=ko;fr.readAsDataURL(file)})}
+async function imgGC(){try{const keep=new Set(S.notes.flatMap(n=>n.imgs||[]));const db=await idb();const t=db.transaction('img','readwrite'),st=t.objectStore('img');const r=st.getAllKeys();r.onsuccess=()=>{for(const k of r.result)if(!keep.has(k))st.delete(k)}}catch(e){}}
 function notesList(){const q=nv.q.toLowerCase();
   const arr=S.notes.filter(n=>(nv.filter==='all'||n.kind===nv.filter)&&(!q||(n.text+' '+Object.values(n.f).join(' ')).toLowerCase().includes(q))).sort((a,b)=>b.at-a.at);
   return arr.length?arr.map(n=>{const K=NK[n.kind],path=K.f.map(([k,l])=>n.f[k]?(k==='ep'?'Ep '+n.f[k]:k==='page'?'p. '+n.f[k]:n.f[k]):'').filter(Boolean).map(esc).join(' › ');
     return`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div><span class="kind" style="margin:0">${K.l}</span><div style="font-weight:600;margin-top:6px;overflow-wrap:anywhere">${path||'Bla titre'}</div></div>
     <div style="display:flex;flex:none"><button class="x" data-ned="${n.id}" aria-label="Bddel" style="font-size:15px">✎</button><button class="x" data-nrm="${n.id}" aria-label="Msse7">×</button></div></div>
-    <div style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px">${esc(n.text)}</div><div class="tag">${new Date(n.at).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}</div></div>`}).join(''):'<div class="empty">Ma kayna ta note hna.</div>'}
+    ${n.text?`<div style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px">${esc(n.text)}</div>`:''}${(n.imgs||[]).length?`<div class="thumbs">${n.imgs.map(id=>`<button class="th" data-view="${id}" aria-label="Chouf tswira"><img data-img="${id}" alt=""></button>`).join('')}</div>`:''}<div class="tag">${new Date(n.at).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}</div></div>`}).join(''):'<div class="empty">Ma kayna ta note hna.</div>'}
 function renderNotes(){const ed=nv.edit&&S.notes.find(n=>n.id===nv.edit),kind=ed?ed.kind:nv.kind,K=NK[kind];
   const vals=k=>[...new Set([...(k==='majal'?MAJAL:[]),...S.notes.filter(n=>n.kind===kind&&n.f[k]).map(n=>n.f[k])])];
   app.innerHTML=`<div class="top"><div><h1>Notes</h1><div class="sub">${S.notes.length} note${S.notes.length>1?'s':''}</div></div></div>
   <form class="card" id="f-note"><h3>${ed?'Bddel note':'Note jdida'}</h3>
    <div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0">${Object.entries(NK).map(([k,v])=>`<button type="button" data-nk="${k}" class="${k===kind?'act':''}" ${ed?'disabled':''}>${v.l}</button>`).join('')}</div>
    <div class="grid2">${K.f.map(([k,l])=>`<input id="n-${k}" list="dl-${k}" placeholder="${l}" value="${esc(ed?ed.f[k]:'')}" maxlength="80"${k==='ep'||k==='page'?' inputmode="numeric"':''}><datalist id="dl-${k}">${vals(k).map(v=>`<option value="${esc(v)}">`).join('')}</datalist>`).join('')}</div>
-   <textarea id="n-text" style="margin-top:8px;min-height:110px" placeholder="Ktb note dialek hna" required>${esc(ed?ed.text:'')}</textarea>
+   <textarea id="n-text" style="margin-top:8px;min-height:110px" placeholder="Ktb note dialek hna">${esc(ed?ed.text:'')}</textarea>
+   <div id="n-imgs">${formThumbs()}</div>
+   <label class="addimg">+ Tswira<input type="file" id="n-file" accept="image/*" multiple hidden></label>
    <div style="display:flex;gap:8px;margin-top:8px"><button class="go" style="flex:1">${ed?'Sauvegarder':'Zid note'}</button>${ed?'<button type="button" id="n-cancel">Annuler</button>':''}</div></form>
   <input id="n-q" type="search" placeholder="9elleb f notes" value="${esc(nv.q)}" style="margin-top:14px">
   <div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0">${[['all','Kolchi'],...Object.entries(NK).map(([k,v])=>[k,v.l])].map(([k,l])=>`<button data-nf="${k}" class="${nv.filter===k?'act':''}" style="min-height:36px;font-size:14px">${l}</button>`).join('')}</div>
   <div id="nlist">${notesList()}</div>`;
+  loadImgs();
 }
-app.addEventListener('input',e=>{if(e.target.id==='n-q'){nv.q=e.target.value;document.getElementById('nlist').innerHTML=notesList()}});
+app.addEventListener('input',e=>{if(e.target.id==='n-q'){nv.q=e.target.value;document.getElementById('nlist').innerHTML=notesList();loadImgs()}});
 app.addEventListener('submit',e=>{if(e.target.id!=='f-note')return;e.preventDefault();e.stopImmediatePropagation();
   const ed=nv.edit&&S.notes.find(n=>n.id===nv.edit),kind=ed?ed.kind:nv.kind,f={};
   for(const[k]of NK[kind].f)f[k]=document.getElementById('n-'+k).value.trim();
-  const text=document.getElementById('n-text').value.trim();if(!text)return;
-  if(ed){ed.f=f;ed.text=text;nv.edit=null}else S.notes.push({id:uid(),kind,f,text,at:Date.now()});save();render()});
+  const text=document.getElementById('n-text').value.trim();if(!text&&!nv.imgs.length)return toast2('Ktb chi haja wla zid tswira');
+  if(ed){ed.f=f;ed.text=text;ed.imgs=[...nv.imgs];nv.edit=null}else S.notes.push({id:uid(),kind,f,text,imgs:[...nv.imgs],at:Date.now()});nv.imgs=[];save();render()});
 app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.nk){nv.kind=b.dataset.nk;render()}
   else if(b.dataset.nf){nv.filter=b.dataset.nf;render()}
-  else if(b.dataset.ned){nv.edit=b.dataset.ned;render();scrollTo(0,0)}
-  else if(b.id==='n-cancel'){nv.edit=null;render()}
+  else if(b.dataset.ned){nv.edit=b.dataset.ned;const n=S.notes.find(x=>x.id===nv.edit);nv.imgs=[...((n&&n.imgs)||[])];render();scrollTo(0,0)}
+  else if(b.id==='n-cancel'){nv.edit=null;nv.imgs=[];render()}
+  else if(b.dataset.rmimg){nv.imgs=nv.imgs.filter(x=>x!==b.dataset.rmimg);document.getElementById('n-imgs').innerHTML=formThumbs();loadImgs()}
+  else if(b.dataset.view){const lb=document.getElementById('lb');lb.querySelector('img').src=IMG.get(b.dataset.view)||'';lb.classList.add('on')}
   else if(b.dataset.nrm){snap();S.notes=S.notes.filter(n=>n.id!==b.dataset.nrm);save();render();toast('Note tmss7at')}
 });
+app.addEventListener('change',async e=>{if(e.target.id!=='n-file')return;const files=[...e.target.files];e.target.value='';
+  for(const f of files){try{const url=await shrink(f),id=uid();await imgPut(id,url);nv.imgs.push(id)}catch(err){toast2('Ma 9dertch nzid had tswira')}}
+  const box=document.getElementById('n-imgs');if(box){box.innerHTML=formThumbs();loadImgs()}});
+document.getElementById('lb').addEventListener('click',e=>e.currentTarget.classList.remove('on'));
+setTimeout(imgGC,8000);
 function render(){
   for(const t of['today','cal','habits','projects','notes'])document.getElementById('tab-'+t).className=view.tab===t?'act':'';
   if(view.tab==='today')renderToday();
