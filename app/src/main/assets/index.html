@@ -103,6 +103,15 @@ select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:8px 10px;b
 .thx{position:absolute;top:3px;right:3px;min-height:28px;width:28px;padding:0;border-radius:99px;background:rgba(0,0,0,.65);color:#fff;border:0;font-size:16px}
 .addimg{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border-radius:12px;border:1px dashed var(--mute);margin-top:8px;cursor:pointer;font-weight:600}
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:20;padding:12px}#lb.on{display:flex}#lb img{max-width:100%;max-height:100%;border-radius:8px}
+#sheet{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;z-index:15}#sheet.on{display:flex}
+#sheet .panel{background:var(--paper);border:1px solid var(--line);border-radius:20px 20px 0 0;width:100%;max-width:560px;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.icgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px;margin-top:12px}.icgrid button{font-size:24px;padding:0;min-height:48px}
+.icb{background:none;border:0;padding:0 6px 0 0;min-height:0;font-size:inherit;line-height:inherit;cursor:pointer;vertical-align:baseline}
+.sndgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.sndgrid button{min-height:56px;font-size:16px}
+input[type=range]{width:100%;accent-color:var(--grow);margin-top:14px}
+.stage{display:flex;flex-direction:column;gap:2px}.stg{font:700 22px/1.1 Outfit,Inter,sans-serif;color:var(--hot)}
+.mininp{width:86px!important;flex:none}
+.topbar{display:flex;justify-content:flex-end;gap:8px;margin:-6px 0 -10px}.topbar button{min-height:36px;font-size:14px}
 @media(min-width:900px){
   body{padding-bottom:0;padding-left:232px}
   nav{top:0;bottom:0;right:auto;width:232px;flex-direction:column;justify-content:flex-start;align-items:stretch;border-top:0;border-right:1px solid var(--line);padding:28px 16px;gap:6px}
@@ -134,6 +143,7 @@ select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:8px 10px;b
   <button id="tab-notes">Notes</button>
 </nav>
 <div id="toast"></div>
+<div id="sheet" role="dialog"><div class="panel" id="sheet-p"></div></div>
 <div id="lb" role="dialog" aria-label="Tswira"><img alt="Tswira"></div>
 <script>
 {
@@ -150,7 +160,7 @@ const I18N={
 'Walou f had nhar.':["Rien ce jour-là.","Nothing on this day."],
 'Habit jdida, ex: nchreb l-ma':["Nouvelle habitude, ex : boire de l'eau","New habit, e.g. drink water"],
 'Ma kayna ta habit. Zid wa7da lfo9.':["Aucune habitude. Ajoute-en une ci-dessus.","No habits yet. Add one above."],
-'+3 kol nhar · +3 bonus kol 3 ayam streak · −1 ila fatek nhar':["+3 par jour · +3 bonus tous les 3 jours de série · −1 par jour manqué","+3 per day · +3 bonus every 3-day streak · −1 per missed day"],
+'+3 kol habit w kol tache f nharha · +3 bonus kol 3 ayam streak · −1 ila fatek nhar':["+3 par jour · +3 bonus tous les 3 jours de série · −1 par jour manqué","+3 per day · +3 bonus every 3-day streak · −1 per missed day"],
 'Import mn Claude':["Importer depuis Claude","Import from Claude"],'Lessa9 hna l-code li 3tak Claude':["Colle ici le code donné par Claude","Paste the code Claude gave you"],'Zid l-plan':["Ajouter le plan","Add the plan"],
 'Projet jdid':["Nouveau projet","New project"],'Smiya dial l-projet':["Nom du projet","Project name"],'L-hadaf dialek':["Ton objectif","Your goal"],
 'Individuel':["Individuel","Solo"],'Équipe':["Équipe","Team"],'Zid l-projet':["Ajouter le projet","Add project"],'Ma kayn ta projet.':["Aucun projet.","No projects yet."],
@@ -189,7 +199,11 @@ const I18N={
 'Code ghalet. Copy l-code kaml mn Claude.':["Code invalide. Copie tout le code de Claude.","Invalid code. Copy the full code from Claude."],
 'Tache tmss7at':["Tâche supprimée","Task deleted"],'Problème tmss7':["Problème supprimé","Problem deleted"],'(ba9i ma ktebti solution)':["(pas encore de solution)","(no solution yet)"],
 '7iyed':["Retirer","Remove"],'Bddel':["Modifier","Edit"],'Chhar jay':["Mois suivant","Next month"],'Chhar li fat':["Mois précédent","Previous month"],'Chkoun':["Qui","Who"],
-'Khtar tache, solution wla habit':["Choisir une tâche, solution ou habitude","Pick a task, solution or habit"],'Msse7':["Supprimer","Delete"],'Tswira':["Photo","Photo"],'Chouf tswira':["Voir la photo","View photo"]};
+'Khtar tache, solution wla habit':["Choisir une tâche, solution ou habitude","Pick a task, solution or habit"],'Msse7':["Supprimer","Delete"],'Tswira':["Photo","Photo"],'Chouf tswira':["Voir la photo","View photo"],
+'+3 kol habit w kol tache f nharha · +3 bonus kol 3 ayam streak · −1 ila fatek nhar':["+3 par habitude et par tâche faite le jour prévu · +3 bonus tous les 3 jours de série · −1 par jour manqué","+3 per habit and per task done on its day · +3 bonus every 3-day streak · −1 per missed day"],
+'Bdit':["Débutant","Starter"],'Wselti l-akhir 🔥':["Niveau max 🔥","Max level 🔥"],'Khtar icon':["Choisir une icône","Pick an icon"],'Sdd':["Fermer","Close"],
+'🎧 Sotat dial concentration':["🎧 Sons de concentration","🎧 Focus sounds"],'🌧️ Chta':["🌧️ Pluie","🌧️ Rain"],'🌊 L-b7er':["🌊 Océan","🌊 Ocean"],'🌫️ Hadwa':["🌫️ Calme","🌫️ Calm noise"],'⏹ Wa9ef':["⏹ Arrêter","⏹ Stop"],
+'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
 const I18NX=[
 [/^Ba9i (\d+) j$/,"Encore $1 j","$1 d left"],[/^Deadline fatet (\d+) j$/,"Deadline dépassée de $1 j","Deadline passed $1 d ago"],
 [/^Lyoum: (\d+)\/(\d+) kmlti$/,"Aujourd'hui : $1/$2 faites","Today: $1/$2 done"],[/^(\d+) projet(s?)$/,"$1 projet$2","$1 project$2"],
@@ -199,7 +213,7 @@ const I18NX=[
 [/^Deadline fatet! Derti ghir (\d+)% mn l-projet\.$/,"Deadline dépassée ! Tu as fait seulement $1 % du projet.","Deadline passed! You only did $1% of the project."],
 [/^Tzadou (\d+) taches f (\d+) projets?$/,"$1 tâches ajoutées dans $2 projet(s)","$1 tasks added to $2 project(s)"],
 [/^Tzadou (\d+) taches f (\d+) projets? \+ (\d+) habits$/,"$1 tâches ajoutées dans $2 projet(s) + $3 habitudes","$1 tasks added to $2 project(s) + $3 habits"],
-[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
+[/^Ba9i (\d+) pts l (.+)$/,"Encore $1 pts pour $2","$1 pts to $2"],[/^⏱ (.+) ba9in lyoum$/,"⏱ $1 restantes aujourd'hui","⏱ $1 left today"],[/^Stage jdid: (.+)$/,"Nouveau niveau : $1","New level: $1"],[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
 [/^(.*): taches$/,"$1 : tâches","$1: tasks"],[/^(.*): solutions$/,"$1 : solutions","$1: solutions"]];
 function tr(s){if(LANG==='dr')return s;const i=LANG==='fr'?0:1,k=s.trim();if(!k)return s;let out=I18N[k]&&I18N[k][i];
   if(out==null){for(const r of I18NX){if(r[0].test(k)){out=k.replace(r[0],r[1+i]);break}}}
@@ -286,14 +300,43 @@ function hPoints(h){const days=Object.keys(h.days).sort();let start=h.created||d
     if(h.days[k]){pts+=3;st++;if(st%3===0)pts+=3}else if(k<t){pts-=1;st=0}
     d.setDate(d.getDate()+1)}
   return pts}
+const ICONS=['📌','🎯','💪','🏃','📚','🧠','💧','🕌','🌅','😴','🍎','🥗','💰','🎮','💻','🎬','🎨','✍️','🧘','🔥','⭐','🚀','🏆','❤️','📝','🎓','🛠️','📱','🎧','🌙'];
+const icBtn=(k,id,ic)=>`<button type="button" class="icb" data-icpick="${k}|${id}" aria-label="Icon">${ic}</button>`;
+const fmtMin=m=>m<60?m+' min':Math.floor(m/60)+'h'+(m%60?String(m%60).padStart(2,'0'):'');
+const STAGES=[[0,'Bdit'],[50,'Good'],[150,'Wa3r'],[300,'Hrban'],[600,'GOAT 🐐']];
+function taskPoints(){const t=todayK();let p=0;for(const d in S.plan){if(d>t)continue;for(const it of S.plan[d]){if(it.type==='habit')continue;const r=res(it,d);if(r.gone)continue;if(r.done)p+=3;else if(d<t)p-=1}}return p}
+const totalPts=()=>S.habits.reduce((a,h)=>a+hPoints(h),0)+taskPoints();
+function stageOf(t){let i=0;for(let j=0;j<STAGES.length;j++)if(t>=STAGES[j][0])i=j;return i}
+function openSheet(html){document.getElementById('sheet-p').innerHTML=html;document.getElementById('sheet').classList.add('on')}
+function closeSheet(){document.getElementById('sheet').classList.remove('on')}
+const SND={ctx:null,cur:null,nodes:[],vol:0.6,master:null,timer:null};
+function sndCtx(){if(!SND.ctx){const C=window.AudioContext||window.webkitAudioContext;SND.ctx=new C();SND.master=SND.ctx.createGain();SND.master.gain.value=SND.vol;SND.master.connect(SND.ctx.destination)}return SND.ctx}
+function noiseSrc(ctx,type){const n=ctx.sampleRate*4,b=ctx.createBuffer(1,n,ctx.sampleRate),d=b.getChannelData(0);let last=0;
+  for(let i=0;i<n;i++){const w=Math.random()*2-1;if(type==='brown'){last=(last+0.02*w)/1.02;d[i]=last*3.5}else d[i]=w}
+  const s=ctx.createBufferSource();s.buffer=b;s.loop=true;return s}
+function sndStop(){SND.nodes.forEach(n=>{try{n.stop&&n.stop()}catch(e){}try{n.disconnect()}catch(e){}});SND.nodes=[];clearInterval(SND.timer);SND.timer=null;SND.cur=null}
+function sndPlay(kind){const ctx=sndCtx();if(ctx.resume)ctx.resume();sndStop();SND.cur=kind;const out=SND.master,F=(t,f)=>{const x=ctx.createBiquadFilter();x.type=t;x.frequency.value=f;return x},G=v=>{const g=ctx.createGain();g.gain.value=v;return g};
+  if(kind==='rain'){const s=noiseSrc(ctx,'white'),hp=F('highpass',500),lp=F('lowpass',7000),g=G(0.3),s2=noiseSrc(ctx,'brown'),g2=G(0.45);s.connect(hp);hp.connect(lp);lp.connect(g);g.connect(out);s2.connect(g2);g2.connect(out);s.start();s2.start();SND.nodes.push(s,hp,lp,g,s2,g2)}
+  else if(kind==='ocean'){const s=noiseSrc(ctx,'brown'),lp=F('lowpass',900),g=G(0.5),lfo=ctx.createOscillator(),lg=G(0.45);lfo.frequency.value=0.09;lfo.connect(lg);lg.connect(g.gain);s.connect(lp);lp.connect(g);g.connect(out);s.start();lfo.start();SND.nodes.push(s,lp,g,lfo,lg)}
+  else if(kind==='brown'){const s=noiseSrc(ctx,'brown'),g=G(0.8);s.connect(g);g.connect(out);s.start();SND.nodes.push(s,g)}
+  else if(kind==='piano'){const notes=[261.63,293.66,329.63,392,440,523.25,587.33,659.25],dl=ctx.createDelay(1),fb=G(0.35),wet=G(0.4);dl.delayTime.value=0.45;dl.connect(fb);fb.connect(dl);dl.connect(wet);wet.connect(out);SND.nodes.push(dl,fb,wet);
+    const play=()=>{const t=ctx.currentTime,f=notes[Math.floor(Math.random()*notes.length)]*(Math.random()<0.3?0.5:1);
+      [0.22,0.06,0.025].forEach((a,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f*(i+1);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(a,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+3.2);o.connect(g);g.connect(out);g.connect(dl);o.start(t);o.stop(t+3.3)})};
+    play();SND.timer=setInterval(()=>{if(Math.random()<0.8)play()},900)}}
+const SNDS=[['rain','🌧️ Chta'],['ocean','🌊 L-b7er'],['piano','🎹 Piano'],['brown','🌫️ Hadwa']];
+function sndSheet(){openSheet(`<h3>🎧 Sotat dial concentration</h3><div class="sndgrid">${SNDS.map(([k,l])=>`<button data-snd="${k}" class="${SND.cur===k?'act':''}">${l}</button>`).join('')}</div>
+  <input type="range" id="snd-vol" min="0" max="1" step="0.05" value="${SND.vol}" aria-label="Volume">
+  <div style="display:flex;gap:8px;margin-top:12px"><button data-snd="stop" style="flex:1">⏹ Wa9ef</button><button data-close style="flex:1">Sdd</button></div>`)}
 function renderHabits(){
   const k7=[...Array(7)].map((_,i)=>plus(i-6));
   const doneToday=S.habits.filter(h=>h.days[todayK()]).length;
-  app.innerHTML=`<div class="top"><div><h1>Habits</h1><div class="sub">Lyoum: ${doneToday}/${S.habits.length} kmlti</div></div><div style="text-align:right"><div class="pct" style="font-size:36px;color:var(--grow)">${S.habits.reduce((a,h)=>a+hPoints(h),0)}</div><div class="sub">points</div></div></div>
-  <div class="sub" style="margin-top:-8px">+3 kol nhar · +3 bonus kol 3 ayam streak · −1 ila fatek nhar</div>
+  app.innerHTML=`<div class="top"><div><h1>Habits</h1><div class="sub">Lyoum: ${doneToday}/${S.habits.length} kmlti</div></div><div style="text-align:right"><div class="pct" style="font-size:36px;color:var(--grow)">${totalPts()}</div><div class="sub">points</div></div></div>
+  ${(()=>{const tot=totalPts(),i=stageOf(tot),cur=STAGES[i],nx=STAGES[i+1],pc=nx?Math.round((tot-cur[0])/(nx[0]-cur[0])*100):100;
+    return`<div class="card stage"><div style="display:flex;justify-content:space-between;align-items:end;gap:8px;flex-wrap:wrap"><span class="stg">${cur[1]}</span><span class="sub">${nx?`Ba9i ${nx[0]-tot} pts l ${nx[1]}`:'Wselti l-akhir 🔥'}</span></div><div class="bar"><i style="width:${Math.max(0,Math.min(100,pc))}%"></i></div></div>`})()}
+  <div class="sub">+3 kol habit w kol tache f nharha · +3 bonus kol 3 ayam streak · −1 ila fatek nhar</div>
   <form class="add" id="f-habit"><input id="i-habit" placeholder="Habit jdida, ex: nchreb l-ma" maxlength="60" required><button class="go">Zid</button></form>
   ${S.habits.length?'':'<div class="empty">Ma kayna ta habit. Zid wa7da lfo9.</div>'}
-  <div class="hlist">${S.habits.map(h=>`<div class="card hrow"><h3>${esc(h.name)}</h3>
+  <div class="hlist">${S.habits.map(h=>`<div class="card hrow"><h3>${icBtn('h',h.id,h.ic||'⭐')}${esc(h.name)}</h3>
     <div style="display:flex;align-items:center;gap:4px"><span class="streak"><b>${streak(h)}</b> j · ${hPoints(h)} pts</span><button class="x" data-del-habit="${h.id}" aria-label="Msse7">×</button></div>
     <div class="days">${k7.map(k=>{const d=new Date(k+'T00:00');return`<button class="day ${h.days[k]?'on':''} ${k===todayK()?'today':''}" data-hd="${h.id}|${k}" aria-pressed="${!!h.days[k]}"><span>${d.toLocaleDateString(LOC,{weekday:'short'}).slice(0,3)}</span><b>${d.getDate()}</b></button>`}).join('')}</div></div>`).join('')}</div>`;
 }
@@ -308,7 +351,7 @@ function renderProjects(){
    <select id="i-ptype" style="margin-top:8px" aria-label="Type"><option value="solo">Individuel</option><option value="team">Équipe</option></select>
    <button class="go" style="margin-top:8px;width:100%">Zid l-projet</button></form>
   ${S.projects.length?'':'<div class="empty">Ma kayn ta projet.</div>'}
-  <div class="plist">${S.projects.map(p=>{const pc=pctOf(p);return`<button class="card proj" data-open="${p.id}"><h3>${esc(p.name)}</h3>
+  <div class="plist">${S.projects.map(p=>{const pc=pctOf(p);return`<button class="card proj" data-open="${p.id}"><h3>${p.ic||'📌'} ${esc(p.name)}</h3>
    <div class="bar"><i style="width:${pc}%"></i></div><div class="meta"><span><b style="color:var(--ink)">${pc}%</b></span><span>${p.tasks.filter(t=>t.done).length}/${p.tasks.length} taches</span><span>${dlText(p)}</span></div></button>`}).join('')}</div>`;
 }
 function renderProject(p){
@@ -318,7 +361,7 @@ function renderProject(p){
   else if(pc>=100&&p.tasks.length)alert=`<div class="alert ok">100%! Kmlti ga3 les taches.</div>`;
   const list=(arr,kind,ph)=>`<form class="add" data-add="${kind}"><input placeholder="${ph}" maxlength="140" required><button class="go">Zid</button></form>`;
   app.innerHTML=`<button id="back" style="margin-bottom:12px">← Projets</button>
-  <h1>${esc(p.name)}</h1>
+  <h1>${icBtn('p',p.id,p.ic||'📌')}${esc(p.name)}</h1>
   ${alert}
   <div class="card"><div style="display:flex;justify-content:space-between;align-items:end;gap:10px;flex-wrap:wrap"><div class="pct">${pc}%</div><div class="meta" style="text-align:right"><span>${dlText(p)}</span></div></div>
    <div class="bar"><i style="width:${pc}%"></i></div>
@@ -330,8 +373,8 @@ function renderProject(p){
    <form class="add" id="f-member"><input id="i-member" placeholder="Smiya dial sa7bek" maxlength="40" required><button class="go">Zid</button></form>
    <div class="card">${['Ana',...(p.members||[])].map(n=>{const who=n==='Ana'?'':n,ts=p.tasks.filter(t=>(t.who||'')===who),dn=ts.filter(t=>t.done).length,pc2=ts.length?Math.round(dn/ts.length*100):0;
     return`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n)}</b><span class="count">${dn}/${ts.length} · ${pc2}%${n!=='Ana'?` <button class="x" data-rmm="${esc(n)}" aria-label="7iyed">×</button>`:''}</span></div><div class="bar"><i style="width:${pc2}%"></i></div></div>`}).join('')}</div></div>`:''}
-  <div class="sec"><h3>Les taches <span class="count">${p.tasks.filter(t=>t.done).length}/${p.tasks.length}</span></h3>${p.type==='team'?`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><select aria-label="Chkoun" style="width:auto;max-width:38%">${['Ana',...(p.members||[])].map(n=>`<option value="${n==='Ana'?'':esc(n)}">${esc(n)}</option>`).join('')}</select><button class="go">Zid</button></form>`:list(0,'tasks','Tache jdida')}
-   <div class="card">${p.tasks.length?p.tasks.map(t=>`<div class="item ${t.done?'done':''}"><button class="chk" data-tog="${t.id}" aria-pressed="${!!t.done}" aria-label="Check">${t.done?'✓':''}</button><span class="t">${esc(t.t)}</span>${p.type==='team'?`<span class="kind">${esc(t.who||'Ana')}</span>`:''}<button class="x" data-rm="tasks|${t.id}" aria-label="Msse7">×</button></div>`).join(''):'<div class="empty">Zid les taches. L-pourcentage kayt7seb mnhom.</div>'}</div></div>
+  <div class="sec"><h3>Les taches <span class="count">${p.tasks.filter(t=>t.done).length}/${p.tasks.length}</span></h3>${p.type==='team'?`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><select aria-label="Chkoun" style="width:auto;max-width:30%">${['Ana',...(p.members||[])].map(n=>`<option value="${n==='Ana'?'':esc(n)}">${esc(n)}</option>`).join('')}</select><button class="go">Zid</button></form>`:`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><button class="go">Zid</button></form>`}
+   <div class="card">${p.tasks.length?p.tasks.map(t=>`<div class="item ${t.done?'done':''}"><button class="chk" data-tog="${t.id}" aria-pressed="${!!t.done}" aria-label="Check">${t.done?'✓':''}</button><span class="t">${esc(t.t)}</span>${t.min?`<span class="kind">⏱ ${fmtMin(t.min)}</span>`:''}${p.type==='team'?`<span class="kind">${esc(t.who||'Ana')}</span>`:''}<button class="x" data-rm="tasks|${t.id}" aria-label="Msse7">×</button></div>`).join(''):'<div class="empty">Zid les taches. L-pourcentage kayt7seb mnhom.</div>'}</div></div>
   <div class="sec"><h3>Les problèmes w les solutions <span class="count">${p.problems.filter(x=>x.s).length}/${p.problems.length} m7loulin</span></h3>${list(0,'problems','Problème jdid')}
    <div class="card">${p.problems.length?p.problems.map(x=>`<div class="prob"><div class="p"><span class="t" style="overflow-wrap:anywhere">${esc(x.p)}</span><button class="x" data-rm="problems|${x.id}" aria-label="Msse7">×</button></div><label for="s-${x.id}">Solution</label><textarea id="s-${x.id}" data-sol="${x.id}" placeholder="Kifach ghadi t7elha?">${esc(x.s)}</textarea></div>`).join(''):'<div class="empty">Ma kayn ta problème daba.</div>'}</div></div>
   <div class="sec"><h3>Les résultats réels <span class="count">${p.results.length}</span></h3>${list(0,'results','Chno wselti lih b se7')}
@@ -342,18 +385,18 @@ function renderProject(p){
 const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 function res(it,k){
   if(it.type==='task'){const p=S.projects.find(x=>x.id===it.pid),t=p&&p.tasks.find(x=>x.id===it.tid);
-    return t?{t:t.t,sub:p.name,kind:'Tache',done:!!t.done}:{t:'Tache tmss7at',sub:'',kind:'Tache',done:false,gone:1}}
+    return t?{t:t.t,sub:(p.ic||'📌')+' '+p.name,kind:'Tache',done:!!t.done,min:t.min||0}:{t:'Tache tmss7at',sub:'',kind:'Tache',done:false,gone:1}}
   if(it.type==='sol'){const p=S.projects.find(x=>x.id===it.pid),x=p&&p.problems.find(q=>q.id===it.qid);
     return x?{t:x.s||'(ba9i ma ktebti solution)',sub:'Problème: '+x.p+' · '+p.name,kind:'Solution',done:!!it.done}:{t:'Problème tmss7',sub:'',kind:'Solution',done:false,gone:1}}
   if(it.type==='habit'){const h=S.habits.find(x=>x.id===it.hid);
-    return h?{t:h.name,sub:'',kind:'Habit',done:!!h.days[k]}:{t:'Habit tmss7at',sub:'',kind:'Habit',done:false,gone:1}}
+    return h?{t:(h.ic||'⭐')+' '+h.name,sub:'',kind:'Habit',done:!!h.days[k]}:{t:'Habit tmss7at',sub:'',kind:'Habit',done:false,gone:1}}
   return{t:it.t,sub:'',kind:'Khra',done:!!it.done}
 }
 function toggleIt(k,iid){const it=(S.plan[k]||[]).find(x=>x.id===iid);if(!it)return;
   if(it.type==='task'){const p=S.projects.find(x=>x.id===it.pid),t=p&&p.tasks.find(x=>x.id===it.tid);if(t)t.done=t.done?0:1}
   else if(it.type==='habit'){const h=S.habits.find(x=>x.id===it.hid);if(h){h.days[k]?delete h.days[k]:h.days[k]=1}}
   else it.done=it.done?0:1;}
-const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class="item ${r.done?'done':''}"><button class="chk" data-it="${k}|${it.id}" aria-pressed="${r.done}" aria-label="Check">${r.done?'✓':''}</button><span class="t">${esc(r.t)}${r.sub?`<span class="tag">${esc(r.sub)}</span>`:''}</span><span class="kind">${r.kind}</span><button class="x" data-rmi="${k}|${it.id}" aria-label="7iyed">×</button></div>`}).join('');
+const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class="item ${r.done?'done':''}"><button class="chk" data-it="${k}|${it.id}" aria-pressed="${r.done}" aria-label="Check">${r.done?'✓':''}</button><span class="t">${esc(r.t)}${r.sub?`<span class="tag">${esc(r.sub)}</span>`:''}</span>${r.min?`<span class="kind">⏱ ${fmtMin(r.min)}</span>`:''}<span class="kind">${r.kind}</span><button class="x" data-rmi="${k}|${it.id}" aria-label="7iyed">×</button></div>`}).join('');
 const deadlinesOn=k=>S.projects.filter(p=>p.deadline===k);
 const freeForm=k=>`<form class="add" data-free="${k}"><input placeholder="Tache khra (machi f chi projet)" maxlength="140" required><button class="go">Zid</button></form>`;
 
@@ -397,8 +440,9 @@ setTimeout(doSync,1200);
 function renderToday(){const k=todayK(),arr=S.plan[k]||[];
   const n=arr.filter(it=>res(it,k).done).length;
   const late=Object.keys(S.plan).filter(d=>d<k).sort().flatMap(d=>S.plan[d].filter(it=>{const r=res(it,d);return it.type!=='habit'&&!r.done&&!r.gone}).map(it=>({d,it})));
-  app.innerHTML=`<div style="display:flex;justify-content:flex-end;margin:-6px 0 -10px"><button id="cloud" style="min-height:36px;font-size:14px">${cloudLabel()}</button></div><div class="top"><div><h1>Lyoum</h1><div class="sub">${new Date().toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pct" style="font-size:36px">${n}/${arr.length}</div></div>
-  ${arr.length?`<div class="bar"><i style="width:${Math.round(n/arr.length*100)}%"></i></div>`:''}
+  const left=arr.reduce((a,it)=>{const r=res(it,k);return a+(r.done?0:(r.min||0))},0);
+  app.innerHTML=`<div class="topbar"><button id="pts-open" style="margin-right:auto;color:var(--grow)">⭐ ${totalPts()} · ${STAGES[stageOf(totalPts())][1]}</button><button id="snd-open">🎧${SND.cur?' ▶':''}</button><button id="cloud">${cloudLabel()}</button></div><div class="top"><div><h1>Lyoum</h1><div class="sub">${new Date().toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pct" style="font-size:36px">${n}/${arr.length}</div></div>
+  ${arr.length?`<div class="bar"><i style="width:${Math.round(n/arr.length*100)}%"></i></div>`:''}${left?`<div class="sub">⏱ ${fmtMin(left)} ba9in lyoum</div>`:''}
   ${deadlinesOn(k).map(p=>`<div class="alert">Lyoum deadline dial "${esc(p.name)}": ${pctOf(p)}%</div>`).join('')}
   ${freeForm(k)}
   <div class="card">${arr.length?itemsHTML(k):'<div class="empty">Ma kayn walou lyoum. Zid tache lfo9, wla mchi l Calendar w khtar mn les projets.</div>'}</div>
@@ -437,7 +481,7 @@ async function imgGC(){try{const keep=new Set(S.notes.flatMap(n=>n.imgs||[]));co
 function notesList(){const q=nv.q.toLowerCase();
   const arr=S.notes.filter(n=>(nv.filter==='all'||n.kind===nv.filter)&&(!q||(n.text+' '+Object.values(n.f).join(' ')).toLowerCase().includes(q))).sort((a,b)=>b.at-a.at);
   return arr.length?arr.map(n=>{const K=NK[n.kind],path=K.f.map(([k,l])=>n.f[k]?(k==='ep'?'Ep '+n.f[k]:k==='page'?'p. '+n.f[k]:n.f[k]):'').filter(Boolean).map(esc).join(' › ');
-    return`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div><span class="kind" style="margin:0">${K.l}</span><div style="font-weight:600;margin-top:6px;overflow-wrap:anywhere">${path||'Bla titre'}</div></div>
+    return`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div>${icBtn('n',n.id,n.ic||'📝')}<span class="kind" style="margin:0">${K.l}</span><div style="font-weight:600;margin-top:6px;overflow-wrap:anywhere">${path||'Bla titre'}</div></div>
     <div style="display:flex;flex:none"><button class="x" data-ned="${n.id}" aria-label="Bddel" style="font-size:15px">✎</button><button class="x" data-nrm="${n.id}" aria-label="Msse7">×</button></div></div>
     ${n.text?`<div style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px">${esc(n.text)}</div>`:''}${(n.imgs||[]).length?`<div class="thumbs">${n.imgs.map(id=>`<button class="th" data-view="${id}" aria-label="Chouf tswira"><img data-img="${id}" alt=""></button>`).join('')}</div>`:''}<div class="tag">${new Date(n.at).toLocaleDateString(LOC,{day:'numeric',month:'short'})}</div></div>`}).join(''):'<div class="empty">Ma kayna ta note hna.</div>'}
 function renderNotes(){const ed=nv.edit&&S.notes.find(n=>n.id===nv.edit),kind=ed?ed.kind:nv.kind,K=NK[kind];
@@ -475,6 +519,16 @@ app.addEventListener('change',async e=>{if(e.target.id!=='n-file')return;const f
   const box=document.getElementById('n-imgs');if(box){box.innerHTML=formThumbs();loadImgs()}});
 document.getElementById('lb').addEventListener('click',e=>e.currentTarget.classList.remove('on'));
 setTimeout(imgGC,8000);
+document.getElementById('sheet').addEventListener('click',e=>{if(e.target.id==='sheet'){closeSheet();return}const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.close!==undefined){closeSheet()}
+  else if(b.dataset.icset){const[k,id,ic]=b.dataset.icset.split('|');const arr=k==='h'?S.habits:k==='p'?S.projects:S.notes;const x=arr.find(y=>y.id===id);if(x){x.ic=ic;save()}closeSheet();render()}
+  else if(b.dataset.snd){if(b.dataset.snd==='stop')sndStop();else if(SND.cur===b.dataset.snd)sndStop();else{try{sndPlay(b.dataset.snd)}catch(err){toast2('Sot ma khdamch f had l-appareil')}}sndSheet();if(view.tab==='today')render()}});
+document.getElementById('sheet').addEventListener('input',e=>{if(e.target.id==='snd-vol'){SND.vol=+e.target.value;if(SND.master)SND.master.gain.value=SND.vol}});
+app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.icpick){e.stopPropagation();e.preventDefault();openSheet(`<h3>Khtar icon</h3><div class="icgrid">${ICONS.map(ic=>`<button data-icset="${b.dataset.icpick}|${ic}">${ic}</button>`).join('')}</div><button data-close style="width:100%;margin-top:12px">Sdd</button>`)}
+  else if(b.id==='snd-open')sndSheet();
+  else if(b.id==='pts-open'){view={tab:'habits',pid:null};render();scrollTo(0,0)}},true);
+let lastStage=null;
 function render(){
   for(const t of['today','cal','habits','projects','notes'])document.getElementById('tab-'+t).className=view.tab===t?'act':'';
   if(view.tab==='account')renderAccount();
@@ -483,6 +537,7 @@ function render(){
   else if(view.tab==='habits')renderHabits();
   else if(view.tab==='notes')renderNotes();
   else{const p=S.projects.find(x=>x.id===view.pid);p?renderProject(p):(view.pid=null,renderProjects())}
+  {const i=stageOf(totalPts());if(lastStage!==null&&i>lastStage)toast2('Stage jdid: '+STAGES[i][1]+' 🎉');lastStage=i}
 }
 function toast(msg){const t=document.getElementById('toast');
   t.innerHTML=`<div class="toast"><span>${msg}</span><button id="undo">Rje3</button></div>`;
@@ -505,7 +560,7 @@ function importOne(P){
   p.members=p.members||[];for(const m of P.members||[])if(m&&m!=='Ana'&&!p.members.includes(m))p.members.push(m);
   for(const c of P.check||[]){const t=p.tasks.find(x=>norm(x.t).includes(norm(c))||norm(c).includes(norm(x.t)));if(t)t.done=1}
   let n=0;for(const T of P.tasks||[]){let t=p.tasks.find(x=>norm(x.t)===norm(T.t));
-    if(!t){t={id:uid(),t:T.t,done:T.done?1:0,who:T.who==='Ana'?'':(T.who||'')};p.tasks.push(t);n++}
+    if(!t){t={id:uid(),t:T.t,done:T.done?1:0,who:T.who==='Ana'?'':(T.who||''),min:+T.min||0};p.tasks.push(t);n++}
     if(T.date){const arr=S.plan[T.date]||(S.plan[T.date]=[]);if(!arr.some(x=>x.type==='task'&&x.tid===t.id))arr.push({id:uid(),type:'task',pid:p.id,tid:t.id})}}
   for(const Q of P.problems||[]){if(!p.problems.some(x=>norm(x.p)===norm(Q.p)))p.problems.push({id:uid(),p:Q.p,s:Q.s||''})}
   for(const R of P.results||[]){if(!p.results.some(x=>norm(x.t)===norm(R)))p.results.push({id:uid(),t:R})}
@@ -513,7 +568,7 @@ function importOne(P){
 app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   if(b.id==='do-imp'){const msg=importPlan(document.getElementById('i-imp').value);toast2(msg)}
   else if(b.id==='exp'){const p=cur();const out=JSON.stringify({dftar:1,project:{name:p.name,goal:p.goal,deadline:p.deadline,type:p.type||'solo',members:p.members||[],
-      tasks:p.tasks.map(t=>({t:t.t,who:t.who||'Ana',done:!!t.done})),problems:p.problems.map(x=>({p:x.p,s:x.s})),results:p.results.map(r=>r.t)}});
+      tasks:p.tasks.map(t=>({t:t.t,who:t.who||'Ana',done:!!t.done,min:t.min||0})),problems:p.problems.map(x=>({p:x.p,s:x.s})),results:p.results.map(r=>r.t)}});
     const ta=document.getElementById('exp-t');ta.style.display='block';ta.value=out;ta.focus();ta.select();
     let ok=false;try{ok=document.execCommand('copy')}catch(e){}
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(()=>toast2('Tcopia! Lesso3 l Claude')).catch(()=>toast2(ok?'Tcopia! Lesso3 l Claude':'Tbe3 3liha w copy'));
@@ -548,7 +603,7 @@ app.addEventListener('submit',e=>{e.preventDefault();const f=e.target;
     const p={id:uid(),name:n,goal:document.getElementById('i-pgoal').value.trim(),deadline:document.getElementById('i-pdl').value,type:document.getElementById('i-ptype').value,members:[],tasks:[],problems:[],results:[]};
     S.projects.unshift(p);save();view.pid=p.id;render();scrollTo(0,0)}
   else if(f.dataset.add){const p=cur(),v=f.querySelector('input').value.trim();if(!p||!v)return;
-    const k=f.dataset.add;p[k].push(k==='tasks'?{id:uid(),t:v,done:0,who:(f.querySelector('select')||{}).value||''}:k==='problems'?{id:uid(),p:v,s:''}:{id:uid(),t:v});save();render();
+    const k=f.dataset.add;p[k].push(k==='tasks'?{id:uid(),t:v,done:0,who:(f.querySelector('select')||{}).value||'',min:Math.max(0,Math.min(600,+((f.querySelector('.mininp')||{}).value)||0))}:k==='problems'?{id:uid(),p:v,s:''}:{id:uid(),t:v});save();render();
     const nf=app.querySelector(`form[data-add="${k}"] input`);nf&&nf.focus()}
 });
 app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
