@@ -215,7 +215,7 @@ const I18N={
 'Fichier wa7d fih kolchi, 7ta tsawer dial notes.':["Un seul fichier avec tout, y compris les photos des notes.","One file with everything, including note photos."],'Fichier ghalet':["Fichier invalide","Invalid file"],'Data rje3at mn fichier ✓':["Données restaurées ✓","Data restored ✓"],
 'Tsauvegarda ✓':["Enregistré ✓","Saved ✓"],'Ma tsauvegardach':["Non enregistré","Not saved"],'Rappel':["Rappel","Reminder"],'Kol nhar f had l-wa9t':["Chaque jour à cette heure","Every day at this time"],'F nhar dial had tache':["Le jour de cette tâche","On this task's day"],
 'Rappels kaykhdmo ghir f l-app dial telephone.':["Les rappels fonctionnent seulement dans l'app téléphone.","Reminders only work in the phone app."],'7iyed rappel':["Supprimer le rappel","Remove reminder"],
-'Wa9t dial habit dialek ⏰':["C'est l'heure de ton habitude ⏰","Time for your habit ⏰"],'Wa9t dial tache ⏰':["C'est l'heure de ta tâche ⏰","Time for your task ⏰"],
+'F 5 d9aye9 ⏰':["Dans 5 minutes ⏰","In 5 minutes ⏰"],'Ghanfakrek 5 d9aye9 9bel':["Rappel 5 minutes avant","Reminder 5 minutes before"],'Wa9t dial habit dialek ⏰':["C'est l'heure de ton habitude ⏰","Time for your habit ⏰"],'Wa9t dial tache ⏰':["C'est l'heure de ta tâche ⏰","Time for your task ⏰"],
 '+ Fichier (PDF, Word...)':["+ Fichier (PDF, Word...)","+ File (PDF, Word...)"],'Fichier kbir bzaf (max 15 MB)':["Fichier trop lourd (max 15 Mo)","File too large (max 15 MB)"],'Ma 9dertch nzid had l-fichier':["Impossible d'ajouter ce fichier","Couldn't add this file"],
 'Had l-fichier ma kaynch f had l-appareil':["Ce fichier n'est pas sur cet appareil","This file isn't on this device"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
 const I18NX=[
@@ -227,7 +227,7 @@ const I18NX=[
 [/^Deadline fatet! Derti ghir (\d+)% mn l-projet\.$/,"Deadline dépassée ! Tu as fait seulement $1 % du projet.","Deadline passed! You only did $1% of the project."],
 [/^Tzadou (\d+) taches f (\d+) projets?$/,"$1 tâches ajoutées dans $2 projet(s)","$1 tasks added to $2 project(s)"],
 [/^Tzadou (\d+) taches f (\d+) projets? \+ (\d+) habits$/,"$1 tâches ajoutées dans $2 projet(s) + $3 habitudes","$1 tasks added to $2 project(s) + $3 habits"],
-[/^Ba9i (\d+) pts l (.+)$/,"Encore $1 pts pour $2","$1 pts to $2"],[/^⏱ (.+) ba9in lyoum$/,"⏱ $1 restantes aujourd'hui","⏱ $1 left today"],[/^Stage jdid: (.+)$/,"Nouveau niveau : $1","New level: $1"],[/^⏰ Sala l-wa9t dial: (.+)$/,"⏰ Temps écoulé : $1","⏰ Time's up: $1"],[/^(-?\d+) · Bdit$/,"$1 · Débutant","$1 · Starter"],[/^(\d+) fichiers$/,"$1 fichiers","$1 files"],[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
+[/^Ba9i (\d+) pts l (.+)$/,"Encore $1 pts pour $2","$1 pts to $2"],[/^⏱ (.+) ba9in lyoum$/,"⏱ $1 restantes aujourd'hui","⏱ $1 left today"],[/^Stage jdid: (.+)$/,"Nouveau niveau : $1","New level: $1"],[/^⏰ Sala l-wa9t dial: (.+)$/,"⏰ Temps écoulé : $1","⏰ Time's up: $1"],[/^(-?\d+) · Bdit$/,"$1 · Débutant","$1 · Starter"],[/^(\d+) fichiers$/,"$1 fichiers","$1 files"],[/^(.+) · Ghanfakrek 5 d9aye9 9bel$/,"$1 · Rappel 5 min avant","$1 · Reminder 5 min before"],[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
 [/^(.*): taches$/,"$1 : tâches","$1: tasks"],[/^(.*): solutions$/,"$1 : solutions","$1: solutions"]];
 function tr(s){if(LANG==='dr')return s;const i=LANG==='fr'?0:1,k=s.trim();if(!k)return s;let out=I18N[k]&&I18N[k][i];
   if(out==null){for(const r of I18NX){if(r[0].test(k)){out=k.replace(r[0],r[1+i]);break}}}
@@ -370,7 +370,7 @@ function renderHabits(){
   <form class="add" id="f-habit"><input id="i-habit" placeholder="Habit jdida, ex: nchreb l-ma" maxlength="60" required><button class="go">Zid</button></form>
   ${S.habits.length?'':'<div class="empty">Ma kayna ta habit. Zid wa7da lfo9.</div>'}
   <div class="hlist">${S.habits.map(h=>`<div class="card hrow"><h3>${icBtn('h',h.id,h.ic||'i:star')}${esc(h.name)}</h3>
-    <div style="display:flex;align-items:center;gap:4px"><span class="streak"><b>${streak(h)}</b> j · ${hPoints(h)} pts</span><button class="x bellb ${h.rem?'on':''}" data-rem="h|${h.id}" aria-label="Rappel">${icHTML('i:bell')}${h.rem?' '+h.rem:''}</button><button class="x" data-del-habit="${h.id}" aria-label="Msse7">×</button></div>
+    <div style="display:flex;align-items:center;gap:4px"><span class="streak"><b>${streak(h)}</b> j · ${hPoints(h)} pts</span><button class="x bellb ${h.rem?'on':''}" data-rem="h|${h.id}" aria-label="Rappel">${icHTML('i:bell')}${h.rem?' '+fmt12(h.rem):''}</button><button class="x" data-del-habit="${h.id}" aria-label="Msse7">×</button></div>
     <div class="days">${k7.map(k=>{const d=new Date(k+'T00:00');return`<button class="day ${h.days[k]?'on':''} ${k===todayK()?'today':''}" data-hd="${h.id}|${k}" aria-pressed="${!!h.days[k]}"><span>${d.toLocaleDateString(LOC,{weekday:'short'}).slice(0,3)}</span><b>${d.getDate()}</b></button>`}).join('')}</div></div>`).join('')}</div>`;
 }
 function renderProjects(){
@@ -429,7 +429,7 @@ function toggleIt(k,iid){const it=(S.plan[k]||[]).find(x=>x.id===iid);if(!it)ret
   if(it.type==='task'){const p=S.projects.find(x=>x.id===it.pid),t=p&&p.tasks.find(x=>x.id===it.tid);if(t)t.done=t.done?0:1}
   else if(it.type==='habit'){const h=S.habits.find(x=>x.id===it.hid);if(h){h.days[k]?delete h.days[k]:h.days[k]=1}}
   else it.done=it.done?0:1;}
-const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class="item ${r.done?'done':''}"><button class="chk" data-it="${k}|${it.id}" aria-pressed="${r.done}" aria-label="Check">${r.done?'✓':''}</button><span class="t">${it.type==='habit'&&r.ic?`<span class="icv">${icHTML(r.ic)}</span>`:''}${esc(r.t)}${r.sub?`<span class="tag">${it.type==='task'&&r.ic?`<span class="icv">${icHTML(r.ic)}</span>`:''}${esc(r.sub)}</span>`:''}</span><span class="chips">${(it.type==='task'||it.type==='free')&&!r.gone?`<button class="kind tbtn" data-setmin="${it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id}" aria-label="Wa9t">${icHTML('i:clock')} ${r.min?fmtMin(r.min):'+'}</button>${r.min&&!r.done?playBtn(it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id):''}`:''}${it.type!=='habit'&&k>=todayK()&&!r.gone?`<button class="kind tbtn ${it.rem?'run':''}" data-rem="p|${k}|${it.id}" aria-label="Rappel">${icHTML('i:bell')}${it.rem?' '+it.rem:''}</button>`:''}<span class="kind">${r.kind}</span><button class="x" data-rmi="${k}|${it.id}" aria-label="7iyed">×</button></span></div>`}).join('');
+const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class="item ${r.done?'done':''}"><button class="chk" data-it="${k}|${it.id}" aria-pressed="${r.done}" aria-label="Check">${r.done?'✓':''}</button><span class="t">${it.type==='habit'&&r.ic?`<span class="icv">${icHTML(r.ic)}</span>`:''}${esc(r.t)}${r.sub?`<span class="tag">${it.type==='task'&&r.ic?`<span class="icv">${icHTML(r.ic)}</span>`:''}${esc(r.sub)}</span>`:''}</span><span class="chips">${(it.type==='task'||it.type==='free')&&!r.gone?`<button class="kind tbtn" data-setmin="${it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id}" aria-label="Wa9t">${icHTML('i:clock')} ${r.min?fmtMin(r.min):'+'}</button>${r.min&&!r.done?playBtn(it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id):''}`:''}${it.type!=='habit'&&k>=todayK()&&!r.gone?`<button class="kind tbtn ${it.rem?'run':''}" data-rem="p|${k}|${it.id}" aria-label="Rappel">${icHTML('i:bell')}${it.rem?' '+fmt12(it.rem):''}</button>`:''}<span class="kind">${r.kind}</span><button class="x" data-rmi="${k}|${it.id}" aria-label="7iyed">×</button></span></div>`}).join('');
 const deadlinesOn=k=>S.projects.filter(p=>p.deadline===k);
 const freeForm=k=>`<form class="add" data-free="${k}"><input placeholder="Tache khra (machi f chi projet)" maxlength="140" required><button class="go">Zid</button></form>`;
 
@@ -636,19 +636,20 @@ app.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)
   else if(b.id==='nexp-all'){const fs=[];for(const n of S.notes)fs.push(await noteFile(n));saveMany(fs);if(!window.DftarAndroid)toast2(fs.length+' fichiers')}
   else if(b.id==='bk-exp'){saveOne(await backupFile())}});
 app.addEventListener('change',e=>{if(e.target.id!=='bk-file')return;const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();r.onload=()=>restoreBackup(String(r.result));r.readAsText(f)});
+const fmt12=t=>{if(!t)return'';const[H,M]=t.split(':').map(Number);return(H%12||12)+':'+String(M).padStart(2,'0')+' '+(H<12?'AM':'PM')};
 function remObj(ref){const a=ref.split('|');if(a[0]==='h')return S.habits.find(x=>x.id===a[1]);return(S.plan[a[1]]||[]).find(x=>x.id===a[2])}
 function remSheet(ref){const o=remObj(ref);if(!o)return;const isApp=!!window.DftarAndroid;
-  openSheet(`<h3>${icHTML('i:bell')} Rappel</h3><div class="sub">${ref[0]==='h'?'Kol nhar f had l-wa9t':'F nhar dial had tache'}</div>
-  <div class="mingrid">${['07:00','08:00','12:00','14:00','18:00','20:00','21:00','22:00'].map(t=>`<button data-remset="${ref}|${t}">${t}</button>`).join('')}</div>
+  openSheet(`<h3>${icHTML('i:bell')} Rappel</h3><div class="sub">${ref[0]==='h'?'Kol nhar f had l-wa9t':'F nhar dial had tache'} · ${'Ghanfakrek 5 d9aye9 9bel'}</div>
+  <div class="mingrid">${['07:00','08:00','12:00','14:00','18:00','20:00','21:00','22:00'].map(t=>`<button data-remset="${ref}|${t}">${fmt12(t)}</button>`).join('')}</div>
   <form id="f-rem" class="add" style="margin-top:10px"><input type="time" id="i-rem" value="${o.rem||''}" aria-label="Wa9t"><button class="go">OK</button></form>
   ${isApp?'':'<div class="late" style="margin-top:8px">Rappels kaykhdmo ghir f l-app dial telephone.</div>'}
   <div style="display:flex;gap:8px;margin-top:8px"><button data-remset="${ref}|" style="flex:1">7iyed rappel</button><button data-close style="flex:1">Sdd</button></div>`);document.getElementById('f-rem').dataset.ref=ref}
 function setRem(ref,t){const o=remObj(ref);if(!o)return;if(t)o.rem=t;else delete o.rem;save();if(t&&window.DftarAndroid&&DftarAndroid.askNotif)DftarAndroid.askNotif()}
 let remT=null;
 function syncRem(){if(!window.DftarAndroid||!DftarAndroid.setReminders)return;clearTimeout(remT);remT=setTimeout(()=>{const list=[],now=Date.now(),td=todayK();
-  for(const h of S.habits){if(!h.rem)continue;const[H,M]=h.rem.split(':').map(Number),d=new Date();d.setHours(H,M,0,0);if(+d<=now||h.days[td])d.setDate(d.getDate()+1);
-    list.push({id:'h-'+h.id,at:+d,title:(h.name||'Habit'),body:tr('Wa9t dial habit dialek ⏰'),daily:true})}
-  for(const k in S.plan){if(k<td)continue;for(const it of S.plan[k]){if(!it.rem)continue;const r=res(it,k);if(r.done||r.gone)continue;const at=+new Date(k+'T'+it.rem+':00');if(at>now)list.push({id:'p-'+it.id,at,title:r.t,body:tr('Wa9t dial tache ⏰'),daily:false})}}
+  for(const h of S.habits){if(!h.rem)continue;const[H,M]=h.rem.split(':').map(Number),d=new Date();d.setHours(H,M,0,0);d.setMinutes(d.getMinutes()-5);if(+d<=now||h.days[td])d.setDate(d.getDate()+1);
+    list.push({id:'h-'+h.id,at:+d,title:(h.name||'Habit')+' · '+fmt12(h.rem),body:tr('F 5 d9aye9 ⏰'),daily:true})}
+  for(const k in S.plan){if(k<td)continue;for(const it of S.plan[k]){if(!it.rem)continue;const r=res(it,k);if(r.done||r.gone)continue;const at=+new Date(k+'T'+it.rem+':00')-5*60000;if(at>now)list.push({id:'p-'+it.id,at,title:r.t+' · '+fmt12(it.rem),body:tr('F 5 d9aye9 ⏰'),daily:false})}}
   try{DftarAndroid.setReminders(JSON.stringify(list))}catch(e){}},800)}
 document.getElementById('sheet').addEventListener('submit',e=>{if(e.target.id!=='f-rem')return;e.preventDefault();const v=document.getElementById('i-rem').value;if(v){setRem(e.target.dataset.ref,v);closeSheet();render()}});
 let lastStage=null;
