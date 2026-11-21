@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dftar</title>
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: personal, direct, motivating — a pocket carnet
+   IDEA: a squared school notebook with tabs and stamps
+   PICTURE: the working tracker itself: habit grid + project progress
+   COLOUR/TYPE: white paper, ink, coral stamp accent, deep green for growth; Outfit + Inter
+   LAYOUT: one column, max 720px, bottom tab bar on phone */
+:root{color-scheme:dark;
+--bg:#121413;--paper:#1c1f1d;--line:#2c312e;
+--ink:#eef1ec;--mute:#a2aaa4;
+--grow:#4fc58f;--hot:#ff6e55;--on:#fff}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip;padding-bottom:88px}
+h1,h2,h3{font-family:Outfit,Inter,sans-serif;margin:0;line-height:1.1;text-wrap:balance}
+h1{font-size:34px}h2{font-size:22px}h3{font-size:17px}
+.wrap{max-width:720px;margin:0 auto;padding:20px max(4vw,16px)}
+.top{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:8px 0 18px}
+.sub{color:var(--mute);font-size:14px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;gap:8px;padding:10px max(4vw,16px) calc(10px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--line);z-index:5}
+nav button{flex:1;max-width:340px;margin:0 auto}
+button{font:inherit;font-weight:600;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:0 14px;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--hot);outline-offset:2px}
+button.act{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.go{background:var(--grow);color:var(--on);border-color:var(--grow)}
+button.x{min-height:36px;min-width:36px;padding:0;background:none;border:0;color:var(--mute);font-size:20px}
+input,textarea{font:inherit;font-size:16px;width:100%;min-height:44px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+textarea{min-height:64px;resize:vertical}
+form.add{display:flex;gap:8px;margin:12px 0}
+form.add input{flex:1}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center}
+.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;grid-column:1/-1}
+.day{min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:12px;color:var(--mute);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;font-weight:500}
+.day b{font-size:14px;color:var(--ink)}
+.day.on{background:var(--grow);border-color:var(--grow);color:var(--on)}.day.on b{color:var(--on)}
+.day.today{border:2px solid var(--ink)}
+.streak{font-size:13px;color:var(--mute)}.streak b{color:var(--hot);font-size:16px}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0 4px}
+.bar i{display:block;height:100%;background:var(--grow);border-radius:99px;transition:width .4s}
+.pct{font-family:Outfit,sans-serif;font-weight:700;font-size:44px;line-height:1}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;color:var(--mute)}
+.late{color:var(--hot);font-weight:600}
+.alert{border-radius:16px;padding:14px 16px;margin:12px 0;font-weight:600;background:var(--hot);color:var(--on)}
+.alert.ok{background:var(--grow)}
+.proj{cursor:pointer;width:100%;text-align:left;display:block;font-weight:400;padding:14px;min-height:0}
+.sec{margin-top:22px}.sec h3{display:flex;justify-content:space-between;align-items:center}
+.count{font-size:13px;color:var(--mute);font-family:Inter}
+.item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .t{flex:1;overflow-wrap:anywhere;padding-top:6px}
+.done .t{text-decoration:line-through;color:var(--mute)}
+.chk{width:28px;height:28px;min-height:28px;border-radius:8px;border:2px solid var(--grow);background:none;padding:0;margin-top:2px;flex:none;color:var(--on);font-size:15px}
+.done .chk{background:var(--grow)}
+.prob{padding:10px 0;border-bottom:1px solid var(--line)}.prob:last-child{border-bottom:0}
+.prob .p{font-weight:600;display:flex;gap:8px;justify-content:space-between}
+.prob label{font-size:13px;color:var(--mute);display:block;margin:6px 0 4px}
+.empty{color:var(--mute);font-size:14px;padding:6px 0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+@media(max-width:600px){.grid2{grid-template-columns:minmax(0,1fr)}h1{font-size:30px}}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 8px 8px 16px;border-radius:12px;display:flex;gap:10px;align-items:center;z-index:9}
+.toast button{min-height:36px;background:var(--hot);color:var(--on);border:0}
+.mhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.mhead h2{text-transform:capitalize}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.wd{font-size:12px;color:var(--mute);text-align:center;padding:2px 0}
+.cd{min-height:52px;padding:4px 2px;border-radius:10px;background:var(--bg);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;font-weight:600}
+.cd.out{visibility:hidden}
+.cd.today{border:2px solid var(--ink)}
+.cd.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cd.dl{box-shadow:inset 0 -3px 0 var(--hot)}
+.dots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;max-width:100%}
+.dots i{width:6px;height:6px;border-radius:9px;background:var(--mute)}.dots i.ok{background:var(--grow)}
+.cd.sel .dots i{background:var(--bg)}.cd.sel .dots i.ok{background:var(--grow)}
+.tag{display:block;font-size:12px;color:var(--mute);margin-top:2px}
+.tag.h{color:var(--grow)}.tag.s{color:var(--hot)}
+.pk{display:flex;width:100%;justify-content:space-between;align-items:center;gap:10px;text-align:left;font-weight:500;margin:6px 0;background:var(--bg)}
+.pk span{overflow-wrap:anywhere;padding:8px 0}.pk b{color:var(--grow);font-size:20px}
+.pg{font-size:13px;color:var(--mute);margin:14px 0 2px;font-weight:600}
+.dlnote{color:var(--hot);font-weight:600;font-size:14px;margin:6px 0}
+nav{gap:6px}nav button{padding:0 6px;font-size:14px}
+select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.calhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.wd{font-size:12px;color:var(--mute);text-align:center;padding-bottom:2px}
+.cell{min-height:52px;padding:6px 0 4px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;font-weight:500;background:var(--bg)}
+.cell.out{opacity:.35}.cell.today{border:2px solid var(--grow)}
+.cell.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.dots{display:flex;gap:3px;margin-top:5px;height:6px}.dots i{width:6px;height:6px;border-radius:50%;background:var(--grow)}.dots i.dl{background:var(--hot)}
+.tag{display:block;font-size:12px;color:var(--mute);margin-top:2px}
+.kind{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--line);color:var(--ink);white-space:nowrap;margin-top:6px}
+.kind.dl{background:var(--hot);color:var(--on)}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px;margin-top:8px}
+.th{position:relative;padding:0;min-height:0;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--bg);display:block;width:100%}
+.th img{width:100%;height:100%;object-fit:cover;display:block}
+.thx{position:absolute;top:3px;right:3px;min-height:28px;width:28px;padding:0;border-radius:99px;background:rgba(0,0,0,.65);color:#fff;border:0;font-size:16px}
+.addimg{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border-radius:12px;border:1px dashed var(--mute);margin-top:8px;cursor:pointer;font-weight:600}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:20;padding:12px}#lb.on{display:flex}#lb img{max-width:100%;max-height:100%;border-radius:8px}
+@media(prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<nav>
+  <button id="tab-today">Lyoum</button>
+  <button id="tab-cal">Calendar</button>
+  <button id="tab-habits">Habits</button>
+  <button id="tab-projects">Projets</button>
+  <button id="tab-notes">Notes</button>
+</nav>
+<div id="toast"></div>
+<div id="lb" role="dialog" aria-label="Tswira"><img alt="Tswira"></div>
+<script>
+{
+const KEY='omar-tracker-v1';
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const todayK=()=>dkey(new Date());
+const plus=n=>{const d=new Date();d.setDate(d.getDate()+n);return dkey(d)};
+const sample={habits:[
+  {id:uid(),name:'Nchreb 2L dial l-ma',days:{[plus(0)]:1,[plus(-1)]:1,[plus(-2)]:1,[plus(-4)]:1}},
+  {id:uid(),name:'Sport 30 min',days:{[plus(-1)]:1,[plus(-3)]:1}}],
+ projects:[{id:uid(),name:'Kenz Lblad, niveau 1',goal:'Niveau wa7ed kamel w mzyan bach nwerrih l-s7abi',deadline:plus(14),
+  tasks:[{id:uid(),t:'Combat dial l-personnage',done:1},{id:uid(),t:'3dou wa7ed',done:1},{id:uid(),t:'Map dial Sla',done:0},{id:uid(),t:'Boss',done:0}],
+  problems:[{id:uid(),p:'L-jump ma mzyanch',s:'Nbeddel l-gravité w n3awed ntesti'}],
+  results:[{id:uid(),t:'L-combat khdam w s7abi 3jbhom'}]}]};
+{const p=sample.projects[0];sample.plan={[plus(0)]:[
+  {id:uid(),type:'task',pid:p.id,tid:p.tasks[2].id},
+  {id:uid(),type:'sol',pid:p.id,qid:p.problems[0].id,done:0},
+  {id:uid(),type:'habit',hid:sample.habits[0].id},
+  {id:uid(),type:'free',t:'Nchri dfater l-fac',done:0}]};}
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.habits)S=sample;
+if(!S.plan)S.plan={};
+if(!S.notes)S.notes=[
+  {id:uid(),kind:'formation',f:{majal:'Marketing',formation:'Facebook Ads mn zero',ep:'3'},text:'Audience sghira w mdi9a kat3ti natija 7sen mn audience kbira.',at:Date.now()-864e5},
+  {id:uid(),kind:'ecole',f:{module:'Analyse',chap:'Chapitre 2: Suites',titre:'Suites géométriques'},text:'Un = U0 × q^n. Ila |q|<1 la suite katconverger l 0.',at:Date.now()-2*864e5},
+  {id:uid(),kind:'book',f:{book:'Atomic Habits',page:'45'},text:'Bda b habit sghira bzaf, 2 d9aye9 f nhar.',at:Date.now()-3*864e5}];
+let view={tab:'today',pid:null};
+const cal={y:new Date().getFullYear(),m:new Date().getMonth(),sel:todayK()};
+let undo=null;
+const SB='https://cuiosvzhgrlpleugjouv.supabase.co',SBK='sb_publishable_N5KpbC4q_sRQOcRs_4FP_A_rHg9cwOo',AK='dftar-auth';
+let AUTH=null;try{AUTH=JSON.parse(localStorage.getItem(AK))}catch(e){}
+const sync={state:AUTH?'idle':'off',last:0,msg:''};
+const writeLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const save=()=>{S._t=Date.now();writeLocal();schedulePush()};
+function setAuth(a){AUTH=a;try{a?localStorage.setItem(AK,JSON.stringify(a)):localStorage.removeItem(AK)}catch(e){}}
+async function sbAuth(path,body){const r=await fetch(SB+'/auth/v1/'+path,{method:'POST',headers:{apikey:SBK,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.msg||j.error_description||j.message||('Erreur '+r.status));e.status=r.status;throw e}return j}
+function keepAuth(j){setAuth({at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000-60000,id:j.user&&j.user.id,email:j.user&&j.user.email})}
+async function token(){if(!AUTH)throw new Error('Ma dakhelch');if(Date.now()<AUTH.exp)return AUTH.at;
+  try{const j=await sbAuth('token?grant_type=refresh_token',{refresh_token:AUTH.rt});keepAuth({...j,user:j.user||{id:AUTH.id,email:AUTH.email}});return AUTH.at}
+  catch(e){if(e.status===400||e.status===401){setAuth(null);sync.state='off';throw new Error('Khassek t3awed tdkhol')}throw e}}
+async function sbRest(method,q,body){const t=await token();
+  const r=await fetch(SB+'/rest/v1/dftar_data'+q,{method,headers:{apikey:SBK,Authorization:'Bearer '+t,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:body?JSON.stringify(body):undefined});
+  if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('Erreur '+r.status))}return method==='GET'?r.json():null}
+let pushT=null,busy=false;
+function schedulePush(){if(!AUTH)return;clearTimeout(pushT);pushT=setTimeout(doSync,2500)}
+function setSync(s){sync.state=s;const c=document.getElementById('cloud');if(c)c.textContent=cloudLabel();if(view.tab==='account')render()}
+const cloudLabel=()=>({off:'☁ Compte',idle:'☁ Sync',busy:'☁ …',ok:'☁ ✓',err:'☁ !',offline:'☁ offline'})[sync.state]||'☁';
+async function doSync(){if(!AUTH||busy)return;if(navigator.onLine===false){setSync('offline');return}busy=true;setSync('busy');let lt=S._t||0,rt=0;
+  try{const rows=await sbRest('GET','?select=data,updated_at&user_id=eq.'+AUTH.id);const remote=rows&&rows[0]&&rows[0].data;rt=(remote&&remote._t)||0;
+    if(remote&&rt>lt){S=remote;if(!S.plan)S.plan={};if(!S.notes)S.notes=[];writeLocal();busy=false;sync.last=Date.now();setSync('ok');render();return}
+    if(!remote||lt>rt){const snapS=S;await sbRest('POST','',{user_id:AUTH.id,data:snapS,updated_at:new Date().toISOString()})}
+    sync.last=Date.now();sync.msg='';busy=false;setSync('ok')}
+  catch(e){sync.msg=e.message;busy=false;setSync(AUTH?'err':'off')}
+  if(AUTH&&(S._t||0)>Math.max(lt,rt))schedulePush()}
+const app=document.getElementById('app');
+const pctOf=p=>p.tasks.length?Math.round(p.tasks.filter(t=>t.done).length/p.tasks.length*100):0;
+const daysLeft=p=>{if(!p.deadline)return null;const a=new Date(p.deadline+'T00:00'),b=new Date(todayK()+'T00:00');return Math.round((a-b)/864e5)};
+const fmt=k=>new Date(k+'T00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+function streak(h){let n=0,i=h.days[todayK()]?0:-1;while(h.days[plus(i)]){n++;i--}return n}
+function dlText(p){const d=daysLeft(p),pc=pctOf(p);if(d===null)return'Bla deadline';
+  if(d<0)return'<span class="late">Deadline fatet '+(-d)+' j</span>';if(d===0)return'<span class="late">Lyoum akhir nhar</span>';return'Ba9i '+d+' j';}
+
+function hPoints(h){const days=Object.keys(h.days).sort();let start=h.created||days[0]||todayK();if(days[0]&&days[0]<start)start=days[0];
+  let pts=0,st=0;const t=todayK();const d=new Date(start+'T00:00');
+  for(let i=0;i<4000;i++){const k=dkey(d);if(k>t)break;
+    if(h.days[k]){pts+=3;st++;if(st%3===0)pts+=3}else if(k<t){pts-=1;st=0}
+    d.setDate(d.getDate()+1)}
+  return pts}
+function renderHabits(){
+  const k7=[...Array(7)].map((_,i)=>plus(i-6));
+  const doneToday=S.habits.filter(h=>h.days[todayK()]).length;
+  app.innerHTML=`<div class="top"><div><h1>Habits</h1><div class="sub">Lyoum: ${doneToday}/${S.habits.length} kmlti</div></div><div style="text-align:right"><div class="pct" style="font-size:36px;color:var(--grow)">${S.habits.reduce((a,h)=>a+hPoints(h),0)}</div><div class="sub">points</div></div></div>
+  <div class="sub" style="margin-top:-8px">+3 kol nhar · +3 bonus kol 3 ayam streak · −1 ila fatek nhar</div>
+  <form class="add" id="f-habit"><input id="i-habit" placeholder="Habit jdida, ex: nchreb l-ma" maxlength="60" required><button class="go">Zid</button></form>
+  ${S.habits.length?'':'<div class="empty">Ma kayna ta habit. Zid wa7da lfo9.</div>'}
+  ${S.habits.map(h=>`<div class="card hrow"><h3>${esc(h.name)}</h3>
+    <div style="display:flex;align-items:center;gap:4px"><span class="streak"><b>${streak(h)}</b> j · ${hPoints(h)} pts</span><button class="x" data-del-habit="${h.id}" aria-label="Msse7">×</button></div>
+    <div class="days">${k7.map(k=>{const d=new Date(k+'T00:00');return`<button class="day ${h.days[k]?'on':''} ${k===todayK()?'today':''}" data-hd="${h.id}|${k}" aria-pressed="${!!h.days[k]}"><span>${d.toLocaleDateString('fr-FR',{weekday:'short'}).slice(0,3)}</span><b>${d.getDate()}</b></button>`}).join('')}</div></div>`).join('')}`;
+}
+function renderProjects(){
+  app.innerHTML=`<div class="top"><div><h1>Projets</h1><div class="sub">${S.projects.length} projet${S.projects.length>1?'s':''}</div></div></div>
+  <details class="card" id="imp-box"><summary style="font-weight:600;cursor:pointer;min-height:28px">Import mn Claude</summary>
+   <textarea id="i-imp" style="margin-top:10px;min-height:120px" placeholder="Lessa9 hna l-code li 3tak Claude"></textarea>
+   <button class="go" id="do-imp" style="margin-top:8px;width:100%">Zid l-plan</button></details>
+  <form class="card" id="f-proj"><h3 style="margin-bottom:10px">Projet jdid</h3>
+   <input id="i-pname" placeholder="Smiya dial l-projet" maxlength="60" required>
+   <div class="grid2" style="margin-top:8px"><input id="i-pgoal" placeholder="L-hadaf dialek" maxlength="140"><input id="i-pdl" type="date" aria-label="Deadline"></div>
+   <select id="i-ptype" style="margin-top:8px" aria-label="Type"><option value="solo">Individuel</option><option value="team">Équipe</option></select>
+   <button class="go" style="margin-top:8px;width:100%">Zid l-projet</button></form>
+  ${S.projects.length?'':'<div class="empty">Ma kayn ta projet.</div>'}
+  ${S.projects.map(p=>{const pc=pctOf(p);return`<button class="card proj" data-open="${p.id}"><h3>${esc(p.name)}</h3>
+   <div class="bar"><i style="width:${pc}%"></i></div><div class="meta"><span><b style="color:var(--ink)">${pc}%</b></span><span>${p.tasks.filter(t=>t.done).length}/${p.tasks.length} taches</span><span>${dlText(p)}</span></div></button>`}).join('')}`;
+}
+function renderProject(p){
+  const pc=pctOf(p),d=daysLeft(p);
+  let alert='';
+  if(d!==null&&d<0)alert=pc>=100?`<div class="alert ok">Bravo! Kmlti l-projet 100% 9bel l-deadline.</div>`:`<div class="alert">Deadline fatet! Derti ghir ${pc}% mn l-projet.</div>`;
+  else if(pc>=100&&p.tasks.length)alert=`<div class="alert ok">100%! Kmlti ga3 les taches.</div>`;
+  const list=(arr,kind,ph)=>`<form class="add" data-add="${kind}"><input placeholder="${ph}" maxlength="140" required><button class="go">Zid</button></form>`;
+  app.innerHTML=`<button id="back" style="margin-bottom:12px">← Projets</button>
+  <h1>${esc(p.name)}</h1>
+  ${alert}
+  <div class="card"><div style="display:flex;justify-content:space-between;align-items:end;gap:10px;flex-wrap:wrap"><div class="pct">${pc}%</div><div class="meta" style="text-align:right"><span>${dlText(p)}</span></div></div>
+   <div class="bar"><i style="width:${pc}%"></i></div>
+   <div class="grid2" style="margin-top:10px">
+    <label class="sub">L-hadaf<input data-f="goal" value="${esc(p.goal)}" placeholder="Chno bghiti tousel lih?"></label>
+    <label class="sub">Deadline<input data-f="deadline" type="date" value="${esc(p.deadline)}"></label></div></div>
+  <div class="sec"><h3>Type</h3><div style="display:flex;gap:8px;margin-top:8px"><button data-ptype="solo" class="${p.type!=='team'?'act':''}" style="flex:1">Individuel</button><button data-ptype="team" class="${p.type==='team'?'act':''}" style="flex:1">Équipe</button></div></div>
+  ${p.type==='team'?`<div class="sec"><h3>L-équipe <span class="count">${(p.members||[]).length+1} drari</span></h3>
+   <form class="add" id="f-member"><input id="i-member" placeholder="Smiya dial sa7bek" maxlength="40" required><button class="go">Zid</button></form>
+   <div class="card">${['Ana',...(p.members||[])].map(n=>{const who=n==='Ana'?'':n,ts=p.tasks.filter(t=>(t.who||'')===who),dn=ts.filter(t=>t.done).length,pc2=ts.length?Math.round(dn/ts.length*100):0;
+    return`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n)}</b><span class="count">${dn}/${ts.length} · ${pc2}%${n!=='Ana'?` <button class="x" data-rmm="${esc(n)}" aria-label="7iyed">×</button>`:''}</span></div><div class="bar"><i style="width:${pc2}%"></i></div></div>`}).join('')}</div></div>`:''}
+  <div class="sec"><h3>Les taches <span class="count">${p.tasks.filter(t=>t.done).length}/${p.tasks.length}</span></h3>${p.type==='team'?`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><select aria-label="Chkoun" style="width:auto;max-width:38%">${['Ana',...(p.members||[])].map(n=>`<option value="${n==='Ana'?'':esc(n)}">${esc(n)}</option>`).join('')}</select><button class="go">Zid</button></form>`:list(0,'tasks','Tache jdida')}
+   <div class="card">${p.tasks.length?p.tasks.map(t=>`<div class="item ${t.done?'done':''}"><button class="chk" data-tog="${t.id}" aria-pressed="${!!t.done}" aria-label="Check">${t.done?'✓':''}</button><span class="t">${esc(t.t)}</span>${p.type==='team'?`<span class="kind">${esc(t.who||'Ana')}</span>`:''}<button class="x" data-rm="tasks|${t.id}" aria-label="Msse7">×</button></div>`).join(''):'<div class="empty">Zid les taches. L-pourcentage kayt7seb mnhom.</div>'}</div></div>
+  <div class="sec"><h3>Les problèmes w les solutions <span class="count">${p.problems.filter(x=>x.s).length}/${p.problems.length} m7loulin</span></h3>${list(0,'problems','Problème jdid')}
+   <div class="card">${p.problems.length?p.problems.map(x=>`<div class="prob"><div class="p"><span class="t" style="overflow-wrap:anywhere">${esc(x.p)}</span><button class="x" data-rm="problems|${x.id}" aria-label="Msse7">×</button></div><label for="s-${x.id}">Solution</label><textarea id="s-${x.id}" data-sol="${x.id}" placeholder="Kifach ghadi t7elha?">${esc(x.s)}</textarea></div>`).join(''):'<div class="empty">Ma kayn ta problème daba.</div>'}</div></div>
+  <div class="sec"><h3>Les résultats réels <span class="count">${p.results.length}</span></h3>${list(0,'results','Chno wselti lih b se7')}
+   <div class="card">${p.results.length?p.results.map(r=>`<div class="item"><span class="t">${esc(r.t)}</span><button class="x" data-rm="results|${r.id}" aria-label="Msse7">×</button></div>`).join(''):'<div class="empty">Ktb chno tla3 b se7, machi chno kanti baghi.</div>'}</div></div>
+  <div class="sec"><h3>Claude</h3><button id="exp" style="margin-top:8px;width:100%">Copy l Claude</button><textarea id="exp-t" readonly style="display:none;margin-top:8px;min-height:120px"></textarea></div>
+  <button id="del-proj" style="margin-top:28px;width:100%;color:var(--hot)">Msse7 had l-projet</button>`;
+}
+const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+function res(it,k){
+  if(it.type==='task'){const p=S.projects.find(x=>x.id===it.pid),t=p&&p.tasks.find(x=>x.id===it.tid);
+    return t?{t:t.t,sub:p.name,kind:'Tache',done:!!t.done}:{t:'Tache tmss7at',sub:'',kind:'Tache',done:false,gone:1}}
+  if(it.type==='sol'){const p=S.projects.find(x=>x.id===it.pid),x=p&&p.problems.find(q=>q.id===it.qid);
+    return x?{t:x.s||'(ba9i ma ktebti solution)',sub:'Problème: '+x.p+' · '+p.name,kind:'Solution',done:!!it.done}:{t:'Problème tmss7',sub:'',kind:'Solution',done:false,gone:1}}
+  if(it.type==='habit'){const h=S.habits.find(x=>x.id===it.hid);
+    return h?{t:h.name,sub:'',kind:'Habit',done:!!h.days[k]}:{t:'Habit tmss7at',sub:'',kind:'Habit',done:false,gone:1}}
+  return{t:it.t,sub:'',kind:'Khra',done:!!it.done}
+}
+function toggleIt(k,iid){const it=(S.plan[k]||[]).find(x=>x.id===iid);if(!it)return;
+  if(it.type==='task'){const p=S.projects.find(x=>x.id===it.pid),t=p&&p.tasks.find(x=>x.id===it.tid);if(t)t.done=t.done?0:1}
+  else if(it.type==='habit'){const h=S.habits.find(x=>x.id===it.hid);if(h){h.days[k]?delete h.days[k]:h.days[k]=1}}
+  else it.done=it.done?0:1;}
+const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class="item ${r.done?'done':''}"><button class="chk" data-it="${k}|${it.id}" aria-pressed="${r.done}" aria-label="Check">${r.done?'✓':''}</button><span class="t">${esc(r.t)}${r.sub?`<span class="tag">${esc(r.sub)}</span>`:''}</span><span class="kind">${r.kind}</span><button class="x" data-rmi="${k}|${it.id}" aria-label="7iyed">×</button></div>`}).join('');
+const deadlinesOn=k=>S.projects.filter(p=>p.deadline===k);
+const freeForm=k=>`<form class="add" data-free="${k}"><input placeholder="Tache khra (machi f chi projet)" maxlength="140" required><button class="go">Zid</button></form>`;
+
+function renderAccount(){
+  const ago=sync.last?new Date(sync.last).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';
+  app.innerHTML=`<button id="back-today" style="margin-bottom:12px">← Lyoum</button><h1>Compte</h1>
+  ${AUTH?`<div class="card"><div class="sub">Dakhel b</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(AUTH.email||'')}</div>
+    <div class="meta" style="margin-top:10px"><span>Akhir sync: <b style="color:var(--ink)">${ago}</b></span><span>${({busy:'Kaysynchroniser…',ok:'Kolchi m7fouda ✓',err:'Mochkil: '+esc(sync.msg),offline:'Bla internet, ghaysync mlli yrje3',idle:'',off:''})[sync.state]||''}</span></div>
+    <button class="go" id="acc-sync" style="width:100%;margin-top:12px">Sync daba</button>
+    <button id="acc-out" style="width:100%;margin-top:8px">Khrej</button></div>
+    <div class="sub" style="margin-top:10px">Habits, projets, calendar w ktaba dial notes kaytsauvegardaw f compte dialek. Tsawer dial notes ba9in ghir f had l-appareil.</div>`
+  :`<form class="card" id="f-acc"><div class="sub" style="margin-bottom:10px">Dkhol bach tsauvegardi data dialek w tl9aha f PC w f telephone.</div>
+    <input id="acc-email" type="email" autocomplete="email" placeholder="Email" required>
+    <input id="acc-pass" type="password" autocomplete="current-password" placeholder="Mot de passe (6 7orouf wla ktar)" minlength="6" required style="margin-top:8px">
+    <button class="go" style="width:100%;margin-top:10px">Dkhol</button>
+    <button type="button" id="acc-up" style="width:100%;margin-top:8px">Créer compte jdid</button>
+    ${sync.msg?`<div class="late" style="margin-top:10px">${esc(sync.msg)}</div>`:''}</form>
+    <div class="sub" style="margin-top:10px">Ila kanet 3ndek data f compte, ghatjib dial compte. Ila kan compte jdid, ghaytsauvegarda dakchi li f had l-appareil.</div>`}`;
+}
+async function accLogin(up){const em=document.getElementById('acc-email').value.trim(),pw=document.getElementById('acc-pass').value;
+  if(!em||pw.length<6){sync.msg='Dkhel email w mot de passe (6 7orouf wla ktar)';render();return}
+  sync.msg=up?'Kancréer l-compte…':'Kandkhol…';render();
+  try{const j=up?await sbAuth('signup',{email:em,password:pw}):await sbAuth('token?grant_type=password',{email:em,password:pw});
+    if(!j.access_token){sync.msg='Compte tcréa. Chouf email dialek w confirmi, 3ad dkhol.';render();return}
+    keepAuth(j);sync.msg='';sync.state='idle';render();await doSync();toast2(up?'Compte tcréa ✓':'Dkhelti ✓')}
+  catch(e){sync.msg=/invalid login|invalid_credentials/i.test(e.message)?'Email wla mot de passe ghalet':/already registered|already exists/i.test(e.message)?'Had l-email 3ndo compte deja, dir Dkhol':e.message;render()}}
+app.addEventListener('submit',e=>{if(e.target.id!=='f-acc')return;e.preventDefault();e.stopImmediatePropagation();accLogin(false)});
+app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.id==='cloud'){view={tab:'account',pid:null};sync.msg=sync.state==='err'?sync.msg:'';render();scrollTo(0,0)}
+  else if(b.id==='back-today'){view={tab:'today',pid:null};render()}
+  else if(b.id==='acc-up')accLogin(true);
+  else if(b.id==='acc-sync')doSync();
+  else if(b.id==='acc-out'){setAuth(null);sync.state='off';sync.last=0;render();toast2('Khrejti. Data b9at f had l-appareil.')}
+});
+window.addEventListener('online',()=>doSync());
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')doSync()});
+setInterval(()=>{if(document.visibilityState!=='hidden')doSync()},60000);
+setTimeout(doSync,1200);
+function renderToday(){const k=todayK(),arr=S.plan[k]||[];
+  const n=arr.filter(it=>res(it,k).done).length;
+  const late=Object.keys(S.plan).filter(d=>d<k).sort().flatMap(d=>S.plan[d].filter(it=>{const r=res(it,d);return it.type!=='habit'&&!r.done&&!r.gone}).map(it=>({d,it})));
+  app.innerHTML=`<div style="display:flex;justify-content:flex-end;margin:-6px 0 -10px"><button id="cloud" style="min-height:36px;font-size:14px">${cloudLabel()}</button></div><div class="top"><div><h1>Lyoum</h1><div class="sub">${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pct" style="font-size:36px">${n}/${arr.length}</div></div>
+  ${arr.length?`<div class="bar"><i style="width:${Math.round(n/arr.length*100)}%"></i></div>`:''}
+  ${deadlinesOn(k).map(p=>`<div class="alert">Lyoum deadline dial "${esc(p.name)}": ${pctOf(p)}%</div>`).join('')}
+  ${freeForm(k)}
+  <div class="card">${arr.length?itemsHTML(k):'<div class="empty">Ma kayn walou lyoum. Zid tache lfo9, wla mchi l Calendar w khtar mn les projets.</div>'}</div>
+  ${late.length?`<div class="sec"><h3>Ma kmltihomch <span class="count">${late.length}</span></h3><div class="card">${late.map(({d,it})=>{const r=res(it,d);return`<div class="item"><button class="chk" data-it="${d}|${it.id}" aria-label="Check"></button><span class="t">${esc(r.t)}<span class="tag">${fmt(d)}${r.sub?' · '+esc(r.sub):''}</span></span><button data-move="${d}|${it.id}" style="min-height:36px;font-size:13px">L-lyoum</button></div>`}).join('')}</div></div>`:''}`;
+}
+function renderCal(){const{y,m,sel}=cal;
+  const start=(new Date(y,m,1).getDay()+6)%7,cells=[...Array(42)].map((_,i)=>new Date(y,m,1-start+i));
+  const opts=S.projects.map(p=>{const ts=p.tasks.filter(t=>!t.done),ss=p.problems.filter(x=>x.s);
+    return(ts.length?`<optgroup label="${esc(p.name)}: taches">${ts.map(t=>`<option value="task|${p.id}|${t.id}">${esc(t.t)}</option>`).join('')}</optgroup>`:'')+
+    (ss.length?`<optgroup label="${esc(p.name)}: solutions">${ss.map(x=>`<option value="sol|${p.id}|${x.id}">${esc(x.s)}</option>`).join('')}</optgroup>`:'')}).join('')+
+    (S.habits.length?`<optgroup label="Habits">${S.habits.map(h=>`<option value="habit|${h.id}">${esc(h.name)}</option>`).join('')}</optgroup>`:'');
+  app.innerHTML=`<div class="calhead"><button data-mo="-1" aria-label="Chhar li fat">‹</button><h2>${MOIS[m]} ${y}</h2><button data-mo="1" aria-label="Chhar jay">›</button></div>
+  <div class="cal">${['L','M','M','J','V','S','D'].map(w=>`<div class="wd">${w}</div>`).join('')}
+  ${cells.map(d=>{const k=dkey(d),n=(S.plan[k]||[]).length,dl=deadlinesOn(k).length;
+    return`<button class="cell ${d.getMonth()!==m?'out':''} ${k===todayK()?'today':''} ${k===sel?'sel':''}" data-sel="${k}">${d.getDate()}<span class="dots">${'<i></i>'.repeat(Math.min(n,3))}${dl?'<i class="dl"></i>':''}</span></button>`}).join('')}</div>
+  <div class="sec"><h3>${new Date(sel+'T00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</h3>
+   ${deadlinesOn(sel).map(p=>`<div class="alert">Deadline: ${esc(p.name)} (${pctOf(p)}%)</div>`).join('')}
+   ${opts?`<form class="add" id="f-pick"><select id="i-pick" aria-label="Khtar tache, solution wla habit">${opts}</select><button class="go">Zid</button></form>`:'<div class="empty">Zid projets, taches wla habits bach tkhtarhom hna.</div>'}
+   ${freeForm(sel)}
+   <div class="card">${(S.plan[sel]||[]).length?itemsHTML(sel):'<div class="empty">Walou f had nhar.</div>'}</div></div>`;
+}
+const NK={formation:{l:'Formation',f:[['majal','Majal (marketing, design, montage...)'],['formation','Smiya dial l-formation'],['ep','Episode']]},
+  ecole:{l:'Madrasa',f:[['module','Module'],['chap','Chapitre'],['titre','Titre']]},
+  book:{l:'Ktab',f:[['book','Smiya dial l-ktab'],['page','Page']]},
+  other:{l:'Other',f:[['cat','Catégorie (li bghiti)'],['titre','Titre']]}};
+const MAJAL=['Marketing','Design','Video editing','Programmation','Langues','Business','Sport'];
+const nv={kind:'formation',filter:'all',q:'',edit:null,imgs:[]};
+const IMG=new Map();let dbp=null;
+function idb(){if(dbp)return dbp;dbp=new Promise((ok,ko)=>{try{const r=indexedDB.open('dftar-img',1);r.onupgradeneeded=()=>r.result.createObjectStore('img');r.onsuccess=()=>ok(r.result);r.onerror=()=>ko(r.error)}catch(e){ko(e)}});return dbp}
+async function imgPut(id,url){const db=await idb();await new Promise((ok,ko)=>{const t=db.transaction('img','readwrite');t.objectStore('img').put(url,id);t.oncomplete=ok;t.onerror=()=>ko(t.error)});IMG.set(id,url)}
+async function imgGet(id){if(IMG.has(id))return IMG.get(id);const db=await idb();const url=await new Promise(ok=>{const r=db.transaction('img').objectStore('img').get(id);r.onsuccess=()=>ok(r.result||'');r.onerror=()=>ok('')});IMG.set(id,url);return url}
+function loadImgs(){document.querySelectorAll('img[data-img]').forEach(async el=>{if(el.src)return;let u='';try{u=await imgGet(el.dataset.img)}catch(e){}if(u)el.src=u;else{const t=el.closest('.th');if(t)t.style.display='none'}})}
+const formThumbs=()=>nv.imgs.length?`<div class="thumbs">${nv.imgs.map(id=>`<div class="th"><img data-img="${id}" alt=""><button type="button" class="thx" data-rmimg="${id}" aria-label="7iyed">×</button></div>`).join('')}</div>`:'';
+function shrink(file){return new Promise((ok,ko)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const m=1280,s=Math.min(1,m/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',0.78))};im.onerror=ko;im.src=fr.result};fr.onerror=ko;fr.readAsDataURL(file)})}
+async function imgGC(){try{const keep=new Set(S.notes.flatMap(n=>n.imgs||[]));const db=await idb();const t=db.transaction('img','readwrite'),st=t.objectStore('img');const r=st.getAllKeys();r.onsuccess=()=>{for(const k of r.result)if(!keep.has(k))st.delete(k)}}catch(e){}}
+function notesList(){const q=nv.q.toLowerCase();
+  const arr=S.notes.filter(n=>(nv.filter==='all'||n.kind===nv.filter)&&(!q||(n.text+' '+Object.values(n.f).join(' ')).toLowerCase().includes(q))).sort((a,b)=>b.at-a.at);
+  return arr.length?arr.map(n=>{const K=NK[n.kind],path=K.f.map(([k,l])=>n.f[k]?(k==='ep'?'Ep '+n.f[k]:k==='page'?'p. '+n.f[k]:n.f[k]):'').filter(Boolean).map(esc).join(' › ');
+    return`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div><span class="kind" style="margin:0">${K.l}</span><div style="font-weight:600;margin-top:6px;overflow-wrap:anywhere">${path||'Bla titre'}</div></div>
+    <div style="display:flex;flex:none"><button class="x" data-ned="${n.id}" aria-label="Bddel" style="font-size:15px">✎</button><button class="x" data-nrm="${n.id}" aria-label="Msse7">×</button></div></div>
+    ${n.text?`<div style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px">${esc(n.text)}</div>`:''}${(n.imgs||[]).length?`<div class="thumbs">${n.imgs.map(id=>`<button class="th" data-view="${id}" aria-label="Chouf tswira"><img data-img="${id}" alt=""></button>`).join('')}</div>`:''}<div class="tag">${new Date(n.at).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}</div></div>`}).join(''):'<div class="empty">Ma kayna ta note hna.</div>'}
+function renderNotes(){const ed=nv.edit&&S.notes.find(n=>n.id===nv.edit),kind=ed?ed.kind:nv.kind,K=NK[kind];
+  const vals=k=>[...new Set([...(k==='majal'?MAJAL:[]),...S.notes.filter(n=>n.kind===kind&&n.f[k]).map(n=>n.f[k])])];
+  app.innerHTML=`<div class="top"><div><h1>Notes</h1><div class="sub">${S.notes.length} note${S.notes.length>1?'s':''}</div></div></div>
+  <form class="card" id="f-note"><h3>${ed?'Bddel note':'Note jdida'}</h3>
+   <div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0">${Object.entries(NK).map(([k,v])=>`<button type="button" data-nk="${k}" class="${k===kind?'act':''}" ${ed?'disabled':''}>${v.l}</button>`).join('')}</div>
+   <div class="grid2">${K.f.map(([k,l])=>`<input id="n-${k}" list="dl-${k}" placeholder="${l}" value="${esc(ed?ed.f[k]:'')}" maxlength="80"${k==='ep'||k==='page'?' inputmode="numeric"':''}><datalist id="dl-${k}">${vals(k).map(v=>`<option value="${esc(v)}">`).join('')}</datalist>`).join('')}</div>
+   <textarea id="n-text" style="margin-top:8px;min-height:110px" placeholder="Ktb note dialek hna">${esc(ed?ed.text:'')}</textarea>
+   <div id="n-imgs">${formThumbs()}</div>
+   <label class="addimg">+ Tswira<input type="file" id="n-file" accept="image/*" multiple hidden></label>
+   <div style="display:flex;gap:8px;margin-top:8px"><button class="go" style="flex:1">${ed?'Sauvegarder':'Zid note'}</button>${ed?'<button type="button" id="n-cancel">Annuler</button>':''}</div></form>
+  <input id="n-q" type="search" placeholder="9elleb f notes" value="${esc(nv.q)}" style="margin-top:14px">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0">${[['all','Kolchi'],...Object.entries(NK).map(([k,v])=>[k,v.l])].map(([k,l])=>`<button data-nf="${k}" class="${nv.filter===k?'act':''}" style="min-height:36px;font-size:14px">${l}</button>`).join('')}</div>
+  <div id="nlist">${notesList()}</div>`;
+  loadImgs();
+}
+app.addEventListener('input',e=>{if(e.target.id==='n-q'){nv.q=e.target.value;document.getElementById('nlist').innerHTML=notesList();loadImgs()}});
+app.addEventListener('submit',e=>{if(e.target.id!=='f-note')return;e.preventDefault();e.stopImmediatePropagation();
+  const ed=nv.edit&&S.notes.find(n=>n.id===nv.edit),kind=ed?ed.kind:nv.kind,f={};
+  for(const[k]of NK[kind].f)f[k]=document.getElementById('n-'+k).value.trim();
+  const text=document.getElementById('n-text').value.trim();if(!text&&!nv.imgs.length)return toast2('Ktb chi haja wla zid tswira');
+  if(ed){ed.f=f;ed.text=text;ed.imgs=[...nv.imgs];nv.edit=null}else S.notes.push({id:uid(),kind,f,text,imgs:[...nv.imgs],at:Date.now()});nv.imgs=[];save();render()});
+app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.nk){nv.kind=b.dataset.nk;render()}
+  else if(b.dataset.nf){nv.filter=b.dataset.nf;render()}
+  else if(b.dataset.ned){nv.edit=b.dataset.ned;const n=S.notes.find(x=>x.id===nv.edit);nv.imgs=[...((n&&n.imgs)||[])];render();scrollTo(0,0)}
+  else if(b.id==='n-cancel'){nv.edit=null;nv.imgs=[];render()}
+  else if(b.dataset.rmimg){nv.imgs=nv.imgs.filter(x=>x!==b.dataset.rmimg);document.getElementById('n-imgs').innerHTML=formThumbs();loadImgs()}
+  else if(b.dataset.view){const lb=document.getElementById('lb');lb.querySelector('img').src=IMG.get(b.dataset.view)||'';lb.classList.add('on')}
+  else if(b.dataset.nrm){snap();S.notes=S.notes.filter(n=>n.id!==b.dataset.nrm);save();render();toast('Note tmss7at')}
+});
+app.addEventListener('change',async e=>{if(e.target.id!=='n-file')return;const files=[...e.target.files];e.target.value='';
+  for(const f of files){try{const url=await shrink(f),id=uid();await imgPut(id,url);nv.imgs.push(id)}catch(err){toast2('Ma 9dertch nzid had tswira')}}
+  const box=document.getElementById('n-imgs');if(box){box.innerHTML=formThumbs();loadImgs()}});
+document.getElementById('lb').addEventListener('click',e=>e.currentTarget.classList.remove('on'));
+setTimeout(imgGC,8000);
+function render(){
+  for(const t of['today','cal','habits','projects','notes'])document.getElementById('tab-'+t).className=view.tab===t?'act':'';
+  if(view.tab==='account')renderAccount();
+  else if(view.tab==='today')renderToday();
+  else if(view.tab==='cal')renderCal();
+  else if(view.tab==='habits')renderHabits();
+  else if(view.tab==='notes')renderNotes();
+  else{const p=S.projects.find(x=>x.id===view.pid);p?renderProject(p):(view.pid=null,renderProjects())}
+}
+function toast(msg){const t=document.getElementById('toast');
+  t.innerHTML=`<div class="toast"><span>${msg}</span><button id="undo">Rje3</button></div>`;
+  clearTimeout(toast.h);toast.h=setTimeout(()=>{t.innerHTML='';undo=null},5000);}
+const cur=()=>S.projects.find(x=>x.id===view.pid);
+const norm=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
+function importPlan(raw){let d;try{d=JSON.parse(raw.slice(raw.indexOf('{'),raw.lastIndexOf('}')+1))}catch(e){return'Code ghalet. Copy l-code kaml mn Claude.'}
+  const list=d.projects||(d.project?[d.project]:[]),hs=Array.isArray(d.habits)?d.habits:[];
+  if(!list.length&&!hs.length)return'Code ghalet: ma fih ta projet wla habit.';
+  if(!list.every(x=>x&&x.name))return'Code ghalet: projet bla smiya.';
+  let hn=0;for(const name of hs){const nm=String(name||'').trim();if(nm&&!S.habits.some(x=>norm(x.name)===norm(nm))){S.habits.push({id:uid(),name:nm,days:{},created:todayK()});hn++}}
+  let tot=0,p;for(const P of list){const r=importOne(P);tot+=r.n;p=r.p}
+  save();
+  if(!list.length){view={tab:'habits',pid:null};render();scrollTo(0,0);return'Tzadou '+hn+' habits'}
+  view={tab:'projects',pid:list.length>1?null:p.id};render();scrollTo(0,0);return'Tzadou '+tot+' taches f '+list.length+' projet'+(list.length>1?'s':'')+(hn?' + '+hn+' habits':'');}
+function importOne(P){
+  let p=S.projects.find(x=>norm(x.name)===norm(P.name));
+  if(!p){p={id:uid(),name:P.name,goal:'',deadline:'',type:'solo',members:[],tasks:[],problems:[],results:[]};S.projects.unshift(p)}
+  if(P.goal)p.goal=P.goal;if(P.deadline)p.deadline=P.deadline;if(P.type)p.type=P.type;
+  p.members=p.members||[];for(const m of P.members||[])if(m&&m!=='Ana'&&!p.members.includes(m))p.members.push(m);
+  for(const c of P.check||[]){const t=p.tasks.find(x=>norm(x.t).includes(norm(c))||norm(c).includes(norm(x.t)));if(t)t.done=1}
+  let n=0;for(const T of P.tasks||[]){let t=p.tasks.find(x=>norm(x.t)===norm(T.t));
+    if(!t){t={id:uid(),t:T.t,done:T.done?1:0,who:T.who==='Ana'?'':(T.who||'')};p.tasks.push(t);n++}
+    if(T.date){const arr=S.plan[T.date]||(S.plan[T.date]=[]);if(!arr.some(x=>x.type==='task'&&x.tid===t.id))arr.push({id:uid(),type:'task',pid:p.id,tid:t.id})}}
+  for(const Q of P.problems||[]){if(!p.problems.some(x=>norm(x.p)===norm(Q.p)))p.problems.push({id:uid(),p:Q.p,s:Q.s||''})}
+  for(const R of P.results||[]){if(!p.results.some(x=>norm(x.t)===norm(R)))p.results.push({id:uid(),t:R})}
+  return{n,p};}
+app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.id==='do-imp'){const msg=importPlan(document.getElementById('i-imp').value);toast2(msg)}
+  else if(b.id==='exp'){const p=cur();const out=JSON.stringify({dftar:1,project:{name:p.name,goal:p.goal,deadline:p.deadline,type:p.type||'solo',members:p.members||[],
+      tasks:p.tasks.map(t=>({t:t.t,who:t.who||'Ana',done:!!t.done})),problems:p.problems.map(x=>({p:x.p,s:x.s})),results:p.results.map(r=>r.t)}});
+    const ta=document.getElementById('exp-t');ta.style.display='block';ta.value=out;ta.focus();ta.select();
+    let ok=false;try{ok=document.execCommand('copy')}catch(e){}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(()=>toast2('Tcopia! Lesso3 l Claude')).catch(()=>toast2(ok?'Tcopia! Lesso3 l Claude':'Tbe3 3liha w copy'));
+    else toast2(ok?'Tcopia! Lesso3 l Claude':'Tbe3 3liha w copy')}
+});
+
+for(const t of['today','cal','habits','projects','notes'])document.getElementById('tab-'+t).onclick=()=>{view={tab:t,pid:null};render();scrollTo(0,0)};
+const addPlan=(k,item,key)=>{const arr=S.plan[k]||(S.plan[k]=[]);if(key&&arr.some(x=>x.type===item.type&&x[key]===item[key]))return toast2('Deja kayna f had nhar');arr.push({id:uid(),...item});save();render()};
+function toast2(msg){const t=document.getElementById('toast');t.innerHTML=`<div class="toast"><span>${msg}</span></div>`;clearTimeout(toast.h);toast.h=setTimeout(()=>{t.innerHTML=''},2500)}
+app.addEventListener('submit',e=>{const f=e.target;
+  if(f.id==='f-pick'){e.preventDefault();const v=document.getElementById('i-pick').value.split('|');
+    if(v[0]==='task')addPlan(cal.sel,{type:'task',pid:v[1],tid:v[2]},'tid');
+    else if(v[0]==='sol')addPlan(cal.sel,{type:'sol',pid:v[1],qid:v[2],done:0},'qid');
+    else addPlan(cal.sel,{type:'habit',hid:v[1]},'hid');e.stopImmediatePropagation()}
+  else if(f.dataset.free){e.preventDefault();const v=f.querySelector('input').value.trim();if(v)addPlan(f.dataset.free,{type:'free',t:v,done:0});
+    const nf=app.querySelector('form[data-free] input');nf&&nf.focus();e.stopImmediatePropagation()}
+});
+app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.it){const[k,id]=b.dataset.it.split('|');toggleIt(k,id);save();render()}
+  else if(b.dataset.rmi){const[k,id]=b.dataset.rmi.split('|');snap();S.plan[k]=S.plan[k].filter(x=>x.id!==id);if(!S.plan[k].length)delete S.plan[k];save();render();toast('T7iydat mn had nhar')}
+  else if(b.dataset.move){const[k,id]=b.dataset.move.split('|');const it=S.plan[k].find(x=>x.id===id);S.plan[k]=S.plan[k].filter(x=>x.id!==id);if(!S.plan[k].length)delete S.plan[k];(S.plan[todayK()]||(S.plan[todayK()]=[])).push(it);save();render()}
+  else if(b.dataset.mo){cal.m+=+b.dataset.mo;if(cal.m<0){cal.m=11;cal.y--}if(cal.m>11){cal.m=0;cal.y++}render()}
+  else if(b.dataset.sel){cal.sel=b.dataset.sel;const d=new Date(cal.sel+'T00:00');cal.y=d.getFullYear();cal.m=d.getMonth();render()}
+});
+document.getElementById('toast').addEventListener('click',e=>{if(e.target.id==='undo'&&undo){S=undo;undo=null;save();render();document.getElementById('toast').innerHTML=''}});
+const snap=()=>{undo=JSON.parse(JSON.stringify(S))};
+
+app.addEventListener('submit',e=>{e.preventDefault();const f=e.target;
+  if(f.id==='f-habit'){const v=document.getElementById('i-habit').value.trim();if(v){S.habits.push({id:uid(),name:v,days:{},created:todayK()});save();render()}}
+  else if(f.id==='f-member'){const p=cur(),v=document.getElementById('i-member').value.trim();if(p&&v&&v!=='Ana'&&!(p.members||[]).includes(v)){(p.members||(p.members=[])).push(v);save();render()}}
+  else if(f.id==='f-proj'){const n=document.getElementById('i-pname').value.trim();if(!n)return;
+    const p={id:uid(),name:n,goal:document.getElementById('i-pgoal').value.trim(),deadline:document.getElementById('i-pdl').value,type:document.getElementById('i-ptype').value,members:[],tasks:[],problems:[],results:[]};
+    S.projects.unshift(p);save();view.pid=p.id;render();scrollTo(0,0)}
+  else if(f.dataset.add){const p=cur(),v=f.querySelector('input').value.trim();if(!p||!v)return;
+    const k=f.dataset.add;p[k].push(k==='tasks'?{id:uid(),t:v,done:0,who:(f.querySelector('select')||{}).value||''}:k==='problems'?{id:uid(),p:v,s:''}:{id:uid(),t:v});save();render();
+    const nf=app.querySelector(`form[data-add="${k}"] input`);nf&&nf.focus()}
+});
+app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.hd){const[id,k]=b.dataset.hd.split('|');const h=S.habits.find(x=>x.id===id);if(h){h.days[k]?delete h.days[k]:h.days[k]=1;save();render()}}
+  else if(b.dataset.delHabit){snap();S.habits=S.habits.filter(x=>x.id!==b.dataset.delHabit);save();render();toast('Habit tmss7at')}
+  else if(b.dataset.open){view.pid=b.dataset.open;render();scrollTo(0,0)}
+  else if(b.id==='back'){view.pid=null;render();scrollTo(0,0)}
+  else if(b.dataset.tog){const t=cur().tasks.find(x=>x.id===b.dataset.tog);t.done=t.done?0:1;save();render()}
+  else if(b.dataset.rm){const[k,id]=b.dataset.rm.split('|');snap();const p=cur();p[k]=p[k].filter(x=>x.id!==id);save();render();toast('Tmss7at')}
+  else if(b.dataset.ptype){cur().type=b.dataset.ptype;save();render()}
+  else if(b.dataset.rmm){const p=cur();snap();p.members=p.members.filter(n=>n!==b.dataset.rmm);p.tasks.forEach(t=>{if(t.who===b.dataset.rmm)t.who=''});save();render();toast('T7iyed mn l-équipe')}
+  else if(b.id==='del-proj'){snap();S.projects=S.projects.filter(x=>x.id!==view.pid);view.pid=null;save();render();toast('Projet tmss7')}
+});
+app.addEventListener('change',e=>{const el=e.target,p=cur();if(!p)return;
+  if(el.dataset.f){p[el.dataset.f]=el.value.trim();save();render()}
+  else if(el.dataset.sol){const x=p.problems.find(q=>q.id===el.dataset.sol);x.s=el.value.trim();save();render()}
+});
+render();
+}
+</script>
+</body>
+</html>

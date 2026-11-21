@@ -147,7 +147,32 @@ if(!S.notes)S.notes=[
 let view={tab:'today',pid:null};
 const cal={y:new Date().getFullYear(),m:new Date().getMonth(),sel:todayK()};
 let undo=null;
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const SB='https://cuiosvzhgrlpleugjouv.supabase.co',SBK='sb_publishable_N5KpbC4q_sRQOcRs_4FP_A_rHg9cwOo',AK='dftar-auth';
+let AUTH=null;try{AUTH=JSON.parse(localStorage.getItem(AK))}catch(e){}
+const sync={state:AUTH?'idle':'off',last:0,msg:''};
+const writeLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const save=()=>{S._t=Date.now();writeLocal();schedulePush()};
+function setAuth(a){AUTH=a;try{a?localStorage.setItem(AK,JSON.stringify(a)):localStorage.removeItem(AK)}catch(e){}}
+async function sbAuth(path,body){const r=await fetch(SB+'/auth/v1/'+path,{method:'POST',headers:{apikey:SBK,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.msg||j.error_description||j.message||('Erreur '+r.status));e.status=r.status;throw e}return j}
+function keepAuth(j){setAuth({at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000-60000,id:j.user&&j.user.id,email:j.user&&j.user.email})}
+async function token(){if(!AUTH)throw new Error('Ma dakhelch');if(Date.now()<AUTH.exp)return AUTH.at;
+  try{const j=await sbAuth('token?grant_type=refresh_token',{refresh_token:AUTH.rt});keepAuth({...j,user:j.user||{id:AUTH.id,email:AUTH.email}});return AUTH.at}
+  catch(e){if(e.status===400||e.status===401){setAuth(null);sync.state='off';throw new Error('Khassek t3awed tdkhol')}throw e}}
+async function sbRest(method,q,body){const t=await token();
+  const r=await fetch(SB+'/rest/v1/dftar_data'+q,{method,headers:{apikey:SBK,Authorization:'Bearer '+t,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:body?JSON.stringify(body):undefined});
+  if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('Erreur '+r.status))}return method==='GET'?r.json():null}
+let pushT=null,busy=false;
+function schedulePush(){if(!AUTH)return;clearTimeout(pushT);pushT=setTimeout(doSync,2500)}
+function setSync(s){sync.state=s;const c=document.getElementById('cloud');if(c)c.textContent=cloudLabel();if(view.tab==='account')render()}
+const cloudLabel=()=>({off:'☁ Compte',idle:'☁ Sync',busy:'☁ …',ok:'☁ ✓',err:'☁ !',offline:'☁ offline'})[sync.state]||'☁';
+async function doSync(){if(!AUTH||busy)return;if(navigator.onLine===false){setSync('offline');return}busy=true;setSync('busy');let lt=S._t||0,rt=0;
+  try{const rows=await sbRest('GET','?select=data,updated_at&user_id=eq.'+AUTH.id);const remote=rows&&rows[0]&&rows[0].data;rt=(remote&&remote._t)||0;
+    if(remote&&rt>lt){S=remote;if(!S.plan)S.plan={};if(!S.notes)S.notes=[];writeLocal();busy=false;sync.last=Date.now();setSync('ok');render();return}
+    if(!remote||lt>rt){const snapS=S;await sbRest('POST','',{user_id:AUTH.id,data:snapS,updated_at:new Date().toISOString()})}
+    sync.last=Date.now();sync.msg='';busy=false;setSync('ok')}
+  catch(e){sync.msg=e.message;busy=false;setSync(AUTH?'err':'off')}
+  if(AUTH&&(S._t||0)>Math.max(lt,rt))schedulePush()}
 const app=document.getElementById('app');
 const pctOf=p=>p.tasks.length?Math.round(p.tasks.filter(t=>t.done).length/p.tasks.length*100):0;
 const daysLeft=p=>{if(!p.deadline)return null;const a=new Date(p.deadline+'T00:00'),b=new Date(todayK()+'T00:00');return Math.round((a-b)/864e5)};
@@ -233,10 +258,45 @@ const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class=
 const deadlinesOn=k=>S.projects.filter(p=>p.deadline===k);
 const freeForm=k=>`<form class="add" data-free="${k}"><input placeholder="Tache khra (machi f chi projet)" maxlength="140" required><button class="go">Zid</button></form>`;
 
+function renderAccount(){
+  const ago=sync.last?new Date(sync.last).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';
+  app.innerHTML=`<button id="back-today" style="margin-bottom:12px">← Lyoum</button><h1>Compte</h1>
+  ${AUTH?`<div class="card"><div class="sub">Dakhel b</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(AUTH.email||'')}</div>
+    <div class="meta" style="margin-top:10px"><span>Akhir sync: <b style="color:var(--ink)">${ago}</b></span><span>${({busy:'Kaysynchroniser…',ok:'Kolchi m7fouda ✓',err:'Mochkil: '+esc(sync.msg),offline:'Bla internet, ghaysync mlli yrje3',idle:'',off:''})[sync.state]||''}</span></div>
+    <button class="go" id="acc-sync" style="width:100%;margin-top:12px">Sync daba</button>
+    <button id="acc-out" style="width:100%;margin-top:8px">Khrej</button></div>
+    <div class="sub" style="margin-top:10px">Habits, projets, calendar w ktaba dial notes kaytsauvegardaw f compte dialek. Tsawer dial notes ba9in ghir f had l-appareil.</div>`
+  :`<form class="card" id="f-acc"><div class="sub" style="margin-bottom:10px">Dkhol bach tsauvegardi data dialek w tl9aha f PC w f telephone.</div>
+    <input id="acc-email" type="email" autocomplete="email" placeholder="Email" required>
+    <input id="acc-pass" type="password" autocomplete="current-password" placeholder="Mot de passe (6 7orouf wla ktar)" minlength="6" required style="margin-top:8px">
+    <button class="go" style="width:100%;margin-top:10px">Dkhol</button>
+    <button type="button" id="acc-up" style="width:100%;margin-top:8px">Créer compte jdid</button>
+    ${sync.msg?`<div class="late" style="margin-top:10px">${esc(sync.msg)}</div>`:''}</form>
+    <div class="sub" style="margin-top:10px">Ila kanet 3ndek data f compte, ghatjib dial compte. Ila kan compte jdid, ghaytsauvegarda dakchi li f had l-appareil.</div>`}`;
+}
+async function accLogin(up){const em=document.getElementById('acc-email').value.trim(),pw=document.getElementById('acc-pass').value;
+  if(!em||pw.length<6){sync.msg='Dkhel email w mot de passe (6 7orouf wla ktar)';render();return}
+  sync.msg=up?'Kancréer l-compte…':'Kandkhol…';render();
+  try{const j=up?await sbAuth('signup',{email:em,password:pw}):await sbAuth('token?grant_type=password',{email:em,password:pw});
+    if(!j.access_token){sync.msg='Compte tcréa. Chouf email dialek w confirmi, 3ad dkhol.';render();return}
+    keepAuth(j);sync.msg='';sync.state='idle';render();await doSync();toast2(up?'Compte tcréa ✓':'Dkhelti ✓')}
+  catch(e){sync.msg=/invalid login|invalid_credentials/i.test(e.message)?'Email wla mot de passe ghalet':/already registered|already exists/i.test(e.message)?'Had l-email 3ndo compte deja, dir Dkhol':e.message;render()}}
+app.addEventListener('submit',e=>{if(e.target.id!=='f-acc')return;e.preventDefault();e.stopImmediatePropagation();accLogin(false)});
+app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.id==='cloud'){view={tab:'account',pid:null};sync.msg=sync.state==='err'?sync.msg:'';render();scrollTo(0,0)}
+  else if(b.id==='back-today'){view={tab:'today',pid:null};render()}
+  else if(b.id==='acc-up')accLogin(true);
+  else if(b.id==='acc-sync')doSync();
+  else if(b.id==='acc-out'){setAuth(null);sync.state='off';sync.last=0;render();toast2('Khrejti. Data b9at f had l-appareil.')}
+});
+window.addEventListener('online',()=>doSync());
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')doSync()});
+setInterval(()=>{if(document.visibilityState!=='hidden')doSync()},60000);
+setTimeout(doSync,1200);
 function renderToday(){const k=todayK(),arr=S.plan[k]||[];
   const n=arr.filter(it=>res(it,k).done).length;
   const late=Object.keys(S.plan).filter(d=>d<k).sort().flatMap(d=>S.plan[d].filter(it=>{const r=res(it,d);return it.type!=='habit'&&!r.done&&!r.gone}).map(it=>({d,it})));
-  app.innerHTML=`<div class="top"><div><h1>Lyoum</h1><div class="sub">${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pct" style="font-size:36px">${n}/${arr.length}</div></div>
+  app.innerHTML=`<div style="display:flex;justify-content:flex-end;margin:-6px 0 -10px"><button id="cloud" style="min-height:36px;font-size:14px">${cloudLabel()}</button></div><div class="top"><div><h1>Lyoum</h1><div class="sub">${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pct" style="font-size:36px">${n}/${arr.length}</div></div>
   ${arr.length?`<div class="bar"><i style="width:${Math.round(n/arr.length*100)}%"></i></div>`:''}
   ${deadlinesOn(k).map(p=>`<div class="alert">Lyoum deadline dial "${esc(p.name)}": ${pctOf(p)}%</div>`).join('')}
   ${freeForm(k)}
@@ -269,7 +329,7 @@ const IMG=new Map();let dbp=null;
 function idb(){if(dbp)return dbp;dbp=new Promise((ok,ko)=>{try{const r=indexedDB.open('dftar-img',1);r.onupgradeneeded=()=>r.result.createObjectStore('img');r.onsuccess=()=>ok(r.result);r.onerror=()=>ko(r.error)}catch(e){ko(e)}});return dbp}
 async function imgPut(id,url){const db=await idb();await new Promise((ok,ko)=>{const t=db.transaction('img','readwrite');t.objectStore('img').put(url,id);t.oncomplete=ok;t.onerror=()=>ko(t.error)});IMG.set(id,url)}
 async function imgGet(id){if(IMG.has(id))return IMG.get(id);const db=await idb();const url=await new Promise(ok=>{const r=db.transaction('img').objectStore('img').get(id);r.onsuccess=()=>ok(r.result||'');r.onerror=()=>ok('')});IMG.set(id,url);return url}
-function loadImgs(){document.querySelectorAll('img[data-img]').forEach(async el=>{if(el.src)return;try{el.src=await imgGet(el.dataset.img)}catch(e){}})}
+function loadImgs(){document.querySelectorAll('img[data-img]').forEach(async el=>{if(el.src)return;let u='';try{u=await imgGet(el.dataset.img)}catch(e){}if(u)el.src=u;else{const t=el.closest('.th');if(t)t.style.display='none'}})}
 const formThumbs=()=>nv.imgs.length?`<div class="thumbs">${nv.imgs.map(id=>`<div class="th"><img data-img="${id}" alt=""><button type="button" class="thx" data-rmimg="${id}" aria-label="7iyed">×</button></div>`).join('')}</div>`:'';
 function shrink(file){return new Promise((ok,ko)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const m=1280,s=Math.min(1,m/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',0.78))};im.onerror=ko;im.src=fr.result};fr.onerror=ko;fr.readAsDataURL(file)})}
 async function imgGC(){try{const keep=new Set(S.notes.flatMap(n=>n.imgs||[]));const db=await idb();const t=db.transaction('img','readwrite'),st=t.objectStore('img');const r=st.getAllKeys();r.onsuccess=()=>{for(const k of r.result)if(!keep.has(k))st.delete(k)}}catch(e){}}
@@ -316,7 +376,8 @@ document.getElementById('lb').addEventListener('click',e=>e.currentTarget.classL
 setTimeout(imgGC,8000);
 function render(){
   for(const t of['today','cal','habits','projects','notes'])document.getElementById('tab-'+t).className=view.tab===t?'act':'';
-  if(view.tab==='today')renderToday();
+  if(view.tab==='account')renderAccount();
+  else if(view.tab==='today')renderToday();
   else if(view.tab==='cal')renderCal();
   else if(view.tab==='habits')renderHabits();
   else if(view.tab==='notes')renderNotes();
