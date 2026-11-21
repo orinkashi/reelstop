@@ -26,7 +26,7 @@ h1{font-size:34px}h2{font-size:22px}h3{font-size:17px}
 .top{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:8px 0 18px}
 .sub{color:var(--mute);font-size:14px}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;gap:8px;padding:10px max(4vw,16px) calc(10px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--line);z-index:5}
-nav button{flex:1;max-width:340px;margin:0 auto}
+nav button{flex:1;max-width:340px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;padding:4px 2px;min-height:52px}nav .ico{width:20px;height:20px}
 button{font:inherit;font-weight:600;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:0 14px;cursor:pointer}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--hot);outline-offset:2px}
 button.act{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -86,7 +86,7 @@ form.add input{flex:1}
 .pk span{overflow-wrap:anywhere;padding:8px 0}.pk b{color:var(--grow);font-size:20px}
 .pg{font-size:13px;color:var(--mute);margin:14px 0 2px;font-weight:600}
 .dlnote{color:var(--hot);font-weight:600;font-size:14px;margin:6px 0}
-nav{gap:6px}nav button{padding:0 6px;font-size:14px}
+nav{gap:6px}
 select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 .calhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
@@ -107,7 +107,8 @@ select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:8px 10px;b
 #sheet{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;z-index:15}#sheet.on{display:flex}
 #sheet .panel{background:var(--paper);border:1px solid var(--line);border-radius:20px 20px 0 0;width:100%;max-width:560px;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
 .icgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px;margin-top:12px}.icgrid button{font-size:24px;padding:0;min-height:48px}
-.icb{background:none;border:0;padding:0 6px 0 0;min-height:0;font-size:inherit;line-height:inherit;cursor:pointer;vertical-align:baseline}
+.ico{width:1.1em;height:1.1em;vertical-align:-.17em;display:inline-block}.icv{color:var(--grow);margin-right:6px}.icgrid .ico{width:24px;height:24px}
+.icb{color:var(--grow);background:none;border:0;padding:0 6px 0 0;min-height:0;font-size:inherit;line-height:inherit;cursor:pointer;vertical-align:baseline}
 .sndgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.sndgrid button{min-height:56px;font-size:16px}
 input[type=range]{width:100%;accent-color:var(--grow);margin-top:14px}
 .stage{display:flex;flex-direction:column;gap:2px}.stg{font:700 22px/1.1 Outfit,Inter,sans-serif;color:var(--hot)}
@@ -122,7 +123,7 @@ input[type=range]{width:100%;accent-color:var(--grow);margin-top:14px}
   body{padding-bottom:0;padding-left:232px}
   nav{top:0;bottom:0;right:auto;width:232px;flex-direction:column;justify-content:flex-start;align-items:stretch;border-top:0;border-right:1px solid var(--line);padding:28px 16px;gap:6px}
   nav::before{content:'Dftar';font:700 28px/1 Outfit,Inter,sans-serif;color:var(--ink);margin:0 10px 22px}
-  nav button{flex:none;max-width:none;width:100%;margin:0;text-align:left;padding:0 16px;font-size:16px;min-height:46px;border-color:transparent;background:none}
+  nav button{flex:none;max-width:none;width:100%;margin:0;text-align:left;padding:0 16px;font-size:16px;min-height:46px;border-color:transparent;background:none;flex-direction:row;justify-content:flex-start;gap:12px}
   nav button.act{background:var(--ink);color:var(--bg)}
   nav button:not(.act):hover{background:var(--paper)}
   .wrap{max-width:1120px;padding:36px 48px}
@@ -208,7 +209,7 @@ const I18N={
 'Khtar tache, solution wla habit':["Choisir une tâche, solution ou habitude","Pick a task, solution or habit"],'Msse7':["Supprimer","Delete"],'Tswira':["Photo","Photo"],'Chouf tswira':["Voir la photo","View photo"],
 '+3 kol habit w kol tache f nharha · +3 bonus kol 3 ayam streak · −1 ila fatek nhar':["+3 par habitude et par tâche faite le jour prévu · +3 bonus tous les 3 jours de série · −1 par jour manqué","+3 per habit and per task done on its day · +3 bonus every 3-day streak · −1 per missed day"],
 'Bdit':["Débutant","Starter"],'Wselti l-akhir 🔥':["Niveau max 🔥","Max level 🔥"],'Khtar icon':["Choisir une icône","Pick an icon"],'Sdd':["Fermer","Close"],
-'🎧 Sotat dial concentration':["🎧 Sons de concentration","🎧 Focus sounds"],'🌧️ Chta':["🌧️ Pluie","🌧️ Rain"],'🌊 L-b7er':["🌊 Océan","🌊 Ocean"],'🌫️ Hadwa':["🌫️ Calme","🌫️ Calm noise"],'⏹ Wa9ef':["⏹ Arrêter","⏹ Stop"],
+'Sotat dial concentration':["Sons de concentration","Focus sounds"],'Sotat':["Sons","Sounds"],'offline':["hors ligne","offline"],'🌧️ Chta':["🌧️ Pluie","🌧️ Rain"],'🌊 L-b7er':["🌊 Océan","🌊 Ocean"],'🌫️ Hadwa':["🌫️ Calme","🌫️ Calm noise"],'⏹ Wa9ef':["⏹ Arrêter","⏹ Stop"],
 '⏱ Ch7al d l-wa9t?':["⏱ Combien de temps ?","⏱ How long?"],'7iyed l-wa9t':["Retirer le temps","Remove time"],'Wa9t':["Temps","Time"],'⏳ Daba khdam 3la':["⏳ En cours","⏳ Working on"],'Khdemti:':["Temps passé :","Time spent:"],'✓ Salit':["✓ Terminé","✓ Done"],'Mzyan! ✓':["Bien joué ! ✓","Nice! ✓"],'Minuterie':["Minuteur","Timer"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
 const I18NX=[
 [/^Ba9i (\d+) j$/,"Encore $1 j","$1 d left"],[/^Deadline fatet (\d+) j$/,"Deadline dépassée de $1 j","Deadline passed $1 d ago"],
@@ -219,7 +220,7 @@ const I18NX=[
 [/^Deadline fatet! Derti ghir (\d+)% mn l-projet\.$/,"Deadline dépassée ! Tu as fait seulement $1 % du projet.","Deadline passed! You only did $1% of the project."],
 [/^Tzadou (\d+) taches f (\d+) projets?$/,"$1 tâches ajoutées dans $2 projet(s)","$1 tasks added to $2 project(s)"],
 [/^Tzadou (\d+) taches f (\d+) projets? \+ (\d+) habits$/,"$1 tâches ajoutées dans $2 projet(s) + $3 habitudes","$1 tasks added to $2 project(s) + $3 habits"],
-[/^Ba9i (\d+) pts l (.+)$/,"Encore $1 pts pour $2","$1 pts to $2"],[/^⏱ (.+) ba9in lyoum$/,"⏱ $1 restantes aujourd'hui","⏱ $1 left today"],[/^Stage jdid: (.+)$/,"Nouveau niveau : $1","New level: $1"],[/^⏰ Sala l-wa9t dial: (.+)$/,"⏰ Temps écoulé : $1","⏰ Time's up: $1"],[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
+[/^Ba9i (\d+) pts l (.+)$/,"Encore $1 pts pour $2","$1 pts to $2"],[/^⏱ (.+) ba9in lyoum$/,"⏱ $1 restantes aujourd'hui","⏱ $1 left today"],[/^Stage jdid: (.+)$/,"Nouveau niveau : $1","New level: $1"],[/^⏰ Sala l-wa9t dial: (.+)$/,"⏰ Temps écoulé : $1","⏰ Time's up: $1"],[/^(-?\d+) · Bdit$/,"$1 · Débutant","$1 · Starter"],[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
 [/^(.*): taches$/,"$1 : tâches","$1: tasks"],[/^(.*): solutions$/,"$1 : solutions","$1: solutions"]];
 function tr(s){if(LANG==='dr')return s;const i=LANG==='fr'?0:1,k=s.trim();if(!k)return s;let out=I18N[k]&&I18N[k][i];
   if(out==null){for(const r of I18NX){if(r[0].test(k)){out=k.replace(r[0],r[1+i]);break}}}
@@ -280,8 +281,8 @@ async function sbRest(method,q,body){const t=await token();
   if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('Erreur '+r.status))}return method==='GET'?r.json():null}
 let pushT=null,busy=false;
 function schedulePush(){if(!AUTH)return;clearTimeout(pushT);pushT=setTimeout(doSync,2500)}
-function setSync(s){sync.state=s;const c=document.getElementById('cloud');if(c)c.textContent=cloudLabel();if(view.tab==='account')render()}
-const cloudLabel=()=>({off:'☁ Compte',idle:'☁ Sync',busy:'☁ …',ok:'☁ ✓',err:'☁ !',offline:'☁ offline'})[sync.state]||'☁';
+function setSync(s){sync.state=s;const c=document.getElementById('cloud-t');if(c)c.textContent=cloudLabel();if(view.tab==='account')render()}
+const cloudLabel=()=>({off:'Compte',idle:'Sync',busy:'…',ok:'✓',err:'!',offline:'offline'})[sync.state]||'';
 async function doSync(){if(!AUTH||busy)return;if(navigator.onLine===false){setSync('offline');return}busy=true;setSync('busy');let lt=S._t||0,rt=0;
   try{const rows=await sbRest('GET','?select=data,updated_at&user_id=eq.'+AUTH.id);const remote=rows&&rows[0]&&rows[0].data;rt=(remote&&remote._t)||0;
     const size=x=>x?((x.habits||[]).length+(x.projects||[]).length+(x.notes||[]).length+Object.keys(x.plan||{}).length):0;
@@ -306,8 +307,27 @@ function hPoints(h){const days=Object.keys(h.days).sort();let start=h.created||d
     if(h.days[k]){pts+=3;st++;if(st%3===0)pts+=3}else if(k<t){pts-=1;st=0}
     d.setDate(d.getDate()+1)}
   return pts}
-const ICONS=['📌','🎯','💪','🏃','📚','🧠','💧','🕌','🌅','😴','🍎','🥗','💰','🎮','💻','🎬','🎨','✍️','🧘','🔥','⭐','🚀','🏆','❤️','📝','🎓','🛠️','📱','🎧','🌙'];
-const icBtn=(k,id,ic)=>`<button type="button" class="icb" data-icpick="${k}|${id}" aria-label="Icon">${ic}</button>`;
+const ICO={target:['c12 12 9','c12 12 5','c12 12 1'],book:['M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z','M4 19V5','M19 19v2H6'],dumbbell:['M6 8v8','M18 8v8','M3 10v4','M21 10v4','M6 12h12'],
+activity:['M3 12h4l3-8 4 16 3-8h4'],droplet:['M12 3c3.5 4.5 6 7.8 6 11a6 6 0 0 1-12 0c0-3.2 2.5-6.5 6-11z'],moon:['M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z'],
+sun:['c12 12 4','M12 2v2','M12 20v2','M4.9 4.9l1.4 1.4','M17.7 17.7l1.4 1.4','M2 12h2','M20 12h2','M4.9 19.1l1.4-1.4','M17.7 6.3l1.4-1.4'],
+heart:['M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z'],star:['M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z'],
+flame:['M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z'],code:['M8 7l-5 5 5 5','M16 7l5 5-5 5','M14 4l-4 16'],
+laptop:['r4 5 16 11 1.5','M2 19h20'],game:['r2 7 20 11 5','M7 10v4','M5 12h4','c16 11 .8','c18.5 14 .8'],music:['M9 18V5l11-2v13','c6 18 3','c17 16 3'],
+camera:['M4 7h3l2-3h6l2 3h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z','c12 13 4'],pen:['M4 20l4-1 11-11-3-3L5 16z','M14 6l3 3'],
+bulb:['M9 18h6','M10 21h4','M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z'],wallet:['r3 6 18 13 2','M3 10h18','M16 15h2'],
+briefcase:['r3 7 18 13 2','M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2','M3 13h18'],home:['M3 11l9-7 9 7','M5 10v10h14V10','M10 20v-6h4v6'],check:['c12 12 9','M8 12l3 3 5-6'],
+clock:['c12 12 9','M12 7v5l3 2'],flag:['M5 21V4','M5 4h12l-2 4 2 4H5'],leaf:['M5 19c0-9 6-14 15-14 0 9-5 15-14 15','M5 19l8-8'],
+cup:['M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z','M16 10h2a2 2 0 0 1 0 4h-2','M8 3v2','M12 3v2'],cap:['M2 9l10-5 10 5-10 5z','M6 11v5c2 2 10 2 12 0v-5'],
+mountain:['M3 20l7-12 4 6 2-3 5 9z'],bolt:['M13 2L4 14h7l-1 8 9-12h-7z'],users:['c9 8 3.5','M2 20a7 7 0 0 1 14 0','M16 4.5a3.5 3.5 0 0 1 0 7','M22 20a6 6 0 0 0-4-5.6'],
+phone:['r7 2 10 20 2','M11 18h2'],calendar:['r3 5 18 16 2','M3 10h18','M8 3v4','M16 3v4'],folder:['M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],
+edit:['M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6','M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z'],headphones:['M3 18v-6a9 9 0 0 1 18 0v6','r3 14 4 6 1.5','r17 14 4 6 1.5'],
+cloud:['M7 18a5 5 0 0 1-.6-10A7 7 0 0 1 20 10.5 4 4 0 0 1 18 18z'],bed:['M3 18V7','M3 14h18v4','M21 14a4 4 0 0 0-4-4h-7v4','c7 11 1.5']};
+const ICONS=Object.keys(ICO).filter(k=>!['calendar','folder','edit','headphones','cloud'].includes(k)).map(k=>'i:'+k).concat(['i:calendar','i:folder','i:edit']);
+for(const[t,ic]of[['today','sun'],['cal','calendar'],['habits','flame'],['projects','folder'],['notes','edit']]){const b=document.getElementById('tab-'+t);if(b)b.innerHTML=icHTML('i:'+ic)+'<span>'+b.textContent+'</span>'}
+function icHTML(ic){if(!ic)return'';if(ic.slice(0,2)!=='i:')return esc(ic);const p=ICO[ic.slice(2)];if(!p)return'';
+  return`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p.map(s=>{const a=s.slice(1).split(' ');
+    return s[0]==='c'?`<circle cx="${a[0]}" cy="${a[1]}" r="${a[2]}"/>`:s[0]==='r'?`<rect x="${a[0]}" y="${a[1]}" width="${a[2]}" height="${a[3]}" rx="${a[4]}"/>`:`<path d="${s}"/>`}).join('')}</svg>`}
+const icBtn=(k,id,ic)=>`<button type="button" class="icb" data-icpick="${k}|${id}" aria-label="Icon">${icHTML(ic)}</button>`;
 const fmtMin=m=>m<60?m+' min':Math.floor(m/60)+'h'+(m%60?String(m%60).padStart(2,'0'):'');
 const STAGES=[[0,'Bdit'],[50,'Good'],[150,'Wa3r'],[300,'Hrban'],[600,'GOAT 🐐']];
 function taskPoints(){const t=todayK();let p=0;for(const d in S.plan){if(d>t)continue;for(const it of S.plan[d]){if(it.type==='habit')continue;const r=res(it,d);if(r.gone)continue;if(r.done)p+=3;else if(d<t)p-=1}}return p}
@@ -330,7 +350,7 @@ function sndPlay(kind){const ctx=sndCtx();if(ctx.resume)ctx.resume();sndStop();S
       [0.22,0.06,0.025].forEach((a,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f*(i+1);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(a,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+3.2);o.connect(g);g.connect(out);g.connect(dl);o.start(t);o.stop(t+3.3)})};
     play();SND.timer=setInterval(()=>{if(Math.random()<0.8)play()},900)}}
 const SNDS=[['rain','🌧️ Chta'],['ocean','🌊 L-b7er'],['piano','🎹 Piano'],['brown','🌫️ Hadwa']];
-function sndSheet(){openSheet(`<h3>🎧 Sotat dial concentration</h3><div class="sndgrid">${SNDS.map(([k,l])=>`<button data-snd="${k}" class="${SND.cur===k?'act':''}">${l}</button>`).join('')}</div>
+function sndSheet(){openSheet(`<h3>${icHTML('i:headphones')} Sotat dial concentration</h3><div class="sndgrid">${SNDS.map(([k,l])=>`<button data-snd="${k}" class="${SND.cur===k?'act':''}">${l}</button>`).join('')}</div>
   <input type="range" id="snd-vol" min="0" max="1" step="0.05" value="${SND.vol}" aria-label="Volume">
   <div style="display:flex;gap:8px;margin-top:12px"><button data-snd="stop" style="flex:1">⏹ Wa9ef</button><button data-close style="flex:1">Sdd</button></div>`)}
 function renderHabits(){
@@ -342,7 +362,7 @@ function renderHabits(){
   <div class="sub">+3 kol habit w kol tache f nharha · +3 bonus kol 3 ayam streak · −1 ila fatek nhar</div>
   <form class="add" id="f-habit"><input id="i-habit" placeholder="Habit jdida, ex: nchreb l-ma" maxlength="60" required><button class="go">Zid</button></form>
   ${S.habits.length?'':'<div class="empty">Ma kayna ta habit. Zid wa7da lfo9.</div>'}
-  <div class="hlist">${S.habits.map(h=>`<div class="card hrow"><h3>${icBtn('h',h.id,h.ic||'⭐')}${esc(h.name)}</h3>
+  <div class="hlist">${S.habits.map(h=>`<div class="card hrow"><h3>${icBtn('h',h.id,h.ic||'i:star')}${esc(h.name)}</h3>
     <div style="display:flex;align-items:center;gap:4px"><span class="streak"><b>${streak(h)}</b> j · ${hPoints(h)} pts</span><button class="x" data-del-habit="${h.id}" aria-label="Msse7">×</button></div>
     <div class="days">${k7.map(k=>{const d=new Date(k+'T00:00');return`<button class="day ${h.days[k]?'on':''} ${k===todayK()?'today':''}" data-hd="${h.id}|${k}" aria-pressed="${!!h.days[k]}"><span>${d.toLocaleDateString(LOC,{weekday:'short'}).slice(0,3)}</span><b>${d.getDate()}</b></button>`}).join('')}</div></div>`).join('')}</div>`;
 }
@@ -357,7 +377,7 @@ function renderProjects(){
    <select id="i-ptype" style="margin-top:8px" aria-label="Type"><option value="solo">Individuel</option><option value="team">Équipe</option></select>
    <button class="go" style="margin-top:8px;width:100%">Zid l-projet</button></form>
   ${S.projects.length?'':'<div class="empty">Ma kayn ta projet.</div>'}
-  <div class="plist">${S.projects.map(p=>{const pc=pctOf(p);return`<button class="card proj" data-open="${p.id}"><h3>${p.ic||'📌'} ${esc(p.name)}</h3>
+  <div class="plist">${S.projects.map(p=>{const pc=pctOf(p);return`<button class="card proj" data-open="${p.id}"><h3><span class="icv">${icHTML(p.ic||'i:target')}</span>${esc(p.name)}</h3>
    <div class="bar"><i style="width:${pc}%"></i></div><div class="meta"><span><b style="color:var(--ink)">${pc}%</b></span><span>${p.tasks.filter(t=>t.done).length}/${p.tasks.length} taches</span><span>${dlText(p)}</span></div></button>`}).join('')}</div>`;
 }
 function renderProject(p){
@@ -367,7 +387,7 @@ function renderProject(p){
   else if(pc>=100&&p.tasks.length)alert=`<div class="alert ok">100%! Kmlti ga3 les taches.</div>`;
   const list=(arr,kind,ph)=>`<form class="add" data-add="${kind}"><input placeholder="${ph}" maxlength="140" required><button class="go">Zid</button></form>`;
   app.innerHTML=`<button id="back" style="margin-bottom:12px">← Projets</button>
-  <h1>${icBtn('p',p.id,p.ic||'📌')}${esc(p.name)}</h1>
+  <h1>${icBtn('p',p.id,p.ic||'i:target')}${esc(p.name)}</h1>
   ${alert}
   <div class="card"><div style="display:flex;justify-content:space-between;align-items:end;gap:10px;flex-wrap:wrap"><div class="pct">${pc}%</div><div class="meta" style="text-align:right"><span>${dlText(p)}</span></div></div>
    <div class="bar"><i style="width:${pc}%"></i></div>
@@ -380,7 +400,7 @@ function renderProject(p){
    <div class="card">${['Ana',...(p.members||[])].map(n=>{const who=n==='Ana'?'':n,ts=p.tasks.filter(t=>(t.who||'')===who),dn=ts.filter(t=>t.done).length,pc2=ts.length?Math.round(dn/ts.length*100):0;
     return`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n)}</b><span class="count">${dn}/${ts.length} · ${pc2}%${n!=='Ana'?` <button class="x" data-rmm="${esc(n)}" aria-label="7iyed">×</button>`:''}</span></div><div class="bar"><i style="width:${pc2}%"></i></div></div>`}).join('')}</div></div>`:''}
   <div class="sec"><h3>Les taches <span class="count">${p.tasks.filter(t=>t.done).length}/${p.tasks.length}</span></h3>${p.type==='team'?`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><select aria-label="Chkoun" style="width:auto;max-width:30%">${['Ana',...(p.members||[])].map(n=>`<option value="${n==='Ana'?'':esc(n)}">${esc(n)}</option>`).join('')}</select><button class="go">Zid</button></form>`:`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><button class="go">Zid</button></form>`}
-   <div class="card">${p.tasks.length?p.tasks.map(t=>`<div class="item ${t.done?'done':''}"><button class="chk" data-tog="${t.id}" aria-pressed="${!!t.done}" aria-label="Check">${t.done?'✓':''}</button><span class="t">${esc(t.t)}</span><span class="chips"><button class="kind tbtn" data-setmin="t|${p.id}|${t.id}" aria-label="Wa9t">⏱ ${t.min?fmtMin(t.min):'+'}</button>${t.min&&!t.done?playBtn('t|'+p.id+'|'+t.id):''}${p.type==='team'?`<span class="kind">${esc(t.who||'Ana')}</span>`:''}<button class="x" data-rm="tasks|${t.id}" aria-label="Msse7">×</button></span></div>`).join(''):'<div class="empty">Zid les taches. L-pourcentage kayt7seb mnhom.</div>'}</div></div>
+   <div class="card">${p.tasks.length?p.tasks.map(t=>`<div class="item ${t.done?'done':''}"><button class="chk" data-tog="${t.id}" aria-pressed="${!!t.done}" aria-label="Check">${t.done?'✓':''}</button><span class="t">${esc(t.t)}</span><span class="chips"><button class="kind tbtn" data-setmin="t|${p.id}|${t.id}" aria-label="Wa9t">${icHTML('i:clock')} ${t.min?fmtMin(t.min):'+'}</button>${t.min&&!t.done?playBtn('t|'+p.id+'|'+t.id):''}${p.type==='team'?`<span class="kind">${esc(t.who||'Ana')}</span>`:''}<button class="x" data-rm="tasks|${t.id}" aria-label="Msse7">×</button></span></div>`).join(''):'<div class="empty">Zid les taches. L-pourcentage kayt7seb mnhom.</div>'}</div></div>
   <div class="sec"><h3>Les problèmes w les solutions <span class="count">${p.problems.filter(x=>x.s).length}/${p.problems.length} m7loulin</span></h3>${list(0,'problems','Problème jdid')}
    <div class="card">${p.problems.length?p.problems.map(x=>`<div class="prob"><div class="p"><span class="t" style="overflow-wrap:anywhere">${esc(x.p)}</span><button class="x" data-rm="problems|${x.id}" aria-label="Msse7">×</button></div><label for="s-${x.id}">Solution</label><textarea id="s-${x.id}" data-sol="${x.id}" placeholder="Kifach ghadi t7elha?">${esc(x.s)}</textarea></div>`).join(''):'<div class="empty">Ma kayn ta problème daba.</div>'}</div></div>
   <div class="sec"><h3>Les résultats réels <span class="count">${p.results.length}</span></h3>${list(0,'results','Chno wselti lih b se7')}
@@ -391,18 +411,18 @@ function renderProject(p){
 const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 function res(it,k){
   if(it.type==='task'){const p=S.projects.find(x=>x.id===it.pid),t=p&&p.tasks.find(x=>x.id===it.tid);
-    return t?{t:t.t,sub:(p.ic||'📌')+' '+p.name,kind:'Tache',done:!!t.done,min:t.min||0}:{t:'Tache tmss7at',sub:'',kind:'Tache',done:false,gone:1}}
+    return t?{t:t.t,sub:p.name,ic:p.ic||'i:target',kind:'Tache',done:!!t.done,min:t.min||0}:{t:'Tache tmss7at',sub:'',kind:'Tache',done:false,gone:1}}
   if(it.type==='sol'){const p=S.projects.find(x=>x.id===it.pid),x=p&&p.problems.find(q=>q.id===it.qid);
     return x?{t:x.s||'(ba9i ma ktebti solution)',sub:'Problème: '+x.p+' · '+p.name,kind:'Solution',done:!!it.done}:{t:'Problème tmss7',sub:'',kind:'Solution',done:false,gone:1}}
   if(it.type==='habit'){const h=S.habits.find(x=>x.id===it.hid);
-    return h?{t:(h.ic||'⭐')+' '+h.name,sub:'',kind:'Habit',done:!!h.days[k]}:{t:'Habit tmss7at',sub:'',kind:'Habit',done:false,gone:1}}
+    return h?{t:h.name,sub:'',ic:h.ic||'i:star',kind:'Habit',done:!!h.days[k]}:{t:'Habit tmss7at',sub:'',kind:'Habit',done:false,gone:1}}
   return{t:it.t,sub:'',kind:'Khra',done:!!it.done,min:it.min||0}
 }
 function toggleIt(k,iid){const it=(S.plan[k]||[]).find(x=>x.id===iid);if(!it)return;
   if(it.type==='task'){const p=S.projects.find(x=>x.id===it.pid),t=p&&p.tasks.find(x=>x.id===it.tid);if(t)t.done=t.done?0:1}
   else if(it.type==='habit'){const h=S.habits.find(x=>x.id===it.hid);if(h){h.days[k]?delete h.days[k]:h.days[k]=1}}
   else it.done=it.done?0:1;}
-const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class="item ${r.done?'done':''}"><button class="chk" data-it="${k}|${it.id}" aria-pressed="${r.done}" aria-label="Check">${r.done?'✓':''}</button><span class="t">${esc(r.t)}${r.sub?`<span class="tag">${esc(r.sub)}</span>`:''}</span><span class="chips">${(it.type==='task'||it.type==='free')&&!r.gone?`<button class="kind tbtn" data-setmin="${it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id}" aria-label="Wa9t">⏱ ${r.min?fmtMin(r.min):'+'}</button>${r.min&&!r.done?playBtn(it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id):''}`:''}<span class="kind">${r.kind}</span><button class="x" data-rmi="${k}|${it.id}" aria-label="7iyed">×</button></span></div>`}).join('');
+const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class="item ${r.done?'done':''}"><button class="chk" data-it="${k}|${it.id}" aria-pressed="${r.done}" aria-label="Check">${r.done?'✓':''}</button><span class="t">${it.type==='habit'&&r.ic?`<span class="icv">${icHTML(r.ic)}</span>`:''}${esc(r.t)}${r.sub?`<span class="tag">${it.type==='task'&&r.ic?`<span class="icv">${icHTML(r.ic)}</span>`:''}${esc(r.sub)}</span>`:''}</span><span class="chips">${(it.type==='task'||it.type==='free')&&!r.gone?`<button class="kind tbtn" data-setmin="${it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id}" aria-label="Wa9t">${icHTML('i:clock')} ${r.min?fmtMin(r.min):'+'}</button>${r.min&&!r.done?playBtn(it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id):''}`:''}<span class="kind">${r.kind}</span><button class="x" data-rmi="${k}|${it.id}" aria-label="7iyed">×</button></span></div>`}).join('');
 const deadlinesOn=k=>S.projects.filter(p=>p.deadline===k);
 const freeForm=k=>`<form class="add" data-free="${k}"><input placeholder="Tache khra (machi f chi projet)" maxlength="140" required><button class="go">Zid</button></form>`;
 
@@ -450,7 +470,7 @@ function renderToday(){const k=todayK(),arr=S.plan[k]||[];
   app.innerHTML=`${TMR&&tObj(TMR.ref)?`<div class="card tcard ${remain(TMR.ref)<0?'over':''}" style="margin-top:14px"><div class="sub">⏳ Daba khdam 3la</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(tName(TMR.ref))}</div>
     <div class="bigclock" data-clock="${TMR.ref}">${fmtClock(remain(TMR.ref))}</div><div class="sub">Khdemti: <b data-spent="${TMR.ref}">${fmtClock(spentNow(TMR.ref))}</b></div>
     <div style="display:flex;gap:8px;margin-top:10px"><button data-tplay="${TMR.ref}" style="flex:1">⏸ Pause</button><button class="go" data-tdone="${TMR.ref}" style="flex:1">✓ Salit</button></div></div>`:''}
-  <div class="topbar"><button id="pts-open" style="margin-right:auto;color:var(--grow)">⭐ ${totalPts()} · ${STAGES[stageOf(totalPts())][1]}</button><button id="snd-open">🎧${SND.cur?' ▶':''}</button><button id="cloud">${cloudLabel()}</button></div><div class="top"><div><h1>Lyoum</h1><div class="sub">${new Date().toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pct" style="font-size:36px">${n}/${arr.length}</div></div>
+  <div class="topbar"><button id="pts-open" style="margin-right:auto;color:var(--grow)">${icHTML('i:star')} ${totalPts()} · ${STAGES[stageOf(totalPts())][1]}</button><button id="snd-open" aria-label="Sotat">${icHTML('i:headphones')}${SND.cur?' ▶':''}</button><button id="cloud">${icHTML('i:cloud')} <span id="cloud-t">${cloudLabel()}</span></button></div><div class="top"><div><h1>Lyoum</h1><div class="sub">${new Date().toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pct" style="font-size:36px">${n}/${arr.length}</div></div>
   ${arr.length?`<div class="bar"><i style="width:${Math.round(n/arr.length*100)}%"></i></div>`:''}${left?`<div class="sub">⏱ ${fmtMin(left)} ba9in lyoum</div>`:''}
   ${deadlinesOn(k).map(p=>`<div class="alert">Lyoum deadline dial "${esc(p.name)}": ${pctOf(p)}%</div>`).join('')}
   ${freeForm(k)}
@@ -490,7 +510,7 @@ async function imgGC(){try{const keep=new Set(S.notes.flatMap(n=>n.imgs||[]));co
 function notesList(){const q=nv.q.toLowerCase();
   const arr=S.notes.filter(n=>(nv.filter==='all'||n.kind===nv.filter)&&(!q||(n.text+' '+Object.values(n.f).join(' ')).toLowerCase().includes(q))).sort((a,b)=>b.at-a.at);
   return arr.length?arr.map(n=>{const K=NK[n.kind],path=K.f.map(([k,l])=>n.f[k]?(k==='ep'?'Ep '+n.f[k]:k==='page'?'p. '+n.f[k]:n.f[k]):'').filter(Boolean).map(esc).join(' › ');
-    return`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div>${icBtn('n',n.id,n.ic||'📝')}<span class="kind" style="margin:0">${K.l}</span><div style="font-weight:600;margin-top:6px;overflow-wrap:anywhere">${path||'Bla titre'}</div></div>
+    return`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div>${icBtn('n',n.id,n.ic||'i:pen')}<span class="kind" style="margin:0">${K.l}</span><div style="font-weight:600;margin-top:6px;overflow-wrap:anywhere">${path||'Bla titre'}</div></div>
     <div style="display:flex;flex:none"><button class="x" data-ned="${n.id}" aria-label="Bddel" style="font-size:15px">✎</button><button class="x" data-nrm="${n.id}" aria-label="Msse7">×</button></div></div>
     ${n.text?`<div style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px">${esc(n.text)}</div>`:''}${(n.imgs||[]).length?`<div class="thumbs">${n.imgs.map(id=>`<button class="th" data-view="${id}" aria-label="Chouf tswira"><img data-img="${id}" alt=""></button>`).join('')}</div>`:''}<div class="tag">${new Date(n.at).toLocaleDateString(LOC,{day:'numeric',month:'short'})}</div></div>`}).join(''):'<div class="empty">Ma kayna ta note hna.</div>'}
 function renderNotes(){const ed=nv.edit&&S.notes.find(n=>n.id===nv.edit),kind=ed?ed.kind:nv.kind,K=NK[kind];
@@ -535,7 +555,7 @@ document.getElementById('sheet').addEventListener('click',e=>{if(e.target.id==='
   else if(b.dataset.snd){if(b.dataset.snd==='stop')sndStop();else if(SND.cur===b.dataset.snd)sndStop();else{try{sndPlay(b.dataset.snd)}catch(err){toast2('Sot ma khdamch f had l-appareil')}}sndSheet();if(view.tab==='today')render()}});
 document.getElementById('sheet').addEventListener('input',e=>{if(e.target.id==='snd-vol'){SND.vol=+e.target.value;if(SND.master)SND.master.gain.value=SND.vol}});
 app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.icpick){e.stopPropagation();e.preventDefault();openSheet(`<h3>Khtar icon</h3><div class="icgrid">${ICONS.map(ic=>`<button data-icset="${b.dataset.icpick}|${ic}">${ic}</button>`).join('')}</div><button data-close style="width:100%;margin-top:12px">Sdd</button>`)}
+  if(b.dataset.icpick){e.stopPropagation();e.preventDefault();openSheet(`<h3>Khtar icon</h3><div class="icgrid">${ICONS.map(ic=>`<button data-icset="${b.dataset.icpick}|${ic}" aria-label="${ic.slice(2)}">${icHTML(ic)}</button>`).join('')}</div><button data-close style="width:100%;margin-top:12px">Sdd</button>`)}
   else if(b.dataset.setmin){e.stopPropagation();const ref=b.dataset.setmin;openSheet(`<h3>⏱ Ch7al d l-wa9t?</h3><div class="mingrid">${[15,30,45,60,90,120,180,240].map(m=>`<button data-minset="${ref}|${m}">${fmtMin(m)}</button>`).join('')}</div>
     <form id="f-min" class="add" style="margin-top:10px"><input type="number" id="i-min" min="1" max="600" inputmode="numeric" placeholder="min"><button class="go">OK</button></form>
     <div style="display:flex;gap:8px;margin-top:8px"><button data-minset="${ref}|0" style="flex:1">7iyed l-wa9t</button><button data-close style="flex:1">Sdd</button></div>`);document.getElementById('f-min').dataset.ref=ref}
