@@ -149,14 +149,21 @@ function streak(h){let n=0,i=h.days[todayK()]?0:-1;while(h.days[plus(i)]){n++;i-
 function dlText(p){const d=daysLeft(p),pc=pctOf(p);if(d===null)return'Bla deadline';
   if(d<0)return'<span class="late">Deadline fatet '+(-d)+' j</span>';if(d===0)return'<span class="late">Lyoum akhir nhar</span>';return'Ba9i '+d+' j';}
 
+function hPoints(h){const days=Object.keys(h.days).sort();let start=h.created||days[0]||todayK();if(days[0]&&days[0]<start)start=days[0];
+  let pts=0,st=0;const t=todayK();const d=new Date(start+'T00:00');
+  for(let i=0;i<4000;i++){const k=dkey(d);if(k>t)break;
+    if(h.days[k]){pts+=3;st++;if(st%3===0)pts+=3}else if(k<t){pts-=1;st=0}
+    d.setDate(d.getDate()+1)}
+  return pts}
 function renderHabits(){
   const k7=[...Array(7)].map((_,i)=>plus(i-6));
   const doneToday=S.habits.filter(h=>h.days[todayK()]).length;
-  app.innerHTML=`<div class="top"><div><h1>Habits</h1><div class="sub">Lyoum: ${doneToday}/${S.habits.length} kmlti</div></div></div>
+  app.innerHTML=`<div class="top"><div><h1>Habits</h1><div class="sub">Lyoum: ${doneToday}/${S.habits.length} kmlti</div></div><div style="text-align:right"><div class="pct" style="font-size:36px;color:var(--grow)">${S.habits.reduce((a,h)=>a+hPoints(h),0)}</div><div class="sub">points</div></div></div>
+  <div class="sub" style="margin-top:-8px">+3 kol nhar · +3 bonus kol 3 ayam streak · −1 ila fatek nhar</div>
   <form class="add" id="f-habit"><input id="i-habit" placeholder="Habit jdida, ex: nchreb l-ma" maxlength="60" required><button class="go">Zid</button></form>
   ${S.habits.length?'':'<div class="empty">Ma kayna ta habit. Zid wa7da lfo9.</div>'}
   ${S.habits.map(h=>`<div class="card hrow"><h3>${esc(h.name)}</h3>
-    <div style="display:flex;align-items:center;gap:4px"><span class="streak"><b>${streak(h)}</b> j streak</span><button class="x" data-del-habit="${h.id}" aria-label="Msse7">×</button></div>
+    <div style="display:flex;align-items:center;gap:4px"><span class="streak"><b>${streak(h)}</b> j · ${hPoints(h)} pts</span><button class="x" data-del-habit="${h.id}" aria-label="Msse7">×</button></div>
     <div class="days">${k7.map(k=>{const d=new Date(k+'T00:00');return`<button class="day ${h.days[k]?'on':''} ${k===todayK()?'today':''}" data-hd="${h.id}|${k}" aria-pressed="${!!h.days[k]}"><span>${d.toLocaleDateString('fr-FR',{weekday:'short'}).slice(0,3)}</span><b>${d.getDate()}</b></button>`}).join('')}</div></div>`).join('')}`;
 }
 function renderProjects(){
@@ -299,7 +306,7 @@ function importPlan(raw){let d;try{d=JSON.parse(raw.slice(raw.indexOf('{'),raw.l
   const list=d.projects||(d.project?[d.project]:[]),hs=Array.isArray(d.habits)?d.habits:[];
   if(!list.length&&!hs.length)return'Code ghalet: ma fih ta projet wla habit.';
   if(!list.every(x=>x&&x.name))return'Code ghalet: projet bla smiya.';
-  let hn=0;for(const name of hs){const nm=String(name||'').trim();if(nm&&!S.habits.some(x=>norm(x.name)===norm(nm))){S.habits.push({id:uid(),name:nm,days:{}});hn++}}
+  let hn=0;for(const name of hs){const nm=String(name||'').trim();if(nm&&!S.habits.some(x=>norm(x.name)===norm(nm))){S.habits.push({id:uid(),name:nm,days:{},created:todayK()});hn++}}
   let tot=0,p;for(const P of list){const r=importOne(P);tot+=r.n;p=r.p}
   save();
   if(!list.length){view={tab:'habits',pid:null};render();scrollTo(0,0);return'Tzadou '+hn+' habits'}
@@ -348,7 +355,7 @@ document.getElementById('toast').addEventListener('click',e=>{if(e.target.id==='
 const snap=()=>{undo=JSON.parse(JSON.stringify(S))};
 
 app.addEventListener('submit',e=>{e.preventDefault();const f=e.target;
-  if(f.id==='f-habit'){const v=document.getElementById('i-habit').value.trim();if(v){S.habits.push({id:uid(),name:v,days:{}});save();render()}}
+  if(f.id==='f-habit'){const v=document.getElementById('i-habit').value.trim();if(v){S.habits.push({id:uid(),name:v,days:{},created:todayK()});save();render()}}
   else if(f.id==='f-member'){const p=cur(),v=document.getElementById('i-member').value.trim();if(p&&v&&v!=='Ana'&&!(p.members||[]).includes(v)){(p.members||(p.members=[])).push(v);save();render()}}
   else if(f.id==='f-proj'){const n=document.getElementById('i-pname').value.trim();if(!n)return;
     const p={id:uid(),name:n,goal:document.getElementById('i-pgoal').value.trim(),deadline:document.getElementById('i-pdl').value,type:document.getElementById('i-ptype').value,members:[],tasks:[],problems:[],results:[]};
