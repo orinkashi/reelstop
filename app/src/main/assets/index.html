@@ -296,9 +296,14 @@ function toast(msg){const t=document.getElementById('toast');
 const cur=()=>S.projects.find(x=>x.id===view.pid);
 const norm=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
 function importPlan(raw){let d;try{d=JSON.parse(raw.slice(raw.indexOf('{'),raw.lastIndexOf('}')+1))}catch(e){return'Code ghalet. Copy l-code kaml mn Claude.'}
-  const list=d.projects||(d.project?[d.project]:[]);if(!list.length||!list.every(x=>x&&x.name))return'Code ghalet: ma fih ta projet.';
+  const list=d.projects||(d.project?[d.project]:[]),hs=Array.isArray(d.habits)?d.habits:[];
+  if(!list.length&&!hs.length)return'Code ghalet: ma fih ta projet wla habit.';
+  if(!list.every(x=>x&&x.name))return'Code ghalet: projet bla smiya.';
+  let hn=0;for(const name of hs){const nm=String(name||'').trim();if(nm&&!S.habits.some(x=>norm(x.name)===norm(nm))){S.habits.push({id:uid(),name:nm,days:{}});hn++}}
   let tot=0,p;for(const P of list){const r=importOne(P);tot+=r.n;p=r.p}
-  save();view={tab:'projects',pid:list.length>1?null:p.id};render();scrollTo(0,0);return'Tzadou '+tot+' taches f '+list.length+' projet'+(list.length>1?'s':'');}
+  save();
+  if(!list.length){view={tab:'habits',pid:null};render();scrollTo(0,0);return'Tzadou '+hn+' habits'}
+  view={tab:'projects',pid:list.length>1?null:p.id};render();scrollTo(0,0);return'Tzadou '+tot+' taches f '+list.length+' projet'+(list.length>1?'s':'')+(hn?' + '+hn+' habits':'');}
 function importOne(P){
   let p=S.projects.find(x=>norm(x.name)===norm(P.name));
   if(!p){p={id:uid(),name:P.name,goal:'',deadline:'',type:'solo',members:[],tasks:[],problems:[],results:[]};S.projects.unshift(p)}
