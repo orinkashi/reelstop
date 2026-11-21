@@ -1,6 +1,11 @@
 package com.omar.dftar;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
@@ -42,6 +47,51 @@ public class MainActivity extends Activity {
                         startActivityForResult(i, SAVE_ONE);
                     } catch (Exception e) {
                         notifySaved(false);
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void setReminders(String json) {
+            Reminders.setAll(getApplicationContext(), json);
+        }
+
+        @JavascriptInterface
+        public void askNotif() {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    if (Build.VERSION.SDK_INT >= 33
+                            && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 5);
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void openFile(final String name, final String mime, final String b64) {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    if (Build.VERSION.SDK_INT < 29) {
+                        saveFile(name, mime, b64);
+                        return;
+                    }
+                    try {
+                        ContentValues v = new ContentValues();
+                        v.put(MediaStore.MediaColumns.DISPLAY_NAME, name);
+                        v.put(MediaStore.MediaColumns.MIME_TYPE, mime);
+                        v.put(MediaStore.MediaColumns.RELATIVE_PATH, "Download/Dftar");
+                        Uri uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, v);
+                        OutputStream out = getContentResolver().openOutputStream(uri);
+                        out.write(Base64.decode(b64, Base64.DEFAULT));
+                        out.close();
+                        Intent view = new Intent(Intent.ACTION_VIEW);
+                        view.setDataAndType(uri, mime);
+                        view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(Intent.createChooser(view, name));
+                    } catch (Exception e) {
+                        web.evaluateJavascript("window.toast2&&toast2('Ma l9itch app t7el had l-fichier')", null);
                     }
                 }
             });
@@ -99,9 +149,7 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType(images ? "image/*" : "*/*");
-                if (images) {
-                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                }
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 try {
                     startActivityForResult(Intent.createChooser(intent, images ? "Khtar tswira" : "Khtar fichier"), PICK_FILES);
                 } catch (Exception e) {

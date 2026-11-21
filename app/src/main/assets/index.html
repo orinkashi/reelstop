@@ -115,7 +115,8 @@ input[type=range]{width:100%;accent-color:var(--grow);margin-top:14px}
 .chips{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:4px;max-width:55%;flex:none}.chips .kind{margin-top:0}.chips .x{min-height:30px;min-width:30px}
 .tbtn{border:0;cursor:pointer;min-height:28px;font-family:inherit;font-variant-numeric:tabular-nums}
 .tbtn.run{background:var(--grow);color:var(--on)}.tbtn.over,.tcard.over .bigclock{color:var(--hot)}.tbtn.run.over{background:var(--hot);color:var(--on)}
-.tcard{border-color:var(--grow)}.bigclock{font:700 56px/1 Outfit,Inter,sans-serif;font-variant-numeric:tabular-nums;color:var(--grow);margin:8px 0}
+.tcard{border-color:var(--grow)}.bellb{width:auto!important;font-size:13px;padding:0 4px}.bellb.on{color:var(--grow)}
+.fchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.fchip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 10px;border-radius:10px;font-size:14px;font-weight:500;max-width:100%}.fchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}.bigclock{font:700 56px/1 Outfit,Inter,sans-serif;font-variant-numeric:tabular-nums;color:var(--grow);margin:8px 0}
 .mingrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.mingrid button{min-height:48px}
 .topbar{display:flex;justify-content:flex-end;gap:8px;margin:-6px 0 -10px}.topbar button{min-height:36px;font-size:14px}
 @media(min-width:900px){
@@ -211,7 +212,11 @@ const I18N={
 'Sotat dial concentration':["Sons de concentration","Focus sounds"],'Sotat':["Sons","Sounds"],'offline':["hors ligne","offline"],'🌧️ Chta':["🌧️ Pluie","🌧️ Rain"],'🌊 L-b7er':["🌊 Océan","🌊 Ocean"],'🌫️ Hadwa':["🌫️ Calme","🌫️ Calm noise"],'⏹ Wa9ef':["⏹ Arrêter","⏹ Stop"],
 '⏱ Ch7al d l-wa9t?':["⏱ Combien de temps ?","⏱ How long?"],'7iyed l-wa9t':["Retirer le temps","Remove time"],'Wa9t':["Temps","Time"],'⏳ Daba khdam 3la':["⏳ En cours","⏳ Working on"],'Khdemti:':["Temps passé :","Time spent:"],'✓ Salit':["✓ Terminé","✓ Done"],'Mzyan! ✓':["Bien joué ! ✓","Nice! ✓"],'Minuterie':["Minuteur","Timer"],'Export kol note':["Exporter chaque note","Export each note"],'Export':["Exporter","Export"],'Sauvegarde f fichier':["Sauvegarde dans un fichier","Backup to a file"],'Export kolchi':["Tout exporter","Export everything"],'Import mn fichier':["Importer un fichier","Import from file"],
 'Fichier wa7d fih kolchi, 7ta tsawer dial notes.':["Un seul fichier avec tout, y compris les photos des notes.","One file with everything, including note photos."],'Fichier ghalet':["Fichier invalide","Invalid file"],'Data rje3at mn fichier ✓':["Données restaurées ✓","Data restored ✓"],
-'Tsauvegarda ✓':["Enregistré ✓","Saved ✓"],'Ma tsauvegardach':["Non enregistré","Not saved"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
+'Tsauvegarda ✓':["Enregistré ✓","Saved ✓"],'Ma tsauvegardach':["Non enregistré","Not saved"],'Rappel':["Rappel","Reminder"],'Kol nhar f had l-wa9t':["Chaque jour à cette heure","Every day at this time"],'F nhar dial had tache':["Le jour de cette tâche","On this task's day"],
+'Rappels kaykhdmo ghir f l-app dial telephone.':["Les rappels fonctionnent seulement dans l'app téléphone.","Reminders only work in the phone app."],'7iyed rappel':["Supprimer le rappel","Remove reminder"],
+'Wa9t dial habit dialek ⏰':["C'est l'heure de ton habitude ⏰","Time for your habit ⏰"],'Wa9t dial tache ⏰':["C'est l'heure de ta tâche ⏰","Time for your task ⏰"],
+'+ Fichier (PDF, Word...)':["+ Fichier (PDF, Word...)","+ File (PDF, Word...)"],'Fichier kbir bzaf (max 15 MB)':["Fichier trop lourd (max 15 Mo)","File too large (max 15 MB)"],'Ma 9dertch nzid had l-fichier':["Impossible d'ajouter ce fichier","Couldn't add this file"],
+'Had l-fichier ma kaynch f had l-appareil':["Ce fichier n'est pas sur cet appareil","This file isn't on this device"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
 const I18NX=[
 [/^Ba9i (\d+) j$/,"Encore $1 j","$1 d left"],[/^Deadline fatet (\d+) j$/,"Deadline dépassée de $1 j","Deadline passed $1 d ago"],
 [/^Lyoum: (\d+)\/(\d+) kmlti$/,"Aujourd'hui : $1/$2 faites","Today: $1/$2 done"],[/^(\d+) projet(s?)$/,"$1 projet$2","$1 project$2"],
@@ -269,7 +274,7 @@ const SB='https://cuiosvzhgrlpleugjouv.supabase.co',SBK='sb_publishable_N5KpbC4q
 let AUTH=null;try{AUTH=JSON.parse(localStorage.getItem(AK))}catch(e){}
 const sync={state:AUTH?'idle':'off',last:0,msg:''};
 const writeLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
-const save=()=>{S._t=Date.now();writeLocal();schedulePush()};
+const save=()=>{S._t=Date.now();writeLocal();schedulePush();if(typeof syncRem==='function')syncRem()};
 function setAuth(a){AUTH=a;try{a?localStorage.setItem(AK,JSON.stringify(a)):localStorage.removeItem(AK)}catch(e){}}
 async function sbAuth(path,body){const r=await fetch(SB+'/auth/v1/'+path,{method:'POST',headers:{apikey:SBK,'Content-Type':'application/json'},body:JSON.stringify(body)});
   const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.msg||j.error_description||j.message||('Erreur '+r.status));e.status=r.status;throw e}return j}
@@ -322,8 +327,8 @@ cup:['M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z','M16 10h2a2 2 0 0 1 0 4h-2','M8 
 mountain:['M3 20l7-12 4 6 2-3 5 9z'],bolt:['M13 2L4 14h7l-1 8 9-12h-7z'],users:['c9 8 3.5','M2 20a7 7 0 0 1 14 0','M16 4.5a3.5 3.5 0 0 1 0 7','M22 20a6 6 0 0 0-4-5.6'],
 phone:['r7 2 10 20 2','M11 18h2'],calendar:['r3 5 18 16 2','M3 10h18','M8 3v4','M16 3v4'],folder:['M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],
 edit:['M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6','M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z'],headphones:['M3 18v-6a9 9 0 0 1 18 0v6','r3 14 4 6 1.5','r17 14 4 6 1.5'],
-cloud:['M7 18a5 5 0 0 1-.6-10A7 7 0 0 1 20 10.5 4 4 0 0 1 18 18z'],download:['M12 3v12','M7 10l5 5 5-5','M5 21h14'],upload:['M12 21V9','M7 14l5-5 5 5','M5 3h14'],bed:['M3 18V7','M3 14h18v4','M21 14a4 4 0 0 0-4-4h-7v4','c7 11 1.5']};
-const ICONS=Object.keys(ICO).filter(k=>!['calendar','folder','edit','headphones','cloud','download','upload'].includes(k)).map(k=>'i:'+k).concat(['i:calendar','i:folder','i:edit']);
+cloud:['M7 18a5 5 0 0 1-.6-10A7 7 0 0 1 20 10.5 4 4 0 0 1 18 18z'],download:['M12 3v12','M7 10l5 5 5-5','M5 21h14'],bell:['M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9','M10.3 21a1.9 1.9 0 0 0 3.4 0'],file:['M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z','M14 3v6h6','M8 13h8','M8 17h6'],upload:['M12 21V9','M7 14l5-5 5 5','M5 3h14'],bed:['M3 18V7','M3 14h18v4','M21 14a4 4 0 0 0-4-4h-7v4','c7 11 1.5']};
+const ICONS=Object.keys(ICO).filter(k=>!['calendar','folder','edit','headphones','cloud','download','upload','bell','file'].includes(k)).map(k=>'i:'+k).concat(['i:calendar','i:folder','i:edit']);
 for(const[t,ic]of[['today','sun'],['cal','calendar'],['habits','flame'],['projects','folder'],['notes','edit']]){const b=document.getElementById('tab-'+t);if(b)b.innerHTML=icHTML('i:'+ic)+'<span>'+b.textContent+'</span>'}
 function icHTML(ic){if(!ic)return'';if(ic.slice(0,2)!=='i:')return esc(ic);const p=ICO[ic.slice(2)];if(!p)return'';
   return`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p.map(s=>{const a=s.slice(1).split(' ');
@@ -364,7 +369,7 @@ function renderHabits(){
   <form class="add" id="f-habit"><input id="i-habit" placeholder="Habit jdida, ex: nchreb l-ma" maxlength="60" required><button class="go">Zid</button></form>
   ${S.habits.length?'':'<div class="empty">Ma kayna ta habit. Zid wa7da lfo9.</div>'}
   <div class="hlist">${S.habits.map(h=>`<div class="card hrow"><h3>${icBtn('h',h.id,h.ic||'i:star')}${esc(h.name)}</h3>
-    <div style="display:flex;align-items:center;gap:4px"><span class="streak"><b>${streak(h)}</b> j · ${hPoints(h)} pts</span><button class="x" data-del-habit="${h.id}" aria-label="Msse7">×</button></div>
+    <div style="display:flex;align-items:center;gap:4px"><span class="streak"><b>${streak(h)}</b> j · ${hPoints(h)} pts</span><button class="x bellb ${h.rem?'on':''}" data-rem="h|${h.id}" aria-label="Rappel">${icHTML('i:bell')}${h.rem?' '+h.rem:''}</button><button class="x" data-del-habit="${h.id}" aria-label="Msse7">×</button></div>
     <div class="days">${k7.map(k=>{const d=new Date(k+'T00:00');return`<button class="day ${h.days[k]?'on':''} ${k===todayK()?'today':''}" data-hd="${h.id}|${k}" aria-pressed="${!!h.days[k]}"><span>${d.toLocaleDateString(LOC,{weekday:'short'}).slice(0,3)}</span><b>${d.getDate()}</b></button>`}).join('')}</div></div>`).join('')}</div>`;
 }
 function renderProjects(){
@@ -423,7 +428,7 @@ function toggleIt(k,iid){const it=(S.plan[k]||[]).find(x=>x.id===iid);if(!it)ret
   if(it.type==='task'){const p=S.projects.find(x=>x.id===it.pid),t=p&&p.tasks.find(x=>x.id===it.tid);if(t)t.done=t.done?0:1}
   else if(it.type==='habit'){const h=S.habits.find(x=>x.id===it.hid);if(h){h.days[k]?delete h.days[k]:h.days[k]=1}}
   else it.done=it.done?0:1;}
-const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class="item ${r.done?'done':''}"><button class="chk" data-it="${k}|${it.id}" aria-pressed="${r.done}" aria-label="Check">${r.done?'✓':''}</button><span class="t">${it.type==='habit'&&r.ic?`<span class="icv">${icHTML(r.ic)}</span>`:''}${esc(r.t)}${r.sub?`<span class="tag">${it.type==='task'&&r.ic?`<span class="icv">${icHTML(r.ic)}</span>`:''}${esc(r.sub)}</span>`:''}</span><span class="chips">${(it.type==='task'||it.type==='free')&&!r.gone?`<button class="kind tbtn" data-setmin="${it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id}" aria-label="Wa9t">${icHTML('i:clock')} ${r.min?fmtMin(r.min):'+'}</button>${r.min&&!r.done?playBtn(it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id):''}`:''}<span class="kind">${r.kind}</span><button class="x" data-rmi="${k}|${it.id}" aria-label="7iyed">×</button></span></div>`}).join('');
+const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class="item ${r.done?'done':''}"><button class="chk" data-it="${k}|${it.id}" aria-pressed="${r.done}" aria-label="Check">${r.done?'✓':''}</button><span class="t">${it.type==='habit'&&r.ic?`<span class="icv">${icHTML(r.ic)}</span>`:''}${esc(r.t)}${r.sub?`<span class="tag">${it.type==='task'&&r.ic?`<span class="icv">${icHTML(r.ic)}</span>`:''}${esc(r.sub)}</span>`:''}</span><span class="chips">${(it.type==='task'||it.type==='free')&&!r.gone?`<button class="kind tbtn" data-setmin="${it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id}" aria-label="Wa9t">${icHTML('i:clock')} ${r.min?fmtMin(r.min):'+'}</button>${r.min&&!r.done?playBtn(it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id):''}`:''}${it.type!=='habit'&&k>=todayK()&&!r.gone?`<button class="kind tbtn ${it.rem?'run':''}" data-rem="p|${k}|${it.id}" aria-label="Rappel">${icHTML('i:bell')}${it.rem?' '+it.rem:''}</button>`:''}<span class="kind">${r.kind}</span><button class="x" data-rmi="${k}|${it.id}" aria-label="7iyed">×</button></span></div>`}).join('');
 const deadlinesOn=k=>S.projects.filter(p=>p.deadline===k);
 const freeForm=k=>`<form class="add" data-free="${k}"><input placeholder="Tache khra (machi f chi projet)" maxlength="140" required><button class="go">Zid</button></form>`;
 
@@ -503,21 +508,29 @@ const NK={formation:{l:'Formation',f:[['majal','Majal (marketing, design, montag
   book:{l:'Ktab',f:[['book','Smiya dial l-ktab'],['page','Page']]},
   other:{l:'Other',f:[['cat','Catégorie (li bghiti)'],['titre','Titre']]}};
 const MAJAL=['Marketing','Design','Video editing','Programmation','Langues','Business','Sport'];
-const nv={kind:'formation',filter:'all',q:'',edit:null,imgs:[]};
+const nv={kind:'formation',filter:'all',q:'',edit:null,imgs:[],files:[]};
 const IMG=new Map();let dbp=null;
 function idb(){if(dbp)return dbp;dbp=new Promise((ok,ko)=>{try{const r=indexedDB.open('dftar-img',1);r.onupgradeneeded=()=>r.result.createObjectStore('img');r.onsuccess=()=>ok(r.result);r.onerror=()=>ko(r.error)}catch(e){ko(e)}});return dbp}
 async function imgPut(id,url){const db=await idb();await new Promise((ok,ko)=>{const t=db.transaction('img','readwrite');t.objectStore('img').put(url,id);t.oncomplete=ok;t.onerror=()=>ko(t.error)});IMG.set(id,url)}
 async function imgGet(id){if(IMG.has(id))return IMG.get(id);const db=await idb();const url=await new Promise(ok=>{const r=db.transaction('img').objectStore('img').get(id);r.onsuccess=()=>ok(r.result||'');r.onerror=()=>ok('')});IMG.set(id,url);return url}
 function loadImgs(){document.querySelectorAll('img[data-img]').forEach(async el=>{if(el.src)return;let u='';try{u=await imgGet(el.dataset.img)}catch(e){}if(u)el.src=u;else{const t=el.closest('.th');if(t)t.style.display='none'}})}
+const fmtSize=b=>b>1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
+const formFiles=()=>nv.files.length?`<div class="fchips">${nv.files.map(x=>`<span class="fchip kind" style="margin:0">${icHTML('i:file')}<span>${esc(x.name)}</span> <small>${fmtSize(x.size)}</small><button type="button" class="x" data-rmfile="${x.id}" aria-label="7iyed" style="min-height:28px;min-width:28px">×</button></span>`).join('')}</div>`:'';
+async function openDoc(ref){const[nid,fid]=ref.split('|');const n=S.notes.find(x=>x.id===nid),m=n&&(n.files||[]).find(x=>x.id===fid);if(!m)return;
+  let url='';try{url=await imgGet(fid)}catch(e){}if(!url)return toast2('Had l-fichier ma kaynch f had l-appareil');
+  if(window.DftarAndroid&&DftarAndroid.openFile){DftarAndroid.openFile(m.name,m.mime||'application/octet-stream',url.slice(url.indexOf(',')+1));return}
+  const bin=atob(url.slice(url.indexOf(',')+1)),arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+  const bu=URL.createObjectURL(new Blob([arr],{type:m.mime||'application/octet-stream'})),a=document.createElement('a');a.href=bu;
+  if((m.mime||'').includes('pdf'))a.target='_blank';else a.download=m.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(bu);a.remove()},60000)}
 const formThumbs=()=>nv.imgs.length?`<div class="thumbs">${nv.imgs.map(id=>`<div class="th"><img data-img="${id}" alt=""><button type="button" class="thx" data-rmimg="${id}" aria-label="7iyed">×</button></div>`).join('')}</div>`:'';
 function shrink(file){return new Promise((ok,ko)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const m=1280,s=Math.min(1,m/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',0.78))};im.onerror=ko;im.src=fr.result};fr.onerror=ko;fr.readAsDataURL(file)})}
-async function imgGC(){try{const keep=new Set(S.notes.flatMap(n=>n.imgs||[]));const db=await idb();const t=db.transaction('img','readwrite'),st=t.objectStore('img');const r=st.getAllKeys();r.onsuccess=()=>{for(const k of r.result)if(!keep.has(k))st.delete(k)}}catch(e){}}
+async function imgGC(){try{const keep=new Set(S.notes.flatMap(n=>[...(n.imgs||[]),...(n.files||[]).map(x=>x.id)]));const db=await idb();const t=db.transaction('img','readwrite'),st=t.objectStore('img');const r=st.getAllKeys();r.onsuccess=()=>{for(const k of r.result)if(!keep.has(k))st.delete(k)}}catch(e){}}
 function notesList(){const q=nv.q.toLowerCase();
   const arr=S.notes.filter(n=>(nv.filter==='all'||n.kind===nv.filter)&&(!q||(n.text+' '+Object.values(n.f).join(' ')).toLowerCase().includes(q))).sort((a,b)=>b.at-a.at);
   return arr.length?arr.map(n=>{const K=NK[n.kind],path=K.f.map(([k,l])=>n.f[k]?(k==='ep'?'Ep '+n.f[k]:k==='page'?'p. '+n.f[k]:n.f[k]):'').filter(Boolean).map(esc).join(' › ');
     return`<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div>${icBtn('n',n.id,n.ic||'i:pen')}<span class="kind" style="margin:0">${K.l}</span><div style="font-weight:600;margin-top:6px;overflow-wrap:anywhere">${path||'Bla titre'}</div></div>
     <div style="display:flex;flex:none"><button class="x" data-nexp="${n.id}" aria-label="Export">${icHTML('i:download')}</button><button class="x" data-ned="${n.id}" aria-label="Bddel" style="font-size:15px">✎</button><button class="x" data-nrm="${n.id}" aria-label="Msse7">×</button></div></div>
-    ${n.text?`<div style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px">${esc(n.text)}</div>`:''}${(n.imgs||[]).length?`<div class="thumbs">${n.imgs.map(id=>`<button class="th" data-view="${id}" aria-label="Chouf tswira"><img data-img="${id}" alt=""></button>`).join('')}</div>`:''}<div class="tag">${new Date(n.at).toLocaleDateString(LOC,{day:'numeric',month:'short'})}</div></div>`}).join(''):'<div class="empty">Ma kayna ta note hna.</div>'}
+    ${n.text?`<div style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px">${esc(n.text)}</div>`:''}${(n.imgs||[]).length?`<div class="thumbs">${n.imgs.map(id=>`<button class="th" data-view="${id}" aria-label="Chouf tswira"><img data-img="${id}" alt=""></button>`).join('')}</div>`:''}${(n.files||[]).length?`<div class="fchips">${n.files.map(x=>`<button class="fchip" data-openfile="${n.id}|${x.id}">${icHTML('i:file')}<span>${esc(x.name)}</span></button>`).join('')}</div>`:''}<div class="tag">${new Date(n.at).toLocaleDateString(LOC,{day:'numeric',month:'short'})}</div></div>`}).join(''):'<div class="empty">Ma kayna ta note hna.</div>'}
 function renderNotes(){const ed=nv.edit&&S.notes.find(n=>n.id===nv.edit),kind=ed?ed.kind:nv.kind,K=NK[kind];
   const vals=k=>[...new Set([...(k==='majal'?MAJAL:[]),...S.notes.filter(n=>n.kind===kind&&n.f[k]).map(n=>n.f[k])])];
   app.innerHTML=`<div class="top"><div><h1>Notes</h1><div class="sub">${S.notes.length} note${S.notes.length>1?'s':''}</div></div>${S.notes.length?`<button id="nexp-all">${icHTML('i:download')} Export kol note</button>`:''}</div>
@@ -526,7 +539,9 @@ function renderNotes(){const ed=nv.edit&&S.notes.find(n=>n.id===nv.edit),kind=ed
    <div class="grid2">${K.f.map(([k,l])=>`<input id="n-${k}" list="dl-${k}" placeholder="${l}" value="${esc(ed?ed.f[k]:'')}" maxlength="80"${k==='ep'||k==='page'?' inputmode="numeric"':''}><datalist id="dl-${k}">${vals(k).map(v=>`<option value="${esc(v)}">`).join('')}</datalist>`).join('')}</div>
    <textarea id="n-text" style="margin-top:8px;min-height:110px" placeholder="Ktb note dialek hna">${esc(ed?ed.text:'')}</textarea>
    <div id="n-imgs">${formThumbs()}</div>
-   <label class="addimg">+ Tswira<input type="file" id="n-file" accept="image/*" multiple hidden></label>
+   <div id="n-files">${formFiles()}</div>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><label class="addimg">+ Tswira<input type="file" id="n-file" accept="image/*" multiple hidden></label>
+   <label class="addimg">${icHTML('i:file')}&nbsp;+ Fichier (PDF, Word...)<input type="file" id="n-doc" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.odt,application/pdf" multiple hidden></label></div>
    <div style="display:flex;gap:8px;margin-top:8px"><button class="go" style="flex:1">${ed?'Sauvegarder':'Zid note'}</button>${ed?'<button type="button" id="n-cancel">Annuler</button>':''}</div></form>
   <input id="n-q" type="search" placeholder="9elleb f notes" value="${esc(nv.q)}" style="margin-top:14px">
   <div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0">${[['all','Kolchi'],...Object.entries(NK).map(([k,v])=>[k,v.l])].map(([k,l])=>`<button data-nf="${k}" class="${nv.filter===k?'act':''}" style="min-height:36px;font-size:14px">${l}</button>`).join('')}</div>
@@ -537,17 +552,24 @@ app.addEventListener('input',e=>{if(e.target.id==='n-q'){nv.q=e.target.value;doc
 app.addEventListener('submit',e=>{if(e.target.id!=='f-note')return;e.preventDefault();e.stopImmediatePropagation();
   const ed=nv.edit&&S.notes.find(n=>n.id===nv.edit),kind=ed?ed.kind:nv.kind,f={};
   for(const[k]of NK[kind].f)f[k]=document.getElementById('n-'+k).value.trim();
-  const text=document.getElementById('n-text').value.trim();if(!text&&!nv.imgs.length)return toast2('Ktb chi haja wla zid tswira');
-  if(ed){ed.f=f;ed.text=text;ed.imgs=[...nv.imgs];nv.edit=null}else S.notes.push({id:uid(),kind,f,text,imgs:[...nv.imgs],at:Date.now()});nv.imgs=[];save();render()});
+  const text=document.getElementById('n-text').value.trim();if(!text&&!nv.imgs.length&&!nv.files.length)return toast2('Ktb chi haja wla zid tswira');
+  if(ed){ed.f=f;ed.text=text;ed.imgs=[...nv.imgs];ed.files=[...nv.files];nv.edit=null}else S.notes.push({id:uid(),kind,f,text,imgs:[...nv.imgs],files:[...nv.files],at:Date.now()});nv.imgs=[];nv.files=[];save();render()});
 app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.nk){nv.kind=b.dataset.nk;render()}
   else if(b.dataset.nf){nv.filter=b.dataset.nf;render()}
-  else if(b.dataset.ned){nv.edit=b.dataset.ned;const n=S.notes.find(x=>x.id===nv.edit);nv.imgs=[...((n&&n.imgs)||[])];render();scrollTo(0,0)}
-  else if(b.id==='n-cancel'){nv.edit=null;nv.imgs=[];render()}
+  else if(b.dataset.ned){nv.edit=b.dataset.ned;const n=S.notes.find(x=>x.id===nv.edit);nv.imgs=[...((n&&n.imgs)||[])];nv.files=[...((n&&n.files)||[])];render();scrollTo(0,0)}
+  else if(b.id==='n-cancel'){nv.edit=null;nv.imgs=[];nv.files=[];render()}
+  else if(b.dataset.rmfile){nv.files=nv.files.filter(x=>x.id!==b.dataset.rmfile);document.getElementById('n-files').innerHTML=formFiles()}
+  else if(b.dataset.openfile){openDoc(b.dataset.openfile)}
   else if(b.dataset.rmimg){nv.imgs=nv.imgs.filter(x=>x!==b.dataset.rmimg);document.getElementById('n-imgs').innerHTML=formThumbs();loadImgs()}
   else if(b.dataset.view){const lb=document.getElementById('lb');lb.querySelector('img').src=IMG.get(b.dataset.view)||'';lb.classList.add('on')}
   else if(b.dataset.nrm){snap();S.notes=S.notes.filter(n=>n.id!==b.dataset.nrm);save();render();toast('Note tmss7at')}
 });
+app.addEventListener('change',async e=>{if(e.target.id!=='n-doc')return;const files=[...e.target.files];e.target.value='';
+  for(const f of files){if(f.size>15*1048576){toast2('Fichier kbir bzaf (max 15 MB)');continue}
+    try{const url=await new Promise((ok,ko)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=ko;r.readAsDataURL(f)});const id=uid();await imgPut(id,url);nv.files.push({id,name:f.name,mime:f.type||'application/octet-stream',size:f.size})}
+    catch(err){toast2('Ma 9dertch nzid had l-fichier')}}
+  const box=document.getElementById('n-files');if(box)box.innerHTML=formFiles()});
 app.addEventListener('change',async e=>{if(e.target.id!=='n-file')return;const files=[...e.target.files];e.target.value='';
   for(const f of files){try{const url=await shrink(f),id=uid();await imgPut(id,url);nv.imgs.push(id)}catch(err){toast2('Ma 9dertch nzid had tswira')}}
   const box=document.getElementById('n-imgs');if(box){box.innerHTML=formThumbs();loadImgs()}});
@@ -555,12 +577,14 @@ document.getElementById('lb').addEventListener('click',e=>e.currentTarget.classL
 setTimeout(imgGC,8000);
 document.getElementById('sheet').addEventListener('click',e=>{if(e.target.id==='sheet'){closeSheet();return}const b=e.target.closest('button');if(!b)return;
   if(b.dataset.close!==undefined){closeSheet()}
+  else if(b.dataset.remset!==undefined){const i=b.dataset.remset.lastIndexOf('|');setRem(b.dataset.remset.slice(0,i),b.dataset.remset.slice(i+1));closeSheet();render()}
   else if(b.dataset.minset){const a=b.dataset.minset.split('|');setMin(a.slice(0,3).join('|'),+a[3]);closeSheet();render()}
   else if(b.dataset.icset){const[k,id,ic]=b.dataset.icset.split('|');const arr=k==='h'?S.habits:k==='p'?S.projects:S.notes;const x=arr.find(y=>y.id===id);if(x){x.ic=ic;save()}closeSheet();render()}
   else if(b.dataset.snd){if(b.dataset.snd==='stop')sndStop();else if(SND.cur===b.dataset.snd)sndStop();else{try{sndPlay(b.dataset.snd)}catch(err){toast2('Sot ma khdamch f had l-appareil')}}sndSheet();if(view.tab==='today')render()}});
 document.getElementById('sheet').addEventListener('input',e=>{if(e.target.id==='snd-vol'){SND.vol=+e.target.value;if(SND.master)SND.master.gain.value=SND.vol}});
 app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.icpick){e.stopPropagation();e.preventDefault();openSheet(`<h3>Khtar icon</h3><div class="icgrid">${ICONS.map(ic=>`<button data-icset="${b.dataset.icpick}|${ic}" aria-label="${ic.slice(2)}">${icHTML(ic)}</button>`).join('')}</div><button data-close style="width:100%;margin-top:12px">Sdd</button>`)}
+  else if(b.dataset.rem){e.stopPropagation();remSheet(b.dataset.rem)}
   else if(b.dataset.setmin){e.stopPropagation();const ref=b.dataset.setmin;openSheet(`<h3>⏱ Ch7al d l-wa9t?</h3><div class="mingrid">${[15,30,45,60,90,120,180,240].map(m=>`<button data-minset="${ref}|${m}">${fmtMin(m)}</button>`).join('')}</div>
     <form id="f-min" class="add" style="margin-top:10px"><input type="number" id="i-min" min="1" max="600" inputmode="numeric" placeholder="min"><button class="go">OK</button></form>
     <div style="display:flex;gap:8px;margin-top:8px"><button data-minset="${ref}|0" style="flex:1">7iyed l-wa9t</button><button data-close style="flex:1">Sdd</button></div>`);document.getElementById('f-min').dataset.ref=ref}
@@ -598,19 +622,34 @@ async function noteFile(n){const K=NK[n.kind]||NK.other;const vals=K.f.map(([k])
   const imgs=[];for(const id of n.imgs||[]){try{const u=await imgGet(id);if(u)imgs.push(u)}catch(e){}}
   const base=clean(K.l+' - '+title)+' ('+n.id.slice(0,4)+')';
   if(!imgs.length)return{name:base+'.txt',mime:'text/plain',text:K.l+'\n'+meta.join('\n')+'\n'+date+'\n\n'+n.text+'\n'};
-  return{name:base+'.html',mime:'text/html',text:`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title></head><body style="font-family:system-ui,sans-serif;max-width:720px;margin:24px auto;padding:0 16px;line-height:1.55"><h1>${esc(title)}</h1><p style="color:#666">${esc(K.l)} · ${meta.map(esc).join(' · ')} · ${esc(date)}</p><div style="white-space:pre-wrap">${esc(n.text)}</div>${imgs.map(u=>`<img src="${u}" style="max-width:100%;margin-top:12px;border-radius:8px" alt="">`).join('')}</body></html>`}}
-async function backupFile(){const images={};for(const n of S.notes)for(const id of n.imgs||[]){try{const u=await imgGet(id);if(u)images[id]=u}catch(e){}}
+  return{name:base+'.html',mime:'text/html',text:`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title></head><body style="font-family:system-ui,sans-serif;max-width:720px;margin:24px auto;padding:0 16px;line-height:1.55"><h1>${esc(title)}</h1><p style="color:#666">${esc(K.l)} · ${meta.map(esc).join(' · ')} · ${esc(date)}</p><div style="white-space:pre-wrap">${esc(n.text)}</div>${(n.files||[]).length?`<p>📎 ${(n.files||[]).map(x=>esc(x.name)).join(', ')}</p>`:''}${imgs.map(u=>`<img src="${u}" style="max-width:100%;margin-top:12px;border-radius:8px" alt="">`).join('')}</body></html>`}}
+async function backupFile(){const images={};for(const n of S.notes)for(const id of[...(n.imgs||[]),...(n.files||[]).map(x=>x.id)]){try{const u=await imgGet(id);if(u)images[id]=u}catch(e){}}
   return{name:'dftar-sauvegarde-'+todayK()+'.json',mime:'application/json',text:JSON.stringify({dftar_backup:1,at:new Date().toISOString(),data:S,images})}}
 async function restoreBackup(txt){let d;try{d=JSON.parse(txt)}catch(e){return toast2('Fichier ghalet')}
   const data=d&&d.dftar_backup?d.data:d;if(!data||!Array.isArray(data.habits)||!Array.isArray(data.projects))return toast2('Fichier ghalet');
   snap();for(const[id,u]of Object.entries(d.images||{})){try{await imgPut(id,u)}catch(e){}}
   S=data;if(!S.plan)S.plan={};if(!S.notes)S.notes=[];save();view={tab:'today',pid:null};render();toast('Data rje3at mn fichier ✓')}
-window.dftarSaved=ok=>toast2(ok?'Tsauvegarda ✓':'Ma tsauvegardach');
+window.toast2=toast2;window.dftarSaved=ok=>toast2(ok?'Tsauvegarda ✓':'Ma tsauvegardach');
 app.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.nexp){const n=S.notes.find(x=>x.id===b.dataset.nexp);if(n){saveOne(await noteFile(n))}}
   else if(b.id==='nexp-all'){const fs=[];for(const n of S.notes)fs.push(await noteFile(n));saveMany(fs);if(!window.DftarAndroid)toast2(fs.length+' fichiers')}
   else if(b.id==='bk-exp'){saveOne(await backupFile())}});
 app.addEventListener('change',e=>{if(e.target.id!=='bk-file')return;const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();r.onload=()=>restoreBackup(String(r.result));r.readAsText(f)});
+function remObj(ref){const a=ref.split('|');if(a[0]==='h')return S.habits.find(x=>x.id===a[1]);return(S.plan[a[1]]||[]).find(x=>x.id===a[2])}
+function remSheet(ref){const o=remObj(ref);if(!o)return;const isApp=!!window.DftarAndroid;
+  openSheet(`<h3>${icHTML('i:bell')} Rappel</h3><div class="sub">${ref[0]==='h'?'Kol nhar f had l-wa9t':'F nhar dial had tache'}</div>
+  <div class="mingrid">${['07:00','08:00','12:00','14:00','18:00','20:00','21:00','22:00'].map(t=>`<button data-remset="${ref}|${t}">${t}</button>`).join('')}</div>
+  <form id="f-rem" class="add" style="margin-top:10px"><input type="time" id="i-rem" value="${o.rem||''}" aria-label="Wa9t"><button class="go">OK</button></form>
+  ${isApp?'':'<div class="late" style="margin-top:8px">Rappels kaykhdmo ghir f l-app dial telephone.</div>'}
+  <div style="display:flex;gap:8px;margin-top:8px"><button data-remset="${ref}|" style="flex:1">7iyed rappel</button><button data-close style="flex:1">Sdd</button></div>`);document.getElementById('f-rem').dataset.ref=ref}
+function setRem(ref,t){const o=remObj(ref);if(!o)return;if(t)o.rem=t;else delete o.rem;save();if(t&&window.DftarAndroid&&DftarAndroid.askNotif)DftarAndroid.askNotif()}
+let remT=null;
+function syncRem(){if(!window.DftarAndroid||!DftarAndroid.setReminders)return;clearTimeout(remT);remT=setTimeout(()=>{const list=[],now=Date.now(),td=todayK();
+  for(const h of S.habits){if(!h.rem)continue;const[H,M]=h.rem.split(':').map(Number),d=new Date();d.setHours(H,M,0,0);if(+d<=now||h.days[td])d.setDate(d.getDate()+1);
+    list.push({id:'h-'+h.id,at:+d,title:(h.name||'Habit'),body:tr('Wa9t dial habit dialek ⏰'),daily:true})}
+  for(const k in S.plan){if(k<td)continue;for(const it of S.plan[k]){if(!it.rem)continue;const r=res(it,k);if(r.done||r.gone)continue;const at=+new Date(k+'T'+it.rem+':00');if(at>now)list.push({id:'p-'+it.id,at,title:r.t,body:tr('Wa9t dial tache ⏰'),daily:false})}}
+  try{DftarAndroid.setReminders(JSON.stringify(list))}catch(e){}},800)}
+document.getElementById('sheet').addEventListener('submit',e=>{if(e.target.id!=='f-rem')return;e.preventDefault();const v=document.getElementById('i-rem').value;if(v){setRem(e.target.dataset.ref,v);closeSheet();render()}});
 let lastStage=null;
 function render(){
   for(const t of['today','cal','habits','projects','notes'])document.getElementById('tab-'+t).className=view.tab===t?'act':'';
@@ -704,7 +743,7 @@ app.addEventListener('change',e=>{const el=e.target,p=cur();if(!p)return;
   if(el.dataset.f){p[el.dataset.f]=el.value.trim();save();render()}
   else if(el.dataset.sol){const x=p.problems.find(q=>q.id===el.dataset.sol);x.s=el.value.trim();save();render()}
 });
-render();trDom(document.body);
+render();trDom(document.body);syncRem();
 }
 </script>
 </body>
