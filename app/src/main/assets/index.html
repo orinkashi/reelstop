@@ -186,8 +186,11 @@ function setSync(s){sync.state=s;const c=document.getElementById('cloud');if(c)c
 const cloudLabel=()=>({off:'☁ Compte',idle:'☁ Sync',busy:'☁ …',ok:'☁ ✓',err:'☁ !',offline:'☁ offline'})[sync.state]||'☁';
 async function doSync(){if(!AUTH||busy)return;if(navigator.onLine===false){setSync('offline');return}busy=true;setSync('busy');let lt=S._t||0,rt=0;
   try{const rows=await sbRest('GET','?select=data,updated_at&user_id=eq.'+AUTH.id);const remote=rows&&rows[0]&&rows[0].data;rt=(remote&&remote._t)||0;
-    if(remote&&rt>lt){S=remote;if(!S.plan)S.plan={};if(!S.notes)S.notes=[];writeLocal();busy=false;sync.last=Date.now();setSync('ok');render();return}
-    if(!remote||lt>rt){const snapS=S;await sbRest('POST','',{user_id:AUTH.id,data:snapS,updated_at:new Date().toISOString()})}
+    const size=x=>x?((x.habits||[]).length+(x.projects||[]).length+(x.notes||[]).length+Object.keys(x.plan||{}).length):0;
+    const ls=size(S),rs=size(remote);
+    const pull=remote&&rs>0&&(ls===0||rt>lt||(rt===lt&&rs>=ls));
+    if(pull){S=remote;if(!S.plan)S.plan={};if(!S.notes)S.notes=[];writeLocal();busy=false;sync.last=Date.now();setSync('ok');render();return}
+    if(!remote||lt>rt||(rs===0&&ls>0)||(lt===rt&&ls>rs)){if(!S._t){S._t=Date.now();writeLocal()}lt=S._t;const snapS=S;await sbRest('POST','',{user_id:AUTH.id,data:snapS,updated_at:new Date().toISOString()})}
     sync.last=Date.now();sync.msg='';busy=false;setSync('ok')}
   catch(e){sync.msg=e.message;busy=false;setSync(AUTH?'err':'off')}
   if(AUTH&&(S._t||0)>Math.max(lt,rt))schedulePush()}
