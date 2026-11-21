@@ -112,7 +112,10 @@ select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:8px 10px;b
 input[type=range]{width:100%;accent-color:var(--grow);margin-top:14px}
 .stage{display:flex;flex-direction:column;gap:2px}.stg{font:700 22px/1.1 Outfit,Inter,sans-serif;color:var(--hot)}
 .mininp{width:86px!important;flex:none}
-.tbtn{border:0;cursor:pointer;min-height:28px;font-family:inherit}
+.chips{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:4px;max-width:55%;flex:none}.chips .kind{margin-top:0}.chips .x{min-height:30px;min-width:30px}
+.tbtn{border:0;cursor:pointer;min-height:28px;font-family:inherit;font-variant-numeric:tabular-nums}
+.tbtn.run{background:var(--grow);color:var(--on)}.tbtn.over,.tcard.over .bigclock{color:var(--hot)}.tbtn.run.over{background:var(--hot);color:var(--on)}
+.tcard{border-color:var(--grow)}.bigclock{font:700 56px/1 Outfit,Inter,sans-serif;font-variant-numeric:tabular-nums;color:var(--grow);margin:8px 0}
 .mingrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.mingrid button{min-height:48px}
 .topbar{display:flex;justify-content:flex-end;gap:8px;margin:-6px 0 -10px}.topbar button{min-height:36px;font-size:14px}
 @media(min-width:900px){
@@ -206,7 +209,7 @@ const I18N={
 '+3 kol habit w kol tache f nharha · +3 bonus kol 3 ayam streak · −1 ila fatek nhar':["+3 par habitude et par tâche faite le jour prévu · +3 bonus tous les 3 jours de série · −1 par jour manqué","+3 per habit and per task done on its day · +3 bonus every 3-day streak · −1 per missed day"],
 'Bdit':["Débutant","Starter"],'Wselti l-akhir 🔥':["Niveau max 🔥","Max level 🔥"],'Khtar icon':["Choisir une icône","Pick an icon"],'Sdd':["Fermer","Close"],
 '🎧 Sotat dial concentration':["🎧 Sons de concentration","🎧 Focus sounds"],'🌧️ Chta':["🌧️ Pluie","🌧️ Rain"],'🌊 L-b7er':["🌊 Océan","🌊 Ocean"],'🌫️ Hadwa':["🌫️ Calme","🌫️ Calm noise"],'⏹ Wa9ef':["⏹ Arrêter","⏹ Stop"],
-'⏱ Ch7al d l-wa9t?':["⏱ Combien de temps ?","⏱ How long?"],'7iyed l-wa9t':["Retirer le temps","Remove time"],'Wa9t':["Temps","Time"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
+'⏱ Ch7al d l-wa9t?':["⏱ Combien de temps ?","⏱ How long?"],'7iyed l-wa9t':["Retirer le temps","Remove time"],'Wa9t':["Temps","Time"],'⏳ Daba khdam 3la':["⏳ En cours","⏳ Working on"],'Khdemti:':["Temps passé :","Time spent:"],'✓ Salit':["✓ Terminé","✓ Done"],'Mzyan! ✓':["Bien joué ! ✓","Nice! ✓"],'Minuterie':["Minuteur","Timer"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
 const I18NX=[
 [/^Ba9i (\d+) j$/,"Encore $1 j","$1 d left"],[/^Deadline fatet (\d+) j$/,"Deadline dépassée de $1 j","Deadline passed $1 d ago"],
 [/^Lyoum: (\d+)\/(\d+) kmlti$/,"Aujourd'hui : $1/$2 faites","Today: $1/$2 done"],[/^(\d+) projet(s?)$/,"$1 projet$2","$1 project$2"],
@@ -216,7 +219,7 @@ const I18NX=[
 [/^Deadline fatet! Derti ghir (\d+)% mn l-projet\.$/,"Deadline dépassée ! Tu as fait seulement $1 % du projet.","Deadline passed! You only did $1% of the project."],
 [/^Tzadou (\d+) taches f (\d+) projets?$/,"$1 tâches ajoutées dans $2 projet(s)","$1 tasks added to $2 project(s)"],
 [/^Tzadou (\d+) taches f (\d+) projets? \+ (\d+) habits$/,"$1 tâches ajoutées dans $2 projet(s) + $3 habitudes","$1 tasks added to $2 project(s) + $3 habits"],
-[/^Ba9i (\d+) pts l (.+)$/,"Encore $1 pts pour $2","$1 pts to $2"],[/^⏱ (.+) ba9in lyoum$/,"⏱ $1 restantes aujourd'hui","⏱ $1 left today"],[/^Stage jdid: (.+)$/,"Nouveau niveau : $1","New level: $1"],[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
+[/^Ba9i (\d+) pts l (.+)$/,"Encore $1 pts pour $2","$1 pts to $2"],[/^⏱ (.+) ba9in lyoum$/,"⏱ $1 restantes aujourd'hui","⏱ $1 left today"],[/^Stage jdid: (.+)$/,"Nouveau niveau : $1","New level: $1"],[/^⏰ Sala l-wa9t dial: (.+)$/,"⏰ Temps écoulé : $1","⏰ Time's up: $1"],[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
 [/^(.*): taches$/,"$1 : tâches","$1: tasks"],[/^(.*): solutions$/,"$1 : solutions","$1: solutions"]];
 function tr(s){if(LANG==='dr')return s;const i=LANG==='fr'?0:1,k=s.trim();if(!k)return s;let out=I18N[k]&&I18N[k][i];
   if(out==null){for(const r of I18NX){if(r[0].test(k)){out=k.replace(r[0],r[1+i]);break}}}
@@ -377,7 +380,7 @@ function renderProject(p){
    <div class="card">${['Ana',...(p.members||[])].map(n=>{const who=n==='Ana'?'':n,ts=p.tasks.filter(t=>(t.who||'')===who),dn=ts.filter(t=>t.done).length,pc2=ts.length?Math.round(dn/ts.length*100):0;
     return`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n)}</b><span class="count">${dn}/${ts.length} · ${pc2}%${n!=='Ana'?` <button class="x" data-rmm="${esc(n)}" aria-label="7iyed">×</button>`:''}</span></div><div class="bar"><i style="width:${pc2}%"></i></div></div>`}).join('')}</div></div>`:''}
   <div class="sec"><h3>Les taches <span class="count">${p.tasks.filter(t=>t.done).length}/${p.tasks.length}</span></h3>${p.type==='team'?`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><select aria-label="Chkoun" style="width:auto;max-width:30%">${['Ana',...(p.members||[])].map(n=>`<option value="${n==='Ana'?'':esc(n)}">${esc(n)}</option>`).join('')}</select><button class="go">Zid</button></form>`:`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><button class="go">Zid</button></form>`}
-   <div class="card">${p.tasks.length?p.tasks.map(t=>`<div class="item ${t.done?'done':''}"><button class="chk" data-tog="${t.id}" aria-pressed="${!!t.done}" aria-label="Check">${t.done?'✓':''}</button><span class="t">${esc(t.t)}</span><button class="kind tbtn" data-setmin="t|${p.id}|${t.id}" aria-label="Wa9t">⏱ ${t.min?fmtMin(t.min):'+'}</button>${p.type==='team'?`<span class="kind">${esc(t.who||'Ana')}</span>`:''}<button class="x" data-rm="tasks|${t.id}" aria-label="Msse7">×</button></div>`).join(''):'<div class="empty">Zid les taches. L-pourcentage kayt7seb mnhom.</div>'}</div></div>
+   <div class="card">${p.tasks.length?p.tasks.map(t=>`<div class="item ${t.done?'done':''}"><button class="chk" data-tog="${t.id}" aria-pressed="${!!t.done}" aria-label="Check">${t.done?'✓':''}</button><span class="t">${esc(t.t)}</span><span class="chips"><button class="kind tbtn" data-setmin="t|${p.id}|${t.id}" aria-label="Wa9t">⏱ ${t.min?fmtMin(t.min):'+'}</button>${t.min&&!t.done?playBtn('t|'+p.id+'|'+t.id):''}${p.type==='team'?`<span class="kind">${esc(t.who||'Ana')}</span>`:''}<button class="x" data-rm="tasks|${t.id}" aria-label="Msse7">×</button></span></div>`).join(''):'<div class="empty">Zid les taches. L-pourcentage kayt7seb mnhom.</div>'}</div></div>
   <div class="sec"><h3>Les problèmes w les solutions <span class="count">${p.problems.filter(x=>x.s).length}/${p.problems.length} m7loulin</span></h3>${list(0,'problems','Problème jdid')}
    <div class="card">${p.problems.length?p.problems.map(x=>`<div class="prob"><div class="p"><span class="t" style="overflow-wrap:anywhere">${esc(x.p)}</span><button class="x" data-rm="problems|${x.id}" aria-label="Msse7">×</button></div><label for="s-${x.id}">Solution</label><textarea id="s-${x.id}" data-sol="${x.id}" placeholder="Kifach ghadi t7elha?">${esc(x.s)}</textarea></div>`).join(''):'<div class="empty">Ma kayn ta problème daba.</div>'}</div></div>
   <div class="sec"><h3>Les résultats réels <span class="count">${p.results.length}</span></h3>${list(0,'results','Chno wselti lih b se7')}
@@ -399,7 +402,7 @@ function toggleIt(k,iid){const it=(S.plan[k]||[]).find(x=>x.id===iid);if(!it)ret
   if(it.type==='task'){const p=S.projects.find(x=>x.id===it.pid),t=p&&p.tasks.find(x=>x.id===it.tid);if(t)t.done=t.done?0:1}
   else if(it.type==='habit'){const h=S.habits.find(x=>x.id===it.hid);if(h){h.days[k]?delete h.days[k]:h.days[k]=1}}
   else it.done=it.done?0:1;}
-const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class="item ${r.done?'done':''}"><button class="chk" data-it="${k}|${it.id}" aria-pressed="${r.done}" aria-label="Check">${r.done?'✓':''}</button><span class="t">${esc(r.t)}${r.sub?`<span class="tag">${esc(r.sub)}</span>`:''}</span>${(it.type==='task'||it.type==='free')&&!r.gone?`<button class="kind tbtn" data-setmin="${it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id}" aria-label="Wa9t">⏱ ${r.min?fmtMin(r.min):'+'}</button>`:''}<span class="kind">${r.kind}</span><button class="x" data-rmi="${k}|${it.id}" aria-label="7iyed">×</button></div>`}).join('');
+const itemsHTML=k=>(S.plan[k]||[]).map(it=>{const r=res(it,k);return`<div class="item ${r.done?'done':''}"><button class="chk" data-it="${k}|${it.id}" aria-pressed="${r.done}" aria-label="Check">${r.done?'✓':''}</button><span class="t">${esc(r.t)}${r.sub?`<span class="tag">${esc(r.sub)}</span>`:''}</span><span class="chips">${(it.type==='task'||it.type==='free')&&!r.gone?`<button class="kind tbtn" data-setmin="${it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id}" aria-label="Wa9t">⏱ ${r.min?fmtMin(r.min):'+'}</button>${r.min&&!r.done?playBtn(it.type==='task'?'t|'+it.pid+'|'+it.tid:'f|'+k+'|'+it.id):''}`:''}<span class="kind">${r.kind}</span><button class="x" data-rmi="${k}|${it.id}" aria-label="7iyed">×</button></span></div>`}).join('');
 const deadlinesOn=k=>S.projects.filter(p=>p.deadline===k);
 const freeForm=k=>`<form class="add" data-free="${k}"><input placeholder="Tache khra (machi f chi projet)" maxlength="140" required><button class="go">Zid</button></form>`;
 
@@ -444,7 +447,10 @@ function renderToday(){const k=todayK(),arr=S.plan[k]||[];
   const n=arr.filter(it=>res(it,k).done).length;
   const late=Object.keys(S.plan).filter(d=>d<k).sort().flatMap(d=>S.plan[d].filter(it=>{const r=res(it,d);return it.type!=='habit'&&!r.done&&!r.gone}).map(it=>({d,it})));
   const left=arr.reduce((a,it)=>{const r=res(it,k);return a+(r.done?0:(r.min||0))},0);
-  app.innerHTML=`<div class="topbar"><button id="pts-open" style="margin-right:auto;color:var(--grow)">⭐ ${totalPts()} · ${STAGES[stageOf(totalPts())][1]}</button><button id="snd-open">🎧${SND.cur?' ▶':''}</button><button id="cloud">${cloudLabel()}</button></div><div class="top"><div><h1>Lyoum</h1><div class="sub">${new Date().toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pct" style="font-size:36px">${n}/${arr.length}</div></div>
+  app.innerHTML=`${TMR&&tObj(TMR.ref)?`<div class="card tcard ${remain(TMR.ref)<0?'over':''}" style="margin-top:14px"><div class="sub">⏳ Daba khdam 3la</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(tName(TMR.ref))}</div>
+    <div class="bigclock" data-clock="${TMR.ref}">${fmtClock(remain(TMR.ref))}</div><div class="sub">Khdemti: <b data-spent="${TMR.ref}">${fmtClock(spentNow(TMR.ref))}</b></div>
+    <div style="display:flex;gap:8px;margin-top:10px"><button data-tplay="${TMR.ref}" style="flex:1">⏸ Pause</button><button class="go" data-tdone="${TMR.ref}" style="flex:1">✓ Salit</button></div></div>`:''}
+  <div class="topbar"><button id="pts-open" style="margin-right:auto;color:var(--grow)">⭐ ${totalPts()} · ${STAGES[stageOf(totalPts())][1]}</button><button id="snd-open">🎧${SND.cur?' ▶':''}</button><button id="cloud">${cloudLabel()}</button></div><div class="top"><div><h1>Lyoum</h1><div class="sub">${new Date().toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pct" style="font-size:36px">${n}/${arr.length}</div></div>
   ${arr.length?`<div class="bar"><i style="width:${Math.round(n/arr.length*100)}%"></i></div>`:''}${left?`<div class="sub">⏱ ${fmtMin(left)} ba9in lyoum</div>`:''}
   ${deadlinesOn(k).map(p=>`<div class="alert">Lyoum deadline dial "${esc(p.name)}": ${pctOf(p)}%</div>`).join('')}
   ${freeForm(k)}
@@ -533,8 +539,25 @@ app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return
   else if(b.dataset.setmin){e.stopPropagation();const ref=b.dataset.setmin;openSheet(`<h3>⏱ Ch7al d l-wa9t?</h3><div class="mingrid">${[15,30,45,60,90,120,180,240].map(m=>`<button data-minset="${ref}|${m}">${fmtMin(m)}</button>`).join('')}</div>
     <form id="f-min" class="add" style="margin-top:10px"><input type="number" id="i-min" min="1" max="600" inputmode="numeric" placeholder="min"><button class="go">OK</button></form>
     <div style="display:flex;gap:8px;margin-top:8px"><button data-minset="${ref}|0" style="flex:1">7iyed l-wa9t</button><button data-close style="flex:1">Sdd</button></div>`);document.getElementById('f-min').dataset.ref=ref}
+  else if(b.dataset.tplay){e.stopPropagation();const ref=b.dataset.tplay;if(TMR&&TMR.ref===ref)tPause();else{try{sndCtx().resume()}catch(err){}tStart(ref)}render()}
+  else if(b.dataset.tdone){e.stopPropagation();const ref=b.dataset.tdone;tPause();const o=tObj(ref);if(o){o.done=1;save()}render();toast2('Mzyan! ✓')}
+  else if((b.dataset.tog||b.dataset.it)&&TMR){const run=TMR.ref;setTimeout(()=>{const o=tObj(run);if(o&&o.done)tPause(),render()},0)}
   else if(b.id==='snd-open')sndSheet();
   else if(b.id==='pts-open'){view={tab:'habits',pid:null};render();scrollTo(0,0)}},true);
+const TK='dftar-timer';let TMR=null;try{TMR=JSON.parse(localStorage.getItem(TK))}catch(e){}
+const saveT=()=>{try{TMR?localStorage.setItem(TK,JSON.stringify(TMR)):localStorage.removeItem(TK)}catch(e){}};
+function tObj(ref){const[k,a,b]=ref.split('|');if(k==='t'){const p=S.projects.find(x=>x.id===a);return p&&p.tasks.find(x=>x.id===b)}return(S.plan[a]||[]).find(x=>x.id===b)}
+function tName(ref){const o=tObj(ref);return o?o.t:''}
+function spentNow(ref){const o=tObj(ref);let s=(o&&o.spent)||0;if(TMR&&TMR.ref===ref)s+=Math.floor((Date.now()-TMR.start)/1000);return s}
+const remain=ref=>{const o=tObj(ref);return((o&&o.min)||0)*60-spentNow(ref)};
+function fmtClock(sec){const over=sec<0;sec=Math.abs(sec);const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return(over?'+':'')+(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(s).padStart(2,'0')}
+function tPause(){if(!TMR)return;const o=tObj(TMR.ref);if(o)o.spent=(o.spent||0)+Math.floor((Date.now()-TMR.start)/1000);TMR=null;saveT();save()}
+function tStart(ref){if(TMR)tPause();TMR={ref,start:Date.now(),rang:remain(ref)<=0};saveT()}
+function ring(){try{const ctx=sndCtx();if(ctx.resume)ctx.resume();[0,0.35,0.7].forEach(d=>{const o=ctx.createOscillator(),g=ctx.createGain(),t=ctx.currentTime+d;o.frequency.value=880;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.4,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+0.3);o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+0.32)})}catch(e){}try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}}
+const playBtn=ref=>{const run=TMR&&TMR.ref===ref,r=remain(ref);return`<button class="kind tbtn ${run?'run':''} ${r<0?'over':''}" data-tplay="${ref}" aria-label="Minuterie">${run?'⏸':'▶'} <span data-clock="${ref}">${fmtClock(r)}</span></button>`};
+setInterval(()=>{if(!TMR)return;document.querySelectorAll('[data-clock]').forEach(el=>{const r=remain(el.dataset.clock);el.textContent=fmtClock(r);const b=el.closest('.tbtn,.tcard');if(b)b.classList.toggle('over',r<0)});
+  document.querySelectorAll('[data-spent]').forEach(el=>el.textContent=fmtClock(spentNow(el.dataset.spent)).replace('+',''));
+  if(!TMR.rang&&remain(TMR.ref)<=0){TMR.rang=true;saveT();ring();toast2('⏰ Sala l-wa9t dial: '+tName(TMR.ref))}},1000);
 function setMin(ref,m){const[k,a,b]=ref.split('|');m=Math.max(0,Math.min(600,m|0));
   if(k==='t'){const p=S.projects.find(x=>x.id===a),t=p&&p.tasks.find(x=>x.id===b);if(t)t.min=m}
   else{const it=(S.plan[a]||[]).find(x=>x.id===b);if(it)it.min=m}save()}
