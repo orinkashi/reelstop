@@ -1,0 +1,43 @@
+name: Build APK
+
+on:
+  push:
+    branches: [maw3id]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build
+        run: gradle assembleDebug
+
+      - name: Rename APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk Maw3id.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Maw3id.apk
+          path: Maw3id.apk
+
+      - name: Publish release (lien direct)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: maw3id
+          name: Maw3id (dernière version)
+          make_latest: false
+          files: Maw3id.apk
