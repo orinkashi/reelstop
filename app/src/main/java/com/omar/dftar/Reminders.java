@@ -8,6 +8,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioAttributes;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 
 import org.json.JSONArray;
@@ -86,8 +89,22 @@ public class Reminders {
 
     static void show(Context c, JSONObject o) {
         NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+        boolean alarm = o.optBoolean("alarm");
+        String chId = alarm ? "dftar_alarm" : "dftar";
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        if (alarmSound == null) {
+            alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        }
         if (Build.VERSION.SDK_INT >= 26) {
-            NotificationChannel ch = new NotificationChannel("dftar", "Dftar", NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel ch = new NotificationChannel(chId, alarm ? "Dftar alarme" : "Dftar", NotificationManager.IMPORTANCE_HIGH);
+            if (alarm) {
+                ch.setSound(alarmSound, new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build());
+                ch.enableVibration(true);
+                ch.setVibrationPattern(new long[]{0, 600, 400, 600, 400, 600});
+            }
             nm.createNotificationChannel(ch);
         }
         Intent open = new Intent(c, MainActivity.class);
@@ -95,13 +112,25 @@ public class Reminders {
         PendingIntent op = PendingIntent.getActivity(c, 0, open,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         Notification.Builder b = Build.VERSION.SDK_INT >= 26
-                ? new Notification.Builder(c, "dftar")
+                ? new Notification.Builder(c, chId)
                 : new Notification.Builder(c);
+        if (alarm) {
+            b.setCategory(Notification.CATEGORY_ALARM);
+            if (Build.VERSION.SDK_INT < 26) {
+                b.setSound(alarmSound);
+                b.setVibrate(new long[]{0, 600, 400, 600, 400, 600});
+                b.setPriority(Notification.PRIORITY_MAX);
+            }
+        }
         b.setSmallIcon(android.R.drawable.ic_popup_reminder)
                 .setContentTitle(o.optString("title", "Dftar"))
                 .setContentText(o.optString("body", ""))
                 .setAutoCancel(true)
                 .setContentIntent(op);
-        nm.notify(o.optString("id").hashCode(), b.build());
+        Notification n = b.build();
+        if (alarm) {
+            n.flags |= Notification.FLAG_INSISTENT;
+        }
+        nm.notify(o.optString("id").hashCode(), n);
     }
 }
