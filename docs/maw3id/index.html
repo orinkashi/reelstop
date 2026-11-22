@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Maw3id</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday tool, calm and precise
+   IDEA the Moroccan tear-off wall calendar (ruznama): one big red date page, the month behind it
+   PICTURE the torn date sheet of the selected day, with its appointments listed on it
+   COLOUR white / night ink, calendar red as the one accent, five event colours
+   TYPE Archivo (display numerals) + Inter
+   LAYOUT laptop: date sheet left, month or week right; phone: sheet band, tabs, view, agenda */
+:root{color-scheme:light dark;
+--bg:light-dark(#ffffff,#0f1115);--panel:light-dark(#f5f5f4,#181b21);--line:light-dark(#e6e4e1,#272b33);
+--ink:light-dark(#17181b,#eceef2);--mute:light-dark(#686b73,#9aa0ab);--red:light-dark(#d8342c,#ff5a4f);--on:#fff;
+--c1:#d8342c;--c2:#2f6fdf;--c3:#1f9d6a;--c4:#e08a00;--c5:#8a4fd8}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--panel);border-radius:12px;min-height:44px;padding:0 14px;font-weight:600}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left)) 96px;display:grid;gap:20px}
+@media(min-width:900px){.wrap{grid-template-columns:340px minmax(0,1fr);align-items:start;padding-top:28px}}
+.sheet{position:relative;background:var(--panel);border-radius:18px;overflow:hidden;border:1px solid var(--line)}
+@media(min-width:900px){.sheet{position:sticky;top:20px}}
+.sheet .top{background:var(--red);color:var(--on);padding:10px 18px 12px;display:flex;justify-content:space-between;align-items:center;font-weight:600}
+.sheet .holes{display:flex;justify-content:space-around;position:absolute;top:-7px;left:30px;right:30px}
+.sheet .holes i{width:14px;height:14px;border-radius:50%;background:var(--bg);border:1px solid var(--line)}
+.sheet .face{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 16px;align-items:end;padding:16px 18px 10px;border-bottom:1px dashed var(--line)}
+.bignum{font:800 clamp(72px,18vw,112px)/.85 Archivo,Inter,sans-serif;letter-spacing:-.04em;color:var(--red)}
+.wd{font:700 22px/1.1 Archivo,Inter,sans-serif}.mo{color:var(--mute);font-size:15px}
+.agenda{padding:8px 10px 14px;display:grid;gap:6px}
+.ev{display:grid;grid-template-columns:4px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border-radius:12px;background:var(--bg);border:1px solid var(--line);text-align:left;font-weight:400;min-height:0}
+.ev .bar{align-self:stretch;border-radius:4px}
+.ev b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ev small{color:var(--mute);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ev .tm{font-variant-numeric:tabular-nums;color:var(--mute);font-size:14px;white-space:nowrap;text-align:right}
+.empty{color:var(--mute);padding:10px 8px;font-size:15px}
+.head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+h1{font:800 clamp(30px,6vw,44px)/1.05 Archivo,Inter,sans-serif;letter-spacing:-.02em;margin:0;text-transform:capitalize}
+.nav{display:flex;gap:6px}.nav button{min-width:44px;padding:0 12px}
+.tabs{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+.tabs button{border:0;background:none;min-height:38px;padding:0 12px;font-size:14px}
+.tabs button.on{background:var(--ink);color:var(--bg)}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);border-radius:14px;overflow:hidden}
+.dow{font-size:13px;color:var(--mute);padding:8px 6px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-transform:capitalize;background:var(--panel)}
+.cell{border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:0;background:var(--bg);min-height:clamp(64px,13vw,108px);padding:6px 4px;display:flex;flex-direction:column;align-items:stretch;gap:3px;text-align:left;font-weight:500}
+.cell .n{font-size:14px;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;font-variant-numeric:tabular-nums}
+.cell.out .n{color:var(--mute);opacity:.6}.cell.today .n{background:var(--red);color:var(--on)}
+.cell.sel{background:color-mix(in srgb,var(--red) 9%,var(--bg))}
+.chip{font-size:12px;line-height:1.3;padding:2px 5px;border-radius:5px;color:var(--on);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:600}
+.more{font-size:12px;color:var(--mute);padding-left:4px}
+.dots{display:none;gap:3px;padding-left:6px}.dots i{width:6px;height:6px;border-radius:50%}
+@media(max-width:600px){.cell .chip,.cell .more{display:none}.cell .dots{display:flex}}
+.tl{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tlh{display:grid;border-bottom:1px solid var(--line);background:var(--panel)}
+.tlh div{padding:8px 4px;text-align:center;font-size:13px;color:var(--mute);text-transform:capitalize}
+.tlh div b{display:block;font:700 20px/1.1 Archivo,Inter,sans-serif;color:var(--ink)}
+.tlh div.today b{color:var(--red)}
+.tlb{height:min(64vh,620px);overflow-y:auto;position:relative}
+.tlg{display:grid;position:relative}
+.hr{height:56px;border-bottom:1px solid var(--line);font-size:12px;color:var(--mute);padding:2px 6px;text-align:right;font-variant-numeric:tabular-nums}
+.col{position:relative;border-left:1px solid var(--line)}
+.slot{height:56px;border-bottom:1px solid var(--line);display:block;width:100%;border-radius:0;background:none;border-top:0;border-left:0;border-right:0;min-height:0;padding:0}
+.blk{position:absolute;border-radius:8px;padding:4px 6px;color:var(--on);font-size:12px;line-height:1.25;overflow:hidden;text-align:left;border:0;min-height:0;font-weight:600}
+.blk span{display:block;font-weight:400;opacity:.9}
+.now{position:absolute;left:0;right:0;height:2px;background:var(--red);z-index:3}.now::before{content:"";position:absolute;left:-5px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--red)}
+.list h3{font:700 18px/1.2 Archivo,Inter,sans-serif;margin:16px 0 6px;text-transform:capitalize}
+.fab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));width:60px;height:60px;border-radius:18px;background:var(--red);color:var(--on);border:0;font-size:30px;font-weight:500;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:20}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:30}
+.modal.on{display:flex}
+@media(min-width:700px){.modal{align-items:center}}
+.form{background:var(--bg);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom));max-height:92vh;overflow-y:auto;border:1px solid var(--line)}
+@media(min-width:700px){.form{border-radius:20px}}
+.form h2{font:800 24px/1.1 Archivo,Inter,sans-serif;margin:0 0 10px}
+.form label{display:block;font-size:13px;color:var(--mute);margin:12px 0 4px}
+.form input,.form textarea,.form select{width:100%;min-height:44px;font-size:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:8px 12px}
+.form textarea{min-height:80px;resize:vertical}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.colors{display:flex;gap:10px;flex-wrap:wrap}.colors button{width:36px;height:36px;min-height:0;padding:0;border-radius:50%;border:3px solid transparent}.colors button.on{border-color:var(--ink)}
+.chk{display:flex!important;align-items:center;gap:10px;color:var(--ink)!important;font-size:15px!important;min-height:44px;margin:6px 0 0!important}
+.chk input{width:22px;height:22px;min-height:0;accent-color:var(--red)}
+.acts{display:flex;gap:8px;margin-top:16px}.acts button{flex:1}
+.go{background:var(--red);color:var(--on);border-color:var(--red)}
+.del{color:var(--red)}
+.note{font-size:13px;color:var(--mute)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;z-index:40;font-weight:600;display:none}
+@media(prefers-reduced-motion:no-preference){.sheet .face{animation:tear .35s ease-out}@keyframes tear{from{transform:translateY(-6px);opacity:.4}to{transform:none;opacity:1}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside class="sheet" id="sheet" aria-live="polite"></aside>
+  <main>
+    <div class="head">
+      <h1 id="title">Maw3id</h1>
+      <div class="nav"><button id="prev" aria-label="Li fat">‹</button><button id="today">Lyoum</button><button id="next" aria-label="Li jay">›</button></div>
+    </div>
+    <div class="tabs" role="tablist" style="margin:14px 0">
+      <button data-v="month" class="on">Chhar</button><button data-v="week">Semaine</button><button data-v="day">Nhar</button><button data-v="list">Liste</button>
+    </div>
+    <div id="view"></div>
+    <p class="note" style="margin-top:12px">Exemples dial mawa3id f l-bdya, msse7hom w zid dialek. Rappels w alarme kaykhdmo f l-app dial telephone.</p>
+  </main>
+</div>
+<button class="fab" id="add" aria-label="Maw3id jdid">+</button>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="f-h"><form class="form" id="form">
+  <h2 id="f-h">Maw3id jdid</h2>
+  <label for="f-t">Titre</label><input id="f-t" maxlength="120" required placeholder="Ex: Rendez-vous m3a tbib">
+  <label for="f-d">Description</label><textarea id="f-d" placeholder="Tafasil, blasa, lien..."></textarea>
+  <label for="f-date">Nhar</label><input type="date" id="f-date" required>
+  <label class="chk"><input type="checkbox" id="f-all"> Nhar kaml</label>
+  <div class="row2" id="f-times"><div><label for="f-s">Mn</label><input type="time" id="f-s" value="09:00"></div><div><label for="f-e">7ta</label><input type="time" id="f-e" value="10:00"></div></div>
+  <label for="f-rep">Kat3awed</label><select id="f-rep"><option value="">La</option><option value="day">Kol nhar</option><option value="wd">Lundi → Vendredi</option><option value="week">Kol semaine</option><option value="month">Kol chhar</option><option value="year">Kol 3am</option></select>
+  <label for="f-off">Rappel</label><select id="f-off"><option value="-1">Bla rappel</option><option value="0">F l-wa9t</option><option value="5">5 min 9bel</option><option value="15" selected>15 min 9bel</option><option value="30">30 min 9bel</option><option value="60">1 sa3a 9bel</option><option value="1440">Nhar 9bel</option></select>
+  <label class="chk"><input type="checkbox" id="f-alarm"> Alarme (sot 9wi)</label>
+  <label>Lon</label><div class="colors" id="f-col"></div>
+  <div class="acts"><button type="button" id="f-cancel">Annuler</button><button class="go">Sauvegarder</button></div>
+  <button type="button" class="del" id="f-del" style="width:100%;margin-top:8px">Msse7 had l-maw3id</button>
+</form></div>
+<div class="toast" id="toast"></div>
+<script>
+{
+const KEY='maw3id-v1',COLORS=['c1','c2','c3','c4','c5'];
+const pad=n=>String(n).padStart(2,'0');
+const dk=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const pk=k=>new Date(k+'T00:00');
+const add=(k,n)=>{const d=pk(k);d.setDate(d.getDate()+n);return dk(d)};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const T=dk(new Date());
+let E=null;try{E=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!Array.isArray(E)){const mon=add(T,-((pk(T).getDay()+6)%7));E=[
+  {id:uid(),title:'Cours d\'Analyse',desc:'Amphi B',date:mon,start:'08:30',end:'10:30',rep:'wd',color:'c2',off:15},
+  {id:uid(),title:'Sport f zen9a',desc:'Push-ups, squats, jri 15 min',date:T,start:'18:00',end:'19:00',rep:'day',color:'c3',off:5},
+  {id:uid(),title:'Rendez-vous m3a tbib',desc:'Jib l-carte',date:add(T,2),start:'11:00',end:'11:45',color:'c1',off:60,alarm:true},
+  {id:uid(),title:'Ftour m3a l-3a2ila',date:add(T,5),start:'13:00',end:'15:00',color:'c4',off:30},
+  {id:uid(),title:'Exam: Algèbre',desc:'Chapitres 1-4',date:add(T,9),allDay:true,color:'c5',off:1440}]}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(E))}catch(e){}};
+let view='month',cur=T,sel=T,editing=null,color='c2',scrolled=false;
+const occurs=(e,k)=>{if((e.ex||[]).includes(k))return false;if(e.date===k)return true;if(!e.rep||k<e.date)return false;
+  const a=pk(e.date),b=pk(k);if(e.rep==='day')return true;if(e.rep==='wd'){const w=b.getDay();return w>0&&w<6}
+  if(e.rep==='week')return a.getDay()===b.getDay();if(e.rep==='month')return a.getDate()===b.getDate();if(e.rep==='year')return a.getDate()===b.getDate()&&a.getMonth()===b.getMonth();return false};
+const on=k=>E.filter(e=>occurs(e,k)).sort((x,y)=>(x.allDay?0:1)-(y.allDay?0:1)||(x.start||'').localeCompare(y.start||''));
+const mins=t=>{const[h,m]=(t||'0:0').split(':').map(Number);return h*60+m};
+const fmtT=t=>t?t.replace(/^0/,''):'';
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const evRow=(e,k)=>`<button class="ev" data-e="${e.id}" data-k="${k}"><i class="bar" style="background:var(--${e.color||'c2'})"></i><span><b>${esc(e.title)}</b>${e.desc?`<small>${esc(e.desc)}</small>`:''}</span><span class="tm">${e.allDay?'Nhar kaml':fmtT(e.start)+'<br>'+fmtT(e.end)}${e.rep?' ↻':''}</span></button>`;
+function renderSheet(){const d=pk(sel),list=on(sel);
+  document.getElementById('sheet').innerHTML=`<div class="holes"><i></i><i></i><i></i></div><div class="top"><span>${cap(d.toLocaleDateString('fr-FR',{month:'long'}))} ${d.getFullYear()}</span><span>${sel===T?'Lyoum':''}</span></div>
+  <div class="face"><div class="bignum">${d.getDate()}</div><div><div class="wd">${cap(d.toLocaleDateString('fr-FR',{weekday:'long'}))}</div><div class="mo">${list.length?list.length+' maw3id':'Nhar khawi'}</div></div></div>
+  <div class="agenda">${list.length?list.map(e=>evRow(e,sel)).join(''):'<div class="empty">Ma kayn walou. Tbe3 3la + bach tzid maw3id.</div>'}</div>`}
+function renderMonth(){const d=pk(cur),y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1),start=(first.getDay()+6)%7;
+  const days=[...Array(42)].map((_,i)=>dk(new Date(y,m,1-start+i)));const wk=[...Array(7)].map((_,i)=>new Date(2024,0,1+i).toLocaleDateString('fr-FR',{weekday:'short'}).replace('.',''));
+  return`<div class="grid">${wk.map(w=>`<div class="dow">${w}</div>`).join('')}${days.map(k=>{const L=on(k),dd=pk(k);
+    return`<button class="cell ${dd.getMonth()!==m?'out':''} ${k===T?'today':''} ${k===sel?'sel':''}" data-sel="${k}" aria-label="${dd.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}, ${L.length} maw3id"><span class="n">${dd.getDate()}</span>${L.slice(0,3).map(e=>`<span class="chip" style="background:var(--${e.color||'c2'})">${e.allDay?'':fmtT(e.start)+' '}${esc(e.title)}</span>`).join('')}${L.length>3?`<span class="more">+${L.length-3}</span>`:''}<span class="dots">${L.slice(0,4).map(e=>`<i style="background:var(--${e.color||'c2'})"></i>`).join('')}</span></button>`}).join('')}</div>`}
+function layout(list){const cols=[];const out=list.filter(e=>!e.allDay).map(e=>{const s=mins(e.start),en=Math.max(mins(e.end||e.start),s+30);let c=0;while(cols[c]&&cols[c]>s)c++;cols[c]=en;return{e,s,en,c}});const n=Math.max(1,cols.length);return out.map(o=>({...o,n}))}
+function renderTime(keys){const H=56,cw=`52px repeat(${keys.length},minmax(0,1fr))`;const nowM=(()=>{const d=new Date();return d.getHours()*60+d.getMinutes()})();
+  const allday=keys.map(k=>on(k).filter(e=>e.allDay));
+  return`<div class="tl"><div class="tlh" style="grid-template-columns:${cw}"><div></div>${keys.map(k=>{const d=pk(k);return`<div class="${k===T?'today':''}">${d.toLocaleDateString('fr-FR',{weekday:'short'}).replace('.','')}<b>${d.getDate()}</b></div>`}).join('')}</div>
+  ${allday.some(a=>a.length)?`<div class="tlh" style="grid-template-columns:${cw}"><div style="font-size:11px">Nhar kaml</div>${allday.map((a,i)=>`<div style="padding:4px">${a.map(e=>`<button class="blk" style="position:static;display:block;width:100%;background:var(--${e.color})" data-e="${e.id}" data-k="${keys[i]}">${esc(e.title)}</button>`).join('')}</div>`).join('')}</div>`:''}
+  <div class="tlb" id="tlb"><div class="tlg" style="grid-template-columns:${cw}"><div>${[...Array(24)].map((_,h)=>`<div class="hr">${h?pad(h)+':00':''}</div>`).join('')}</div>
+  ${keys.map(k=>`<div class="col">${[...Array(24)].map((_,h)=>`<button class="slot" data-slot="${k}|${pad(h)}:00" aria-label="Zid maw3id ${pad(h)}:00"></button>`).join('')}
+   ${layout(on(k)).map(o=>`<button class="blk" data-e="${o.e.id}" data-k="${k}" style="top:${o.s/60*H+1}px;height:${(o.en-o.s)/60*H-2}px;left:calc(${o.c/o.n*100}% + 2px);width:calc(${100/o.n}% - 4px);background:var(--${o.e.color||'c2'})">${esc(o.e.title)}<span>${fmtT(o.e.start)}–${fmtT(o.e.end)}</span></button>`).join('')}
+   ${k===T?`<div class="now" style="top:${nowM/60*H}px"></div>`:''}</div>`).join('')}</div></div></div>`}
+function renderList(){let out='';for(let i=0;i<45;i++){const k=add(sel,i),L=on(k);if(!L.length)continue;const d=pk(k);out+=`<h3>${k===T?'Lyoum · ':''}${d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</h3><div class="agenda" style="padding:0">${L.map(e=>evRow(e,k)).join('')}</div>`}
+  return`<div class="list">${out||'<div class="empty">Ma kayn ta maw3id f 45 yom jayin.</div>'}</div>`}
+function render(){const d=pk(cur);const t=document.getElementById('title');
+  if(view==='month')t.textContent=d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+  else if(view==='week'){const mon=add(cur,-((d.getDay()+6)%7)),sun=add(mon,6);t.textContent=pk(mon).getDate()+' – '+pk(sun).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}
+  else if(view==='day')t.textContent=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  else t.textContent='Mawa3id jayin';
+  const v=document.getElementById('view');
+  if(view==='month')v.innerHTML=renderMonth();
+  else if(view==='week'){const mon=add(cur,-((d.getDay()+6)%7));v.innerHTML=renderTime([...Array(7)].map((_,i)=>add(mon,i)))}
+  else if(view==='day')v.innerHTML=renderTime([cur]);else v.innerHTML=renderList();
+  const tb=document.getElementById('tlb');if(tb&&!scrolled){tb.scrollTop=7*56;scrolled=true}
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));renderSheet()}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2200)}
+const $=id=>document.getElementById(id);
+function drawColors(){$('f-col').innerHTML=COLORS.map(c=>`<button type="button" data-c="${c}" class="${c===color?'on':''}" style="background:var(--${c})" aria-label="Lon ${c}"></button>`).join('')}
+function openForm(e,k,time){editing=e||null;$('f-h').textContent=e?'Bddel l-maw3id':'Maw3id jdid';$('f-t').value=e?e.title:'';$('f-d').value=e?e.desc||'':'';
+  $('f-date').value=e?e.date:(k||sel);$('f-all').checked=!!(e&&e.allDay);$('f-s').value=e?e.start||'09:00':(time||'09:00');
+  $('f-e').value=e?e.end||'10:00':(time?pad(Math.min(23,+time.slice(0,2)+1))+':00':'10:00');$('f-rep').value=e?e.rep||'':'';$('f-off').value=String(e&&e.off!=null?e.off:15);$('f-alarm').checked=!!(e&&e.alarm);
+  color=e?e.color||'c2':'c2';drawColors();$('f-times').style.display=$('f-all').checked?'none':'';$('f-del').style.display=e?'':'none';$('modal').classList.add('on');setTimeout(()=>$('f-t').focus(),50)}
+const closeForm=()=>{$('modal').classList.remove('on');editing=null};
+$('form').addEventListener('submit',ev=>{ev.preventDefault();const o=editing||{id:uid()};o.title=$('f-t').value.trim();if(!o.title)return;o.desc=$('f-d').value.trim();o.date=$('f-date').value||sel;
+  o.allDay=$('f-all').checked;o.start=o.allDay?null:$('f-s').value;o.end=o.allDay?null:$('f-e').value;if(!o.allDay&&o.end&&o.end<=o.start)o.end=pad(Math.min(23,+o.start.slice(0,2)+1))+':'+o.start.slice(3);
+  o.rep=$('f-rep').value;o.off=+$('f-off').value;o.alarm=$('f-alarm').checked;o.color=color;if(!editing)E.push(o);save();sel=o.date;cur=o.date;closeForm();render();toast(editing?'Tbeddel ✓':'Tzad ✓')});
+$('f-all').addEventListener('change',()=>{$('f-times').style.display=$('f-all').checked?'none':''});
+$('f-cancel').onclick=closeForm;$('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeForm()});
+$('f-col').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(b){color=b.dataset.c;drawColors()}});
+$('f-del').onclick=()=>{if(!editing)return;E=E.filter(x=>x!==editing);save();closeForm();render();toast('Tmss7 ✓')};
+$('add').onclick=()=>openForm(null,sel);
+document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;view=b.dataset.v;if(view!=='month')cur=sel;scrolled=false;render()});
+const step=dir=>{const d=pk(cur);if(view==='month'){d.setDate(1);d.setMonth(d.getMonth()+dir)}else if(view==='week')d.setDate(d.getDate()+7*dir);else d.setDate(d.getDate()+dir*(view==='list'?7:1));cur=dk(d);if(view!=='month')sel=cur;render()};
+$('prev').onclick=()=>step(-1);$('next').onclick=()=>step(1);$('today').onclick=()=>{cur=sel=T;scrolled=false;render()};
+document.body.addEventListener('click',e=>{const b=e.target.closest('[data-sel],[data-e],[data-slot]');if(!b||b.closest('#modal'))return;
+  if(b.dataset.sel){sel=b.dataset.sel;render();if(innerWidth<900)document.getElementById('sheet').scrollIntoView({behavior:'smooth',block:'start'})}
+  else if(b.dataset.e){const ev=E.find(x=>x.id===b.dataset.e);if(ev)openForm(ev)}
+  else if(b.dataset.slot){const[k,t]=b.dataset.slot.split('|');openForm(null,k,t)}});
+let tx=null;$('view').addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+$('view').addEventListener('touchend',e=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>70&&view!=='list')step(dx<0?1:-1);tx=null});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeForm()});
+render();
+}
+</script>
+</body>
+</html>
