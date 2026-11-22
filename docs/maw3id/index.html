@@ -104,7 +104,7 @@ h1{font:800 clamp(30px,6vw,44px)/1.05 Archivo,Inter,sans-serif;letter-spacing:-.
   <main>
     <div class="head">
       <h1 id="title">Maw3id</h1>
-      <div class="nav"><button id="prev" aria-label="Li fat">‹</button><button id="today">Lyoum</button><button id="next" aria-label="Li jay">›</button></div>
+      <div class="nav"><button id="prev" aria-label="Li fat">‹</button><button id="today">Lyoum</button><button id="next" aria-label="Li jay">›</button><select id="lang" aria-label="Lugha" style="min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--panel);padding:0 8px;font-weight:600"><option value="dr">DR</option><option value="fr">FR</option><option value="en">EN</option></select></div>
     </div>
     <div class="tabs" role="tablist" style="margin:14px 0">
       <button data-v="month" class="on">Chhar</button><button data-v="week">Semaine</button><button data-v="day">Nhar</button><button data-v="list">Liste</button>
@@ -132,6 +132,12 @@ h1{font:800 clamp(30px,6vw,44px)/1.05 Archivo,Inter,sans-serif;letter-spacing:-.
 <script>
 {
 const KEY='maw3id-v1',COLORS=['c1','c2','c3','c4','c5'];
+let LANG='dr';try{LANG=localStorage.getItem('maw3id-lang')||'dr'}catch(e){}
+const LOC=LANG==='en'?'en-GB':'fr-FR',DICT={"Lyoum": ["Aujourd'hui", "Today"], "Li fat": ["Précédent", "Previous"], "Li jay": ["Suivant", "Next"], "Chhar": ["Mois", "Month"], "Semaine": ["Semaine", "Week"], "Nhar": ["Jour", "Day"], "Liste": ["Liste", "List"], "Exemples dial mawa3id f l-bdya, msse7hom w zid dialek. Jerr maw3id bach tbeddel wa9to (f telephone: appui long). Rappels w alarme kaykhdmo f l-app dial telephone.": ["Exemples au départ : supprime-les et ajoute les tiens. Glisse un rendez-vous pour changer l'heure (sur téléphone : appui long). Rappels et alarme : dans l'app téléphone.", "Sample events to start: delete them and add yours. Drag an event to change its time (on phone: long-press). Reminders and alarms work in the phone app."], "Maw3id jdid": ["Nouveau rendez-vous", "New event"], "Titre": ["Titre", "Title"], "Ex: Rendez-vous m3a tbib": ["Ex : rendez-vous chez le médecin", "E.g. doctor's appointment"], "Description": ["Description", "Description"], "Tafasil, blasa, lien...": ["Détails, lieu, lien...", "Details, place, link..."], "Nhar kaml": ["Toute la journée", "All day"], "Mn": ["De", "From"], "7ta": ["À", "To"], "Kat3awed": ["Répéter", "Repeat"], "La": ["Non", "No"], "Kol nhar": ["Chaque jour", "Daily"], "Lundi → Vendredi": ["Lundi → Vendredi", "Monday → Friday"], "Kol semaine": ["Chaque semaine", "Weekly"], "Kol chhar": ["Chaque mois", "Monthly"], "Kol 3am": ["Chaque année", "Yearly"], "Rappel": ["Rappel", "Reminder"], "Bla rappel": ["Sans rappel", "No reminder"], "F l-wa9t": ["À l'heure", "On time"], "5 min 9bel": ["5 min avant", "5 min before"], "15 min 9bel": ["15 min avant", "15 min before"], "30 min 9bel": ["30 min avant", "30 min before"], "1 sa3a 9bel": ["1 h avant", "1 h before"], "Nhar 9bel": ["La veille", "1 day before"], "Alarme (sot 9wi)": ["Alarme (son fort)", "Alarm (loud)"], "Lon": ["Couleur", "Colour"], "Annuler": ["Annuler", "Cancel"], "Sauvegarder": ["Enregistrer", "Save"], "Msse7 had l-maw3id": ["Supprimer ce rendez-vous", "Delete this event"], "Bddel l-maw3id": ["Modifier le rendez-vous", "Edit event"], "maw3id": ["rendez-vous", "event(s)"], "Nhar khawi": ["Journée libre", "Free day"], "Ma kayn walou. Tbe3 3la + bach tzid maw3id.": ["Rien de prévu. Appuie sur + pour ajouter.", "Nothing planned. Tap + to add one."], "Mawa3id jayin": ["À venir", "Upcoming"], "Lyoum · ": ["Aujourd'hui · ", "Today · "], "Ma kayn ta maw3id f 45 yom jayin.": ["Aucun rendez-vous dans les 45 prochains jours.", "No events in the next 45 days."], "Tbeddel ✓": ["Modifié ✓", "Updated ✓"], "Tzad ✓": ["Ajouté ✓", "Added ✓"], "Tmss7 ✓": ["Supprimé ✓", "Deleted ✓"], "Tbeddel ghir had l-merra ✓": ["Modifié pour cette fois ✓", "Changed for this occurrence ✓"], "Zid maw3id": ["Ajouter", "Add event"], "Lugha": ["Langue", "Language"]};
+const t=s=>LANG==='dr'?s:((DICT[s]||[])[LANG==='fr'?0:1]??s);
+document.documentElement.lang=LANG==='en'?'en':'fr';
+document.querySelectorAll('body *').forEach(el=>{if(/SCRIPT|STYLE/.test(el.tagName))return;for(const n of el.childNodes)if(n.nodeType===3&&n.nodeValue.trim()){const k=n.nodeValue.trim(),v=t(k);if(v!==k)n.nodeValue=n.nodeValue.replace(k,v)}
+  if(el.placeholder)el.placeholder=t(el.placeholder);const al=el.getAttribute('aria-label');if(al)el.setAttribute('aria-label',t(al))});
 const pad=n=>String(n).padStart(2,'0');
 const dk=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const pk=k=>new Date(k+'T00:00');
@@ -155,52 +161,52 @@ const on=k=>E.filter(e=>occurs(e,k)).sort((x,y)=>(x.allDay?0:1)-(y.allDay?0:1)||
 const mins=t=>{const[h,m]=(t||'0:0').split(':').map(Number);return h*60+m};
 const fmtT=t=>t?t.replace(/^0/,''):'';
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
-const evRow=(e,k)=>`<button class="ev" data-e="${e.id}" data-k="${k}"><i class="bar" style="background:var(--${e.color||'c2'})"></i><span><b>${esc(e.title)}</b>${e.desc?`<small>${esc(e.desc)}</small>`:''}</span><span class="tm">${e.allDay?'Nhar kaml':fmtT(e.start)+'<br>'+fmtT(e.end)}${e.rep?' ↻':''}</span></button>`;
+const evRow=(e,k)=>`<button class="ev" data-e="${e.id}" data-k="${k}"><i class="bar" style="background:var(--${e.color||'c2'})"></i><span><b>${esc(e.title)}</b>${e.desc?`<small>${esc(e.desc)}</small>`:''}</span><span class="tm">${e.allDay?t('Nhar kaml'):fmtT(e.start)+'<br>'+fmtT(e.end)}${e.rep?' ↻':''}</span></button>`;
 function renderSheet(){const d=pk(sel),list=on(sel);
-  document.getElementById('sheet').innerHTML=`<div class="holes"><i></i><i></i><i></i></div><div class="top"><span>${cap(d.toLocaleDateString('fr-FR',{month:'long'}))} ${d.getFullYear()}</span><span>${sel===T?'Lyoum':''}</span></div>
-  <div class="face"><div class="bignum">${d.getDate()}</div><div><div class="wd">${cap(d.toLocaleDateString('fr-FR',{weekday:'long'}))}</div><div class="mo">${list.length?list.length+' maw3id':'Nhar khawi'}</div></div></div>
-  <div class="agenda">${list.length?list.map(e=>evRow(e,sel)).join(''):'<div class="empty">Ma kayn walou. Tbe3 3la + bach tzid maw3id.</div>'}</div>`}
+  document.getElementById('sheet').innerHTML=`<div class="holes"><i></i><i></i><i></i></div><div class="top"><span>${cap(d.toLocaleDateString(LOC,{month:'long'}))} ${d.getFullYear()}</span><span>${sel===T?t('Lyoum'):''}</span></div>
+  <div class="face"><div class="bignum">${d.getDate()}</div><div><div class="wd">${cap(d.toLocaleDateString(LOC,{weekday:'long'}))}</div><div class="mo">${list.length?list.length+' '+t('maw3id'):t('Nhar khawi')}</div></div></div>
+  <div class="agenda">${list.length?list.map(e=>evRow(e,sel)).join(''):`<div class="empty">${t('Ma kayn walou. Tbe3 3la + bach tzid maw3id.')}</div>`}</div>`}
 function renderMonth(){const d=pk(cur),y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1),start=(first.getDay()+6)%7;
-  const days=[...Array(42)].map((_,i)=>dk(new Date(y,m,1-start+i)));const wk=[...Array(7)].map((_,i)=>new Date(2024,0,1+i).toLocaleDateString('fr-FR',{weekday:'short'}).replace('.',''));
+  const days=[...Array(42)].map((_,i)=>dk(new Date(y,m,1-start+i)));const wk=[...Array(7)].map((_,i)=>new Date(2024,0,1+i).toLocaleDateString(LOC,{weekday:'short'}).replace('.',''));
   return`<div class="grid">${wk.map(w=>`<div class="dow">${w}</div>`).join('')}${days.map(k=>{const L=on(k),dd=pk(k);
-    return`<button class="cell ${dd.getMonth()!==m?'out':''} ${k===T?'today':''} ${k===sel?'sel':''}" data-sel="${k}" aria-label="${dd.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}, ${L.length} maw3id"><span class="n">${dd.getDate()}</span>${L.slice(0,3).map(e=>`<span class="chip" data-chip="${e.id}" data-k="${k}" style="background:var(--${e.color||'c2'})">${e.allDay?'':fmtT(e.start)+' '}${esc(e.title)}</span>`).join('')}${L.length>3?`<span class="more">+${L.length-3}</span>`:''}<span class="dots">${L.slice(0,4).map(e=>`<i style="background:var(--${e.color||'c2'})"></i>`).join('')}</span></button>`}).join('')}</div>`}
+    return`<button class="cell ${dd.getMonth()!==m?'out':''} ${k===T?'today':''} ${k===sel?'sel':''}" data-sel="${k}" aria-label="${dd.toLocaleDateString(LOC,{day:'numeric',month:'long'})}, ${L.length} maw3id"><span class="n">${dd.getDate()}</span>${L.slice(0,3).map(e=>`<span class="chip" data-chip="${e.id}" data-k="${k}" style="background:var(--${e.color||'c2'})">${e.allDay?'':fmtT(e.start)+' '}${esc(e.title)}</span>`).join('')}${L.length>3?`<span class="more">+${L.length-3}</span>`:''}<span class="dots">${L.slice(0,4).map(e=>`<i style="background:var(--${e.color||'c2'})"></i>`).join('')}</span></button>`}).join('')}</div>`}
 function layout(list){const cols=[];const out=list.filter(e=>!e.allDay).map(e=>{const s=mins(e.start),en=Math.max(mins(e.end||e.start),s+30);let c=0;while(cols[c]&&cols[c]>s)c++;cols[c]=en;return{e,s,en,c}});const n=Math.max(1,cols.length);return out.map(o=>({...o,n}))}
 function renderTime(keys){const H=56,cw=`52px repeat(${keys.length},minmax(0,1fr))`;const nowM=(()=>{const d=new Date();return d.getHours()*60+d.getMinutes()})();
   const allday=keys.map(k=>on(k).filter(e=>e.allDay));
-  return`<div class="tl"><div class="tlh" style="grid-template-columns:${cw}"><div></div>${keys.map(k=>{const d=pk(k);return`<div class="${k===T?'today':''}">${d.toLocaleDateString('fr-FR',{weekday:'short'}).replace('.','')}<b>${d.getDate()}</b></div>`}).join('')}</div>
-  ${allday.some(a=>a.length)?`<div class="tlh" style="grid-template-columns:${cw}"><div style="font-size:11px">Nhar kaml</div>${allday.map((a,i)=>`<div style="padding:4px">${a.map(e=>`<button class="blk" style="position:static;display:block;width:100%;background:var(--${e.color})" data-e="${e.id}" data-k="${keys[i]}">${esc(e.title)}</button>`).join('')}</div>`).join('')}</div>`:''}
+  return`<div class="tl"><div class="tlh" style="grid-template-columns:${cw}"><div></div>${keys.map(k=>{const d=pk(k);return`<div class="${k===T?'today':''}">${d.toLocaleDateString(LOC,{weekday:'short'}).replace('.','')}<b>${d.getDate()}</b></div>`}).join('')}</div>
+  ${allday.some(a=>a.length)?`<div class="tlh" style="grid-template-columns:${cw}"><div style="font-size:11px">${t('Nhar kaml')}</div>${allday.map((a,i)=>`<div style="padding:4px">${a.map(e=>`<button class="blk" style="position:static;display:block;width:100%;background:var(--${e.color})" data-e="${e.id}" data-k="${keys[i]}">${esc(e.title)}</button>`).join('')}</div>`).join('')}</div>`:''}
   <div class="tlb" id="tlb"><div class="tlg" style="grid-template-columns:${cw}"><div>${[...Array(24)].map((_,h)=>`<div class="hr">${h?pad(h)+':00':''}</div>`).join('')}</div>
-  ${keys.map(k=>`<div class="col" data-col="${k}">${[...Array(24)].map((_,h)=>`<button class="slot" data-slot="${k}|${pad(h)}:00" aria-label="Zid maw3id ${pad(h)}:00"></button>`).join('')}
+  ${keys.map(k=>`<div class="col" data-col="${k}">${[...Array(24)].map((_,h)=>`<button class="slot" data-slot="${k}|${pad(h)}:00" aria-label="${t('Zid maw3id')} ${pad(h)}:00"></button>`).join('')}
    ${layout(on(k)).map(o=>`<button class="blk" data-e="${o.e.id}" data-k="${k}" style="top:${o.s/60*H+1}px;height:${(o.en-o.s)/60*H-2}px;left:calc(${o.c/o.n*100}% + 2px);width:calc(${100/o.n}% - 4px);background:var(--${o.e.color||'c2'})">${esc(o.e.title)}<span>${fmtT(o.e.start)}–${fmtT(o.e.end)}</span><i class="rz" aria-hidden="true"></i></button>`).join('')}
    ${k===T?`<div class="now" style="top:${nowM/60*H}px"></div>`:''}</div>`).join('')}</div></div></div>`}
-function renderList(){let out='';for(let i=0;i<45;i++){const k=add(sel,i),L=on(k);if(!L.length)continue;const d=pk(k);out+=`<h3>${k===T?'Lyoum · ':''}${d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</h3><div class="agenda" style="padding:0">${L.map(e=>evRow(e,k)).join('')}</div>`}
-  return`<div class="list">${out||'<div class="empty">Ma kayn ta maw3id f 45 yom jayin.</div>'}</div>`}
-function render(){const d=pk(cur);const t=document.getElementById('title');
-  if(view==='month')t.textContent=d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
-  else if(view==='week'){const mon=add(cur,-((d.getDay()+6)%7)),sun=add(mon,6);t.textContent=pk(mon).getDate()+' – '+pk(sun).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}
-  else if(view==='day')t.textContent=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
-  else t.textContent='Mawa3id jayin';
+function renderList(){let out='';for(let i=0;i<45;i++){const k=add(sel,i),L=on(k);if(!L.length)continue;const d=pk(k);out+=`<h3>${k===T?t('Lyoum · '):''}${d.toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})}</h3><div class="agenda" style="padding:0">${L.map(e=>evRow(e,k)).join('')}</div>`}
+  return`<div class="list">${out||`<div class="empty">${t('Ma kayn ta maw3id f 45 yom jayin.')}</div>`}</div>`}
+function render(){const d=pk(cur);const ti=document.getElementById('title');
+  if(view==='month')ti.textContent=d.toLocaleDateString(LOC,{month:'long',year:'numeric'});
+  else if(view==='week'){const mon=add(cur,-((d.getDay()+6)%7)),sun=add(mon,6);ti.textContent=pk(mon).getDate()+' – '+pk(sun).toLocaleDateString(LOC,{day:'numeric',month:'short'})}
+  else if(view==='day')ti.textContent=d.toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'});
+  else ti.textContent=t('Mawa3id jayin');
   const v=document.getElementById('view'),otb=document.getElementById('tlb'),keep=otb&&scrolled?otb.scrollTop:null;
   if(view==='month')v.innerHTML=renderMonth();
   else if(view==='week'){const mon=add(cur,-((d.getDay()+6)%7));v.innerHTML=renderTime([...Array(7)].map((_,i)=>add(mon,i)))}
   else if(view==='day')v.innerHTML=renderTime([cur]);else v.innerHTML=renderList();
   const tb=document.getElementById('tlb');if(tb){if(keep!=null)tb.scrollTop=keep;else if(!scrolled){tb.scrollTop=7*56}scrolled=true}
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));renderSheet()}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2200)}
+function toast(m){const el=document.getElementById('toast');el.textContent=m;el.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>el.style.display='none',2200)}
 const $=id=>document.getElementById(id);
 function drawColors(){$('f-col').innerHTML=COLORS.map(c=>`<button type="button" data-c="${c}" class="${c===color?'on':''}" style="background:var(--${c})" aria-label="Lon ${c}"></button>`).join('')}
-function openForm(e,k,time,endT){editing=e||null;$('f-h').textContent=e?'Bddel l-maw3id':'Maw3id jdid';$('f-t').value=e?e.title:'';$('f-d').value=e?e.desc||'':'';
+function openForm(e,k,time,endT){editing=e||null;$('f-h').textContent=e?t('Bddel l-maw3id'):t('Maw3id jdid');$('f-t').value=e?e.title:'';$('f-d').value=e?e.desc||'':'';
   $('f-date').value=e?e.date:(k||sel);$('f-all').checked=!!(e&&e.allDay);$('f-s').value=e?e.start||'09:00':(time||'09:00');
   $('f-e').value=e?e.end||'10:00':(endT||(time?pad(Math.min(23,+time.slice(0,2)+1))+':'+time.slice(3):'10:00'));$('f-rep').value=e?e.rep||'':'';$('f-off').value=String(e&&e.off!=null?e.off:15);$('f-alarm').checked=!!(e&&e.alarm);
   color=e?e.color||'c2':'c2';drawColors();$('f-times').style.display=$('f-all').checked?'none':'';$('f-del').style.display=e?'':'none';$('modal').classList.add('on');setTimeout(()=>$('f-t').focus(),50)}
 const closeForm=()=>{$('modal').classList.remove('on');editing=null};
 $('form').addEventListener('submit',ev=>{ev.preventDefault();const o=editing||{id:uid()};o.title=$('f-t').value.trim();if(!o.title)return;o.desc=$('f-d').value.trim();o.date=$('f-date').value||sel;
   o.allDay=$('f-all').checked;o.start=o.allDay?null:$('f-s').value;o.end=o.allDay?null:$('f-e').value;if(!o.allDay&&o.end&&o.end<=o.start)o.end=pad(Math.min(23,+o.start.slice(0,2)+1))+':'+o.start.slice(3);
-  o.rep=$('f-rep').value;o.off=+$('f-off').value;o.alarm=$('f-alarm').checked;o.color=color;if(!editing)E.push(o);save();sel=o.date;cur=o.date;closeForm();render();toast(editing?'Tbeddel ✓':'Tzad ✓')});
+  o.rep=$('f-rep').value;o.off=+$('f-off').value;o.alarm=$('f-alarm').checked;o.color=color;if(!editing)E.push(o);save();sel=o.date;cur=o.date;closeForm();render();toast(editing?t('Tbeddel ✓'):t('Tzad ✓'))});
 $('f-all').addEventListener('change',()=>{$('f-times').style.display=$('f-all').checked?'none':''});
 $('f-cancel').onclick=closeForm;$('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeForm()});
 $('f-col').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(b){color=b.dataset.c;drawColors()}});
-$('f-del').onclick=()=>{if(!editing)return;E=E.filter(x=>x!==editing);save();closeForm();render();toast('Tmss7 ✓')};
+$('f-del').onclick=()=>{if(!editing)return;E=E.filter(x=>x!==editing);save();closeForm();render();toast(t('Tmss7 ✓'))};
 $('add').onclick=()=>openForm(null,sel);
 document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;view=b.dataset.v;if(view!=='month')cur=sel;scrolled=false;render()});
 const step=dir=>{const d=pk(cur);if(view==='month'){d.setDate(1);d.setMonth(d.getMonth()+dir)}else if(view==='week')d.setDate(d.getDate()+7*dir);else d.setDate(d.getDate()+dir*(view==='list'?7:1));cur=dk(d);if(view!=='month')sel=cur;render()};
@@ -212,7 +218,7 @@ document.body.addEventListener('click',e=>{if(justDragged){e.preventDefault();e.
 const H=56,SNAP=15,toT=m=>{m=Math.max(0,Math.min(1439,Math.round(m)));return pad(Math.floor(m/60))+':'+pad(m%60)};
 let D=null,justDragged=false;
 function moveEvent(ev,fromK,toK,start,end){if(ev.rep){ev.ex=[...(ev.ex||[]),fromK];const c={...ev,id:uid(),rep:'',ex:[],date:toK};if(start!==undefined){c.start=start;c.end=end}E.push(c)}
-  else{ev.date=toK;if(start!==undefined){ev.start=start;ev.end=end}}save();sel=toK;if(view==='month'&&pk(toK).getMonth()!==pk(cur).getMonth())cur=toK;render();toast(ev.rep?'Tbeddel ghir had l-merra ✓':'Tbeddel ✓')}
+  else{ev.date=toK;if(start!==undefined){ev.start=start;ev.end=end}}save();sel=toK;if(view==='month'&&pk(toK).getMonth()!==pk(cur).getMonth())cur=toK;render();toast(ev.rep?t('Tbeddel ghir had l-merra ✓'):t('Tbeddel ✓'))}
 function startD(e,o){D={...o,x0:e.clientX,y0:e.clientY,id:e.pointerId,active:false,touch:e.pointerType!=='mouse'};
   if(D.touch)D.timer=setTimeout(()=>{if(D){activate();try{navigator.vibrate&&navigator.vibrate(25)}catch(err){}}},380)}
 function activate(){D.active=true;document.body.classList.add('dragging');if(D.el)D.el.classList.add('drag');
@@ -242,6 +248,7 @@ window.addEventListener('pointerup',endD);window.addEventListener('pointercancel
 let tx=null;$('view').addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
 $('view').addEventListener('touchend',e=>{if(tx==null||justDragged||document.body.classList.contains('dragging')){tx=null;return}const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>70&&view!=='list')step(dx<0?1:-1);tx=null});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeForm()});
+$('lang').value=LANG;$('lang').onchange=e=>{try{localStorage.setItem('maw3id-lang',e.target.value)}catch(err){}location.reload()};
 render();
 }
 </script>
