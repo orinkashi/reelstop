@@ -104,13 +104,13 @@ h1{font:800 clamp(30px,6vw,44px)/1.05 Archivo,Inter,sans-serif;letter-spacing:-.
   <main>
     <div class="head">
       <h1 id="title">Maw3id</h1>
-      <div class="nav"><button id="prev" aria-label="Li fat">‹</button><button id="today">Lyoum</button><button id="next" aria-label="Li jay">›</button><select id="lang" aria-label="Lugha" style="min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--panel);padding:0 8px;font-weight:600"><option value="dr">DR</option><option value="fr">FR</option><option value="en">EN</option></select></div>
+      <div class="nav"><button id="acc-btn" aria-label="Compte">☁</button><button id="prev" aria-label="Li fat">‹</button><button id="today">Lyoum</button><button id="next" aria-label="Li jay">›</button><select id="lang" aria-label="Lugha" style="min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--panel);padding:0 8px;font-weight:600"><option value="dr">DR</option><option value="fr">FR</option><option value="en">EN</option></select></div>
     </div>
     <div class="tabs" role="tablist" style="margin:14px 0">
       <button data-v="month" class="on">Chhar</button><button data-v="week">Semaine</button><button data-v="day">Nhar</button><button data-v="list">Liste</button>
     </div>
     <div id="view"></div>
-    <p class="note" style="margin-top:12px">Exemples dial mawa3id f l-bdya, msse7hom w zid dialek. Jerr maw3id bach tbeddel wa9to (f telephone: appui long). Rappels w alarme kaykhdmo f l-app dial telephone.</p>
+    <p class="note" style="margin-top:12px">Jerr maw3id bach tbeddel wa9to (f telephone: appui long). Rappels w alarme kaykhdmo f l-app dial telephone.</p>
   </main>
 </div>
 <button class="fab" id="add" aria-label="Maw3id jdid">+</button>
@@ -128,12 +128,13 @@ h1{font:800 clamp(30px,6vw,44px)/1.05 Archivo,Inter,sans-serif;letter-spacing:-.
   <div class="acts"><button type="button" id="f-cancel">Annuler</button><button class="go">Sauvegarder</button></div>
   <button type="button" class="del" id="f-del" style="width:100%;margin-top:8px">Msse7 had l-maw3id</button>
 </form></div>
+<div class="modal" id="accm" role="dialog" aria-modal="true" aria-labelledby="a-h"><form class="form" id="accf"></form></div>
 <div class="toast" id="toast"></div>
 <script>
 {
 const KEY='maw3id-v1',COLORS=['c1','c2','c3','c4','c5'];
 let LANG='dr';try{LANG=localStorage.getItem('maw3id-lang')||'dr'}catch(e){}
-const LOC=LANG==='en'?'en-GB':'fr-FR',DICT={"Lyoum": ["Aujourd'hui", "Today"], "Li fat": ["Précédent", "Previous"], "Li jay": ["Suivant", "Next"], "Chhar": ["Mois", "Month"], "Semaine": ["Semaine", "Week"], "Nhar": ["Jour", "Day"], "Liste": ["Liste", "List"], "Exemples dial mawa3id f l-bdya, msse7hom w zid dialek. Jerr maw3id bach tbeddel wa9to (f telephone: appui long). Rappels w alarme kaykhdmo f l-app dial telephone.": ["Exemples au départ : supprime-les et ajoute les tiens. Glisse un rendez-vous pour changer l'heure (sur téléphone : appui long). Rappels et alarme : dans l'app téléphone.", "Sample events to start: delete them and add yours. Drag an event to change its time (on phone: long-press). Reminders and alarms work in the phone app."], "Maw3id jdid": ["Nouveau rendez-vous", "New event"], "Titre": ["Titre", "Title"], "Ex: Rendez-vous m3a tbib": ["Ex : rendez-vous chez le médecin", "E.g. doctor's appointment"], "Description": ["Description", "Description"], "Tafasil, blasa, lien...": ["Détails, lieu, lien...", "Details, place, link..."], "Nhar kaml": ["Toute la journée", "All day"], "Mn": ["De", "From"], "7ta": ["À", "To"], "Kat3awed": ["Répéter", "Repeat"], "La": ["Non", "No"], "Kol nhar": ["Chaque jour", "Daily"], "Lundi → Vendredi": ["Lundi → Vendredi", "Monday → Friday"], "Kol semaine": ["Chaque semaine", "Weekly"], "Kol chhar": ["Chaque mois", "Monthly"], "Kol 3am": ["Chaque année", "Yearly"], "Rappel": ["Rappel", "Reminder"], "Bla rappel": ["Sans rappel", "No reminder"], "F l-wa9t": ["À l'heure", "On time"], "5 min 9bel": ["5 min avant", "5 min before"], "15 min 9bel": ["15 min avant", "15 min before"], "30 min 9bel": ["30 min avant", "30 min before"], "1 sa3a 9bel": ["1 h avant", "1 h before"], "Nhar 9bel": ["La veille", "1 day before"], "Alarme (sot 9wi)": ["Alarme (son fort)", "Alarm (loud)"], "Lon": ["Couleur", "Colour"], "Annuler": ["Annuler", "Cancel"], "Sauvegarder": ["Enregistrer", "Save"], "Msse7 had l-maw3id": ["Supprimer ce rendez-vous", "Delete this event"], "Bddel l-maw3id": ["Modifier le rendez-vous", "Edit event"], "maw3id": ["rendez-vous", "event(s)"], "Nhar khawi": ["Journée libre", "Free day"], "Ma kayn walou. Tbe3 3la + bach tzid maw3id.": ["Rien de prévu. Appuie sur + pour ajouter.", "Nothing planned. Tap + to add one."], "Mawa3id jayin": ["À venir", "Upcoming"], "Lyoum · ": ["Aujourd'hui · ", "Today · "], "Ma kayn ta maw3id f 45 yom jayin.": ["Aucun rendez-vous dans les 45 prochains jours.", "No events in the next 45 days."], "Tbeddel ✓": ["Modifié ✓", "Updated ✓"], "Tzad ✓": ["Ajouté ✓", "Added ✓"], "Tmss7 ✓": ["Supprimé ✓", "Deleted ✓"], "Tbeddel ghir had l-merra ✓": ["Modifié pour cette fois ✓", "Changed for this occurrence ✓"], "Zid maw3id": ["Ajouter", "Add event"], "Lugha": ["Langue", "Language"]};
+const LOC=LANG==='en'?'en-GB':'fr-FR',DICT={"Lyoum": ["Aujourd'hui", "Today"], "Li fat": ["Précédent", "Previous"], "Li jay": ["Suivant", "Next"], "Chhar": ["Mois", "Month"], "Semaine": ["Semaine", "Week"], "Nhar": ["Jour", "Day"], "Liste": ["Liste", "List"], "Jerr maw3id bach tbeddel wa9to (f telephone: appui long). Rappels w alarme kaykhdmo f l-app dial telephone.": ["Glisse un rendez-vous pour changer l'heure (sur téléphone : appui long). Rappels et alarme : dans l'app téléphone.", "Drag an event to change its time (on phone: long-press). Reminders and alarms work in the phone app."], "Maw3id jdid": ["Nouveau rendez-vous", "New event"], "Titre": ["Titre", "Title"], "Ex: Rendez-vous m3a tbib": ["Ex : rendez-vous chez le médecin", "E.g. doctor's appointment"], "Description": ["Description", "Description"], "Tafasil, blasa, lien...": ["Détails, lieu, lien...", "Details, place, link..."], "Nhar kaml": ["Toute la journée", "All day"], "Mn": ["De", "From"], "7ta": ["À", "To"], "Kat3awed": ["Répéter", "Repeat"], "La": ["Non", "No"], "Kol nhar": ["Chaque jour", "Daily"], "Lundi → Vendredi": ["Lundi → Vendredi", "Monday → Friday"], "Kol semaine": ["Chaque semaine", "Weekly"], "Kol chhar": ["Chaque mois", "Monthly"], "Kol 3am": ["Chaque année", "Yearly"], "Rappel": ["Rappel", "Reminder"], "Bla rappel": ["Sans rappel", "No reminder"], "F l-wa9t": ["À l'heure", "On time"], "5 min 9bel": ["5 min avant", "5 min before"], "15 min 9bel": ["15 min avant", "15 min before"], "30 min 9bel": ["30 min avant", "30 min before"], "1 sa3a 9bel": ["1 h avant", "1 h before"], "Nhar 9bel": ["La veille", "1 day before"], "Alarme (sot 9wi)": ["Alarme (son fort)", "Alarm (loud)"], "Lon": ["Couleur", "Colour"], "Annuler": ["Annuler", "Cancel"], "Sauvegarder": ["Enregistrer", "Save"], "Msse7 had l-maw3id": ["Supprimer ce rendez-vous", "Delete this event"], "Bddel l-maw3id": ["Modifier le rendez-vous", "Edit event"], "maw3id": ["rendez-vous", "event(s)"], "Nhar khawi": ["Journée libre", "Free day"], "Ma kayn walou. Tbe3 3la + bach tzid maw3id.": ["Rien de prévu. Appuie sur + pour ajouter.", "Nothing planned. Tap + to add one."], "Mawa3id jayin": ["À venir", "Upcoming"], "Lyoum · ": ["Aujourd'hui · ", "Today · "], "Ma kayn ta maw3id f 45 yom jayin.": ["Aucun rendez-vous dans les 45 prochains jours.", "No events in the next 45 days."], "Tbeddel ✓": ["Modifié ✓", "Updated ✓"], "Tzad ✓": ["Ajouté ✓", "Added ✓"], "Tmss7 ✓": ["Supprimé ✓", "Deleted ✓"], "Tbeddel ghir had l-merra ✓": ["Modifié pour cette fois ✓", "Changed for this occurrence ✓"], "Zid maw3id": ["Ajouter", "Add event"], "Lugha": ["Langue", "Language"],"Compte":["Compte","Account"],"Dakhel b":["Connecté avec","Signed in as"],"Akhir sync:":["Dernière synchro :","Last sync:"],"Bla internet":["Hors ligne","Offline"],"Sync daba":["Synchroniser","Sync now"],"Khrej":["Se déconnecter","Sign out"],"Sdd":["Fermer","Close"],"Dkhol bach tl9a mawa3id dialek f telephone w PC. Nafs l-compte dial Dftar khdam hna.":["Connecte-toi pour retrouver tes rendez-vous sur téléphone et PC. Le compte Dftar marche ici.","Sign in to get your events on phone and PC. Your Dftar account works here."],"Mot de passe (6 7orouf wla ktar)":["Mot de passe (6 caractères min.)","Password (6+ characters)"],"Dkhol":["Se connecter","Sign in"],"Créer compte":["Créer un compte","Create account"],"Chouf email dialek w confirmi":["Vérifie ton email pour confirmer","Check your email to confirm"],"Dkhelti ✓":["Connecté ✓","Signed in ✓"],"Email wla mot de passe ghalet":["Email ou mot de passe incorrect","Wrong email or password"],"Had l-email 3ndo compte, dir Dkhol":["Cet email a déjà un compte","This email already has an account"],"Khrejti":["Déconnecté","Signed out"],"Daba ⏰":["Maintenant ⏰","Now ⏰"],"Ghedda ⏰":["Demain ⏰","Tomorrow ⏰"],"F 1 sa3a ⏰":["Dans 1 heure ⏰","In 1 hour ⏰"]};
 const t=s=>LANG==='dr'?s:((DICT[s]||[])[LANG==='fr'?0:1]??s);
 document.documentElement.lang=LANG==='en'?'en':'fr';
 document.querySelectorAll('body *').forEach(el=>{if(/SCRIPT|STYLE/.test(el.tagName))return;for(const n of el.childNodes)if(n.nodeType===3&&n.nodeValue.trim()){const k=n.nodeValue.trim(),v=t(k);if(v!==k)n.nodeValue=n.nodeValue.replace(k,v)}
@@ -146,13 +147,45 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const uid=()=>Math.random().toString(36).slice(2,9);
 const T=dk(new Date());
 let E=null;try{E=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-if(!Array.isArray(E)){const mon=add(T,-((pk(T).getDay()+6)%7));E=[
-  {id:uid(),title:'Cours d\'Analyse',desc:'Amphi B',date:mon,start:'08:30',end:'10:30',rep:'wd',color:'c2',off:15},
-  {id:uid(),title:'Sport f zen9a',desc:'Push-ups, squats, jri 15 min',date:T,start:'18:00',end:'19:00',rep:'day',color:'c3',off:5},
-  {id:uid(),title:'Rendez-vous m3a tbib',desc:'Jib l-carte',date:add(T,2),start:'11:00',end:'11:45',color:'c1',off:60,alarm:true},
-  {id:uid(),title:'Ftour m3a l-3a2ila',date:add(T,5),start:'13:00',end:'15:00',color:'c4',off:30},
-  {id:uid(),title:'Exam: Algèbre',desc:'Chapitres 1-4',date:add(T,9),allDay:true,color:'c5',off:1440}]}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(E))}catch(e){}};
+if(!Array.isArray(E))E=[];
+let LT=0;try{LT=+localStorage.getItem('maw3id-t')||0}catch(e){}
+const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(E));localStorage.setItem('maw3id-t',String(LT))}catch(e){}};
+const save=()=>{LT=Date.now();saveLocal();schedulePush();syncRem()};
+const SB='https://cuiosvzhgrlpleugjouv.supabase.co',SBK='sb_publishable_N5KpbC4q_sRQOcRs_4FP_A_rHg9cwOo',AK='maw3id-auth';
+let AUTH=null;try{AUTH=JSON.parse(localStorage.getItem(AK))}catch(e){}
+const st={s:AUTH?'idle':'off',last:0,msg:''};
+const setAuth=a=>{AUTH=a;try{a?localStorage.setItem(AK,JSON.stringify(a)):localStorage.removeItem(AK)}catch(e){}};
+async function sbAuth(path,body){const r=await fetch(SB+'/auth/v1/'+path,{method:'POST',headers:{apikey:SBK,'Content-Type':'application/json'},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));
+  if(!r.ok){const e=new Error(j.msg||j.error_description||j.message||('Erreur '+r.status));e.status=r.status;throw e}return j}
+const keepAuth=j=>setAuth({at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000-60000,id:j.user&&j.user.id,email:j.user&&j.user.email});
+async function token(){if(Date.now()<AUTH.exp)return AUTH.at;try{const j=await sbAuth('token?grant_type=refresh_token',{refresh_token:AUTH.rt});keepAuth({...j,user:j.user||{id:AUTH.id,email:AUTH.email}});return AUTH.at}
+  catch(e){if(e.status===400||e.status===401){setAuth(null);st.s='off'}throw e}}
+async function rest(method,q,body){const tk=await token();const r=await fetch(SB+'/rest/v1/maw3id_data'+q,{method,headers:{apikey:SBK,Authorization:'Bearer '+tk,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:body?JSON.stringify(body):undefined});
+  if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('Erreur '+r.status))}return method==='GET'?r.json():null}
+let pushT=null,busy=false;const schedulePush=()=>{if(!AUTH)return;clearTimeout(pushT);pushT=setTimeout(doSync,2000)};
+const setSt=s=>{st.s=s;const b=document.getElementById('acc-btn');if(b)b.textContent={busy:'☁ …',ok:'☁ ✓',err:'☁ !',offline:'☁ ·'}[s]||'☁';if(document.getElementById('accm').classList.contains('on'))accForm()};
+async function doSync(){if(!AUTH||busy)return;if(navigator.onLine===false){setSt('offline');return}busy=true;setSt('busy');
+  try{const rows=await rest('GET','?select=data&user_id=eq.'+AUTH.id);const R=rows&&rows[0]&&rows[0].data,rt=(R&&R._t)||0,rs=R?(R.events||[]).length:0,ls=E.length;
+    if(R&&rs>0&&(ls===0||rt>LT)){E=R.events;LT=rt;saveLocal();busy=false;st.last=Date.now();setSt('ok');render();syncRem();return}
+    if(!R||LT>rt||(rs===0&&ls>0)){if(!LT)LT=Date.now(),saveLocal();await rest('POST','',{user_id:AUTH.id,data:{events:E,_t:LT},updated_at:new Date().toISOString()})}
+    st.last=Date.now();st.msg='';busy=false;setSt('ok')}catch(e){st.msg=e.message;busy=false;setSt(AUTH?'err':'off')}}
+function syncRem(){if(!window.DftarAndroid||!DftarAndroid.setReminders)return;clearTimeout(syncRem.h);syncRem.h=setTimeout(()=>{const list=[],now=Date.now();
+  for(let i=0;i<60&&list.length<300;i++){const k=add(T,i);for(const e of on(k)){if(e.off==null||e.off<0)continue;const tm=e.allDay?'09:00':e.start;const at=+new Date(k+'T'+tm+':00')-e.off*60000;if(at<=now)continue;
+    const when=e.off===0?t('Daba ⏰'):e.off===1440?t('Ghedda ⏰'):e.off===60?t('F 1 sa3a ⏰'):(LANG==='en'?'In '+e.off+' min ⏰':LANG==='fr'?'Dans '+e.off+' min ⏰':'F '+e.off+' d9aye9 ⏰');
+    list.push({id:'m-'+e.id+'-'+k,at,title:e.title+' · '+(e.allDay?t('Nhar kaml'):fmtT(e.start)),body:(e.desc?e.desc.split('\n')[0].slice(0,80)+' · ':'')+when,daily:false,alarm:!!e.alarm})}}
+  try{DftarAndroid.setReminders(JSON.stringify(list))}catch(err){}},600)}
+function accForm(){const f=document.getElementById('accf'),ago=st.last?new Date(st.last).toLocaleTimeString(LOC,{hour:'2-digit',minute:'2-digit'}):'—';
+  f.innerHTML=AUTH?`<h2 id="a-h">${t('Compte')}</h2><div class="note">${t('Dakhel b')}</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(AUTH.email||'')}</div>
+    <div class="note" style="margin-top:8px">${t('Akhir sync:')} <b>${ago}</b> · ${st.s==='err'?esc(st.msg):st.s==='offline'?t('Bla internet'):st.s==='busy'?'…':'✓'}</div>
+    <div class="acts"><button type="button" id="a-sync" class="go">${t('Sync daba')}</button><button type="button" id="a-out">${t('Khrej')}</button></div><button type="button" id="a-close" style="width:100%;margin-top:8px">${t('Sdd')}</button>`
+  :`<h2 id="a-h">${t('Compte')}</h2><div class="note">${t('Dkhol bach tl9a mawa3id dialek f telephone w PC. Nafs l-compte dial Dftar khdam hna.')}</div>
+    <label for="a-em">Email</label><input id="a-em" type="email" autocomplete="email" required><label for="a-pw">${t('Mot de passe (6 7orouf wla ktar)')}</label><input id="a-pw" type="password" autocomplete="current-password" minlength="6" required>
+    ${st.msg?`<div class="note" style="color:var(--red);margin-top:8px">${esc(st.msg)}</div>`:''}
+    <div class="acts"><button class="go">${t('Dkhol')}</button><button type="button" id="a-up">${t('Créer compte')}</button></div><button type="button" id="a-close" style="width:100%;margin-top:8px">${t('Sdd')}</button>`}
+async function login(up){const em=document.getElementById('a-em').value.trim(),pw=document.getElementById('a-pw').value;if(!em||pw.length<6){st.msg=t('Mot de passe (6 7orouf wla ktar)');return accForm()}
+  try{const j=up?await sbAuth('signup',{email:em,password:pw}):await sbAuth('token?grant_type=password',{email:em,password:pw});if(!j.access_token){st.msg=t('Chouf email dialek w confirmi');return accForm()}
+    keepAuth(j);st.msg='';st.s='idle';accForm();await doSync();toast(t('Dkhelti ✓'))}
+  catch(e){st.msg=/invalid/i.test(e.message)?t('Email wla mot de passe ghalet'):/already/i.test(e.message)?t('Had l-email 3ndo compte, dir Dkhol'):e.message;accForm()}}
 let view='month',cur=T,sel=T,editing=null,color='c2',scrolled=false;
 const occurs=(e,k)=>{if((e.ex||[]).includes(k))return false;if(e.date===k)return true;if(!e.rep||k<e.date)return false;
   const a=pk(e.date),b=pk(k);if(e.rep==='day')return true;if(e.rep==='wd'){const w=b.getDay();return w>0&&w<6}
@@ -202,7 +235,7 @@ function openForm(e,k,time,endT){editing=e||null;$('f-h').textContent=e?t('Bddel
 const closeForm=()=>{$('modal').classList.remove('on');editing=null};
 $('form').addEventListener('submit',ev=>{ev.preventDefault();const o=editing||{id:uid()};o.title=$('f-t').value.trim();if(!o.title)return;o.desc=$('f-d').value.trim();o.date=$('f-date').value||sel;
   o.allDay=$('f-all').checked;o.start=o.allDay?null:$('f-s').value;o.end=o.allDay?null:$('f-e').value;if(!o.allDay&&o.end&&o.end<=o.start)o.end=pad(Math.min(23,+o.start.slice(0,2)+1))+':'+o.start.slice(3);
-  o.rep=$('f-rep').value;o.off=+$('f-off').value;o.alarm=$('f-alarm').checked;o.color=color;if(!editing)E.push(o);save();sel=o.date;cur=o.date;closeForm();render();toast(editing?t('Tbeddel ✓'):t('Tzad ✓'))});
+  o.rep=$('f-rep').value;o.off=+$('f-off').value;if(o.off>=0&&window.DftarAndroid&&DftarAndroid.askNotif)DftarAndroid.askNotif();o.alarm=$('f-alarm').checked;o.color=color;if(!editing)E.push(o);save();sel=o.date;cur=o.date;closeForm();render();toast(editing?t('Tbeddel ✓'):t('Tzad ✓'))});
 $('f-all').addEventListener('change',()=>{$('f-times').style.display=$('f-all').checked?'none':''});
 $('f-cancel').onclick=closeForm;$('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeForm()});
 $('f-col').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(b){color=b.dataset.c;drawColors()}});
@@ -248,6 +281,12 @@ window.addEventListener('pointerup',endD);window.addEventListener('pointercancel
 let tx=null;$('view').addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
 $('view').addEventListener('touchend',e=>{if(tx==null||justDragged||document.body.classList.contains('dragging')){tx=null;return}const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>70&&view!=='list')step(dx<0?1:-1);tx=null});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeForm()});
+$('acc-btn').onclick=()=>{accForm();$('accm').classList.add('on')};
+$('accm').addEventListener('click',e=>{if(e.target.id==='accm'||e.target.id==='a-close')$('accm').classList.remove('on');else if(e.target.id==='a-up')login(true);else if(e.target.id==='a-sync')doSync();
+  else if(e.target.id==='a-out'){setAuth(null);st.s='off';st.last=0;setSt('off');accForm();toast(t('Khrejti'))}});
+$('accf').addEventListener('submit',e=>{e.preventDefault();login(false)});
+window.addEventListener('online',doSync);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')doSync()});setInterval(()=>{if(document.visibilityState!=='hidden')doSync()},60000);
+setTimeout(doSync,800);syncRem();setSt(st.s);
 $('lang').value=LANG;$('lang').onchange=e=>{try{localStorage.setItem('maw3id-lang',e.target.value)}catch(err){}location.reload()};
 render();
 }
