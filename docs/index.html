@@ -222,7 +222,11 @@ const I18N={
 'Had l-fichier ma kaynch f had l-appareil':["Ce fichier n'est pas sur cet appareil","This file isn't on this device"],'Titre':["Titre","Title"],'Description':["Description","Description"],'Tafasil, lien, blasa...':["Détails, lien, lieu...","Details, link, place..."],'F l-wa9t':["À l'heure","On time"],'5 min 9bel':["5 min avant","5 min before"],'15 min 9bel':["15 min avant","15 min before"],'30 min 9bel':["30 min avant","30 min before"],'1 sa3a 9bel':["1 h avant","1 h before"],'Nhar 9bel':["La veille","1 day before"],
 '⏰ Alarme (sot 9wi 7ta tchoufha)':["⏰ Alarme (son fort jusqu'à ce que tu la voies)","⏰ Alarm (loud until you see it)"],'↻ Tbe9 3la ga3 l-ayam li jayin':["↻ Appliquer à tous les jours suivants","↻ Apply to all upcoming days"],'↻ Msse7 ga3 l-ayam li jayin':["↻ Supprimer tous les jours suivants","↻ Delete all upcoming days"],
 '↻ Kol nhar':["↻ Chaque jour","↻ Daily"],'↻ Lun→Ven':["↻ Lun→Ven","↻ Mon→Fri"],'↻ Kol semaine':["↻ Chaque semaine","↻ Weekly"],'Kat3awed':["Répéter","Repeat"],'↻ Tzadat':["↻ Ajoutée","↻ Added"],'↻ Tms7at':["↻ Supprimée","↻ Deleted"],
-'Daba ⏰':["Maintenant ⏰","Now ⏰"],'Ghedda f had l-wa9t ⏰':["Demain à cette heure ⏰","Tomorrow at this time ⏰"],'F 1 sa3a ⏰':["Dans 1 heure ⏰","In 1 hour ⏰"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
+'Daba ⏰':["Maintenant ⏰","Now ⏰"],'Ghedda f had l-wa9t ⏰':["Demain à cette heure ⏰","Tomorrow at this time ⏰"],'F 1 sa3a ⏰':["Dans 1 heure ⏰","In 1 hour ⏰"],'Projet partagé · code':["Projet partagé · code","Shared project · code"],'Partager m3a l-équipe (code)':["Partager avec l'équipe (code)","Share with the team (code)"],
+'3ti had l-code l s7abk: f Dftar → Projets → "Dkhel code".':["Donne ce code à tes amis : Dftar → Projets → « Entrer un code ».","Give this code to your friends: Dftar → Projects → \"Enter code\"."],
+'Khrej mn l-projet partagé':["Quitter le projet partagé","Leave shared project"],'Dkhel l projet partagé':["Rejoindre un projet partagé","Join a shared project"],'Code (ex: K7F2A9)':["Code (ex : K7F2A9)","Code (e.g. K7F2A9)"],
+'Khassek compte bach tpartagi':["Il faut un compte pour partager","You need an account to share"],'Khassek compte bach tdkhol l projet':["Il faut un compte pour rejoindre","You need an account to join"],'Deja 3ndek had l-projet':["Tu as déjà ce projet","You already have this project"],
+'Dkhelti l projet ✓':["Projet rejoint ✓","Joined project ✓"],'Code ma kaynch':["Code introuvable","Code not found"],'Tcopia ✓':["Copié ✓","Copied ✓"],'Khrejti mn l-projet partagé':["Tu as quitté le projet partagé","You left the shared project"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
 const I18NX=[
 [/^Ba9i (\d+) j$/,"Encore $1 j","$1 d left"],[/^Deadline fatet (\d+) j$/,"Deadline dépassée de $1 j","Deadline passed $1 d ago"],
 [/^Lyoum: (\d+)\/(\d+) kmlti$/,"Aujourd'hui : $1/$2 faites","Today: $1/$2 done"],[/^(\d+) projet(s?)$/,"$1 projet$2","$1 project$2"],
@@ -232,7 +236,7 @@ const I18NX=[
 [/^Deadline fatet! Derti ghir (\d+)% mn l-projet\.$/,"Deadline dépassée ! Tu as fait seulement $1 % du projet.","Deadline passed! You only did $1% of the project."],
 [/^Tzadou (\d+) taches f (\d+) projets?$/,"$1 tâches ajoutées dans $2 projet(s)","$1 tasks added to $2 project(s)"],
 [/^Tzadou (\d+) taches f (\d+) projets? \+ (\d+) habits$/,"$1 tâches ajoutées dans $2 projet(s) + $3 habitudes","$1 tasks added to $2 project(s) + $3 habits"],
-[/^Ba9i (\d+) pts l (.+)$/,"Encore $1 pts pour $2","$1 pts to $2"],[/^⏱ (.+) ba9in lyoum$/,"⏱ $1 restantes aujourd'hui","⏱ $1 left today"],[/^Stage jdid: (.+)$/,"Nouveau niveau : $1","New level: $1"],[/^⏰ Sala l-wa9t dial: (.+)$/,"⏰ Temps écoulé : $1","⏰ Time's up: $1"],[/^(-?\d+) · Bdit$/,"$1 · Débutant","$1 · Starter"],[/^(\d+) fichiers$/,"$1 fichiers","$1 files"],[/^(.+) · Ghanfakrek 5 d9aye9 9bel$/,"$1 · Rappel 5 min avant","$1 · Reminder 5 min before"],[/^F (\d+) d9aye9 ⏰$/,"Dans $1 minutes ⏰","In $1 minutes ⏰"],[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
+[/^Ba9i (\d+) pts l (.+)$/,"Encore $1 pts pour $2","$1 pts to $2"],[/^⏱ (.+) ba9in lyoum$/,"⏱ $1 restantes aujourd'hui","⏱ $1 left today"],[/^Stage jdid: (.+)$/,"Nouveau niveau : $1","New level: $1"],[/^⏰ Sala l-wa9t dial: (.+)$/,"⏰ Temps écoulé : $1","⏰ Time's up: $1"],[/^(-?\d+) · Bdit$/,"$1 · Débutant","$1 · Starter"],[/^(\d+) fichiers$/,"$1 fichiers","$1 files"],[/^(.+) · Ghanfakrek 5 d9aye9 9bel$/,"$1 · Rappel 5 min avant","$1 · Reminder 5 min before"],[/^F (\d+) d9aye9 ⏰$/,"Dans $1 minutes ⏰","In $1 minutes ⏰"],[/^Code: (.+)$/,"Code : $1","Code: $1"],[/^F l-projet: (.+)$/,"Dans le projet : $1","In the project: $1"],[/^Tzadou (\d+) habits$/,"$1 habitudes ajoutées","$1 habits added"],[/^Mochkil: (.*)$/,"Problème : $1","Error: $1"],
 [/^(.*): taches$/,"$1 : tâches","$1: tasks"],[/^(.*): solutions$/,"$1 : solutions","$1: solutions"]];
 function tr(s){if(LANG==='dr')return s;const i=LANG==='fr'?0:1,k=s.trim();if(!k)return s;let out=I18N[k]&&I18N[k][i];
   if(out==null){for(const r of I18NX){if(r[0].test(k)){out=k.replace(r[0],r[1+i]);break}}}
@@ -304,7 +308,48 @@ async function doSync(){if(!AUTH||busy)return;if(navigator.onLine===false){setSy
     if(!remote||lt>rt||(rs===0&&ls>0)||(lt===rt&&ls>rs)){if(!S._t){S._t=Date.now();writeLocal()}lt=S._t;const snapS=S;await sbRest('POST','',{user_id:AUTH.id,data:snapS,updated_at:new Date().toISOString()})}
     sync.last=Date.now();sync.msg='';busy=false;setSync('ok')}
   catch(e){sync.msg=e.message;busy=false;setSync(AUTH?'err':'off')}
-  if(AUTH&&(S._t||0)>Math.max(lt,rt))schedulePush()}
+  if(AUTH&&(S._t||0)>Math.max(lt,rt))schedulePush();
+  shSyncAll()}
+const myName=()=>AUTH&&AUTH.email?AUTH.email.split('@')[0]:'Ana';
+async function sbAny(path,method,body,prefer){const t=await token();const hd={apikey:SBK,Authorization:'Bearer '+t,'Content-Type':'application/json'};if(prefer)hd.Prefer=prefer;
+  const r=await fetch(SB+'/rest/v1/'+path,{method,headers:hd,body:body?JSON.stringify(body):undefined});const txt=await r.text();let j=null;try{j=txt?JSON.parse(txt):null}catch(e){}
+  if(!r.ok){const m=(j&&(j.message||j.hint))||('Erreur '+r.status);throw new Error(m)}return j}
+const SNK='dftar-shsnap';let SHSNAP={};try{SHSNAP=JSON.parse(localStorage.getItem(SNK))||{}}catch(e){}
+const saveSnap=()=>{try{localStorage.setItem(SNK,JSON.stringify(SHSNAP))}catch(e){}};
+const SH_ARR=['tasks','problems','results'],SH_SCAL=['name','goal','deadline','type','ic'];
+const stripU=o=>{const c={...o};delete c.u;return JSON.stringify(c)};
+function shPayload(p){const d={dead:[...(p.dead||[])],members:[...(p.members||[])]};for(const k of SH_SCAL)d[k]=p[k];for(const a of SH_ARR)d[a]=(p[a]||[]).map(x=>({...x}));return d}
+function stampLocal(p,sd){const now=Date.now();p.dead=p.dead||[];for(const a of SH_ARR){const prev=new Map(((sd&&sd[a])||[]).map(x=>[x.id,x]));
+  for(const el of p[a]||[]){const pr=prev.get(el.id);if(!pr||stripU(pr)!==stripU(el))el.u=now}
+  if(sd)for(const id of prev.keys())if(!(p[a]||[]).some(x=>x.id===id)&&!p.dead.includes(id))p.dead.push(id)}}
+function mergeSh(local,remote,sd){if(!remote)return local;const m={};
+  for(const k of SH_SCAL){const lc=sd?JSON.stringify(local[k])!==JSON.stringify(sd[k]):false;m[k]=lc?local[k]:(remote[k]!==undefined?remote[k]:local[k])}
+  m.dead=[...new Set([...(remote.dead||[]),...(local.dead||[])])].slice(-800);
+  const rmM=sd?(sd.members||[]).filter(n=>!(local.members||[]).includes(n)):[];m.members=[...new Set([...(remote.members||[]),...(local.members||[])])].filter(n=>!rmM.includes(n));
+  for(const a of SH_ARR){const map=new Map();for(const el of[...(remote[a]||[]),...(local[a]||[])]){const cur=map.get(el.id);if(!cur||(el.u||0)>(cur.u||0))map.set(el.id,el)}m[a]=[...map.values()].filter(x=>!m.dead.includes(x.id))}
+  return m}
+async function shSyncOne(p){const id=p.shared.id;const rows=await sbAny('dftar_shared?select=data&id=eq.'+id,'GET');if(!rows||!rows.length)return false;const remote=rows[0].data;
+  const sd=SHSNAP[id];stampLocal(p,sd);const merged=mergeSh(shPayload(p),remote,sd);
+  let mem=[];try{mem=await sbAny('dftar_members?select=email&project_id=eq.'+id,'GET')||[]}catch(e){}
+  merged.members=[...new Set([...(merged.members||[]),...mem.map(x=>(x.email||'').split('@')[0]).filter(Boolean)])];
+  const mj=JSON.stringify(merged);if(mj!==JSON.stringify(remote))await sbAny('dftar_shared?id=eq.'+id,'PATCH',{data:merged,updated_at:new Date().toISOString()},'return=minimal');
+  const before=JSON.stringify(shPayload(p));for(const k of SH_SCAL)p[k]=merged[k];for(const a of SH_ARR)p[a]=merged[a];p.dead=merged.dead;p.members=merged.members;
+  const em=mem.map(x=>x.email).filter(Boolean);const emCh=JSON.stringify(em)!==JSON.stringify(p.shared.emails||[]);p.shared.emails=em;
+  SHSNAP[id]=JSON.parse(mj);saveSnap();return emCh||JSON.stringify(shPayload(p))!==before}
+let shBusy=false;
+function safeRender(){const a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)&&app.contains(a))return;if(document.getElementById('sheet').classList.contains('on'))return;render()}
+async function shSyncAll(){if(!AUTH||shBusy||navigator.onLine===false)return;const list=S.projects.filter(x=>x.shared&&x.shared.id);if(!list.length)return;shBusy=true;let ch=false;
+  for(const p of list){try{if(await shSyncOne(p))ch=true}catch(e){sync.msg=e.message}}shBusy=false;if(ch){S._t=Date.now();writeLocal();schedulePush();safeRender()}}
+setInterval(()=>{if(document.visibilityState!=='hidden')shSyncAll()},15000);
+async function shCreate(p){if(!AUTH){view={tab:'account',pid:null};render();return toast2('Khassek compte bach tpartagi')}
+  const me=myName();p.type='team';p.members=[...new Set([me,...(p.members||[])])];for(const t of p.tasks)if(!t.who)t.who=me;
+  try{const r=await sbAny('rpc/dftar_create_shared','POST',{p_data:shPayload(p)});p.shared={id:r.id,code:r.code,emails:[AUTH.email]};SHSNAP[r.id]=shPayload(p);saveSnap();save();render();toast2('Code: '+r.code)}
+  catch(e){toast2('Mochkil: '+e.message)}}
+async function shJoin(code){if(!AUTH){view={tab:'account',pid:null};render();return toast2('Khassek compte bach tdkhol l projet')}
+  code=code.trim().toUpperCase();if(S.projects.some(x=>x.shared&&x.shared.code===code))return toast2('Deja 3ndek had l-projet');
+  try{const r=await sbAny('rpc/dftar_join','POST',{p_code:code});const d=r.data||{};const p={id:uid(),name:d.name||'Projet',goal:d.goal||'',deadline:d.deadline||'',type:'team',ic:d.ic,members:[...new Set([...(d.members||[]),myName()])],tasks:d.tasks||[],problems:d.problems||[],results:d.results||[],dead:d.dead||[],shared:{id:r.id,code}};
+    S.projects.unshift(p);SHSNAP[r.id]=d;saveSnap();save();view={tab:'projects',pid:p.id};render();toast2('Dkhelti l projet ✓');shSyncAll()}
+  catch(e){toast2(/not found/i.test(e.message)?'Code ma kaynch':'Mochkil: '+e.message)}}
 const app=document.getElementById('app');
 const pctOf=p=>p.tasks.length?Math.round(p.tasks.filter(t=>t.done).length/p.tasks.length*100):0;
 const daysLeft=p=>{if(!p.deadline)return null;const a=new Date(p.deadline+'T00:00'),b=new Date(todayK()+'T00:00');return Math.round((a-b)/864e5)};
@@ -380,6 +425,7 @@ function renderHabits(){
 }
 function renderProjects(){
   app.innerHTML=`<div class="top"><div><h1>Projets</h1><div class="sub">${S.projects.length} projet${S.projects.length>1?'s':''}</div></div></div>
+  <form class="card" id="f-join"><div class="sub">${icHTML('i:users')} Dkhel l projet partagé</div><div class="add" style="margin:8px 0 0"><input id="i-join" placeholder="Code (ex: K7F2A9)" maxlength="8" autocapitalize="characters" style="text-transform:uppercase" required><button class="go">Dkhol</button></div></form>
   <details class="card" id="imp-box"><summary style="font-weight:600;cursor:pointer;min-height:28px">Import mn Claude</summary>
    <textarea id="i-imp" style="margin-top:10px;min-height:120px" placeholder="Lessa9 hna l-code li 3tak Claude"></textarea>
    <button class="go" id="do-imp" style="margin-top:8px;width:100%">Zid l-plan</button></details>
@@ -389,10 +435,10 @@ function renderProjects(){
    <select id="i-ptype" style="margin-top:8px" aria-label="Type"><option value="solo">Individuel</option><option value="team">Équipe</option></select>
    <button class="go" style="margin-top:8px;width:100%">Zid l-projet</button></form>
   ${S.projects.length?'':'<div class="empty">Ma kayn ta projet.</div>'}
-  <div class="plist">${S.projects.map(p=>{const pc=pctOf(p);return`<button class="card proj" data-open="${p.id}"><h3><span class="icv">${icHTML(p.ic||'i:target')}</span>${esc(p.name)}</h3>
+  <div class="plist">${S.projects.map(p=>{const pc=pctOf(p);return`<button class="card proj" data-open="${p.id}"><h3><span class="icv">${icHTML(p.ic||'i:target')}</span>${esc(p.name)}${p.shared&&p.shared.id?` <span class="kind" style="margin:0;vertical-align:middle">${icHTML('i:users')} ${esc(p.shared.code)}</span>`:''}</h3>
    <div class="bar"><i style="width:${pc}%"></i></div><div class="meta"><span><b style="color:var(--ink)">${pc}%</b></span><span>${p.tasks.filter(t=>t.done).length}/${p.tasks.length} taches</span><span>${dlText(p)}</span></div></button>`}).join('')}</div>`;
 }
-function renderProject(p){
+function renderProject(p){const shp=!!(p.shared&&p.shared.id),me=myName(),people=shp?[...new Set([me,...(p.members||[])])]:['Ana',...(p.members||[])];
   const pc=pctOf(p),d=daysLeft(p);
   let alert='';
   if(d!==null&&d<0)alert=pc>=100?`<div class="alert ok">Bravo! Kmlti l-projet 100% 9bel l-deadline.</div>`:`<div class="alert">Deadline fatet! Derti ghir ${pc}% mn l-projet.</div>`;
@@ -407,12 +453,17 @@ function renderProject(p){
     <label class="sub">L-hadaf<input data-f="goal" value="${esc(p.goal)}" placeholder="Chno bghiti tousel lih?"></label>
     <label class="sub">Deadline<input data-f="deadline" type="date" value="${esc(p.deadline)}"></label></div></div>
   <div class="sec"><h3>Type</h3><div style="display:flex;gap:8px;margin-top:8px"><button data-ptype="solo" class="${p.type!=='team'?'act':''}" style="flex:1">Individuel</button><button data-ptype="team" class="${p.type==='team'?'act':''}" style="flex:1">Équipe</button></div></div>
-  ${p.type==='team'?`<div class="sec"><h3>L-équipe <span class="count">${(p.members||[]).length+1} drari</span></h3>
+  ${shp?`<div class="card tcard"><div class="sub">${icHTML('i:users')} Projet partagé · code</div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px"><span class="bigclock" style="font-size:40px;margin:0;letter-spacing:3px">${esc(p.shared.code)}</span><button id="sh-copy" data-code="${esc(p.shared.code)}">Copy</button></div>
+     <div class="sub">3ti had l-code l s7abk: f Dftar → Projets → "Dkhel code".</div>${(p.shared.emails||[]).length?`<div class="sub" style="margin-top:6px">F l-projet: ${p.shared.emails.map(esc).join(', ')}</div>`:''}
+     <button id="sh-leave" style="width:100%;margin-top:10px;color:var(--hot)">Khrej mn l-projet partagé</button></div>`
+   :`<button class="go" id="sh-create" style="width:100%;margin-top:10px">${icHTML('i:users')} Partager m3a l-équipe (code)</button>`}
+  ${p.type==='team'?`<div class="sec"><h3>L-équipe <span class="count">${people.length} drari</span></h3>
+
    <form class="add" id="f-member"><input id="i-member" placeholder="Smiya dial sa7bek" maxlength="40" required><button class="go">Zid</button></form>
-   <div class="card">${['Ana',...(p.members||[])].map(n=>{const who=n==='Ana'?'':n,ts=p.tasks.filter(t=>(t.who||'')===who),dn=ts.filter(t=>t.done).length,pc2=ts.length?Math.round(dn/ts.length*100):0;
-    return`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n)}</b><span class="count">${dn}/${ts.length} · ${pc2}%${n!=='Ana'?` <button class="x" data-rmm="${esc(n)}" aria-label="7iyed">×</button>`:''}</span></div><div class="bar"><i style="width:${pc2}%"></i></div></div>`}).join('')}</div></div>`:''}
-  <div class="sec"><h3>Les taches <span class="count">${p.tasks.filter(t=>t.done).length}/${p.tasks.length}</span></h3>${p.type==='team'?`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><select aria-label="Chkoun" style="width:auto;max-width:30%">${['Ana',...(p.members||[])].map(n=>`<option value="${n==='Ana'?'':esc(n)}">${esc(n)}</option>`).join('')}</select><button class="go">Zid</button></form>`:`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><button class="go">Zid</button></form>`}
-   <div class="card">${p.tasks.length?p.tasks.map(t=>`<div class="item ${t.done?'done':''}"><button class="chk" data-tog="${t.id}" aria-pressed="${!!t.done}" aria-label="Check">${t.done?'✓':''}</button><span class="t">${esc(t.t)}</span><span class="chips"><button class="kind tbtn" data-setmin="t|${p.id}|${t.id}" aria-label="Wa9t">${icHTML('i:clock')} ${t.min?fmtMin(t.min):'+'}</button>${t.min&&!t.done?playBtn('t|'+p.id+'|'+t.id):''}${p.type==='team'?`<span class="kind">${esc(t.who||'Ana')}</span>`:''}<button class="x" data-rm="tasks|${t.id}" aria-label="Msse7">×</button></span></div>`).join(''):'<div class="empty">Zid les taches. L-pourcentage kayt7seb mnhom.</div>'}</div></div>
+   <div class="card">${people.map(n=>{const who=n==='Ana'?'':n,ts=p.tasks.filter(t=>(t.who||'')===who),dn=ts.filter(t=>t.done).length,pc2=ts.length?Math.round(dn/ts.length*100):0;
+    return`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n)}${shp&&n===me?' (nta)':''}</b><span class="count">${dn}/${ts.length} · ${pc2}%${n!=='Ana'&&!(shp&&n===me)?` <button class="x" data-rmm="${esc(n)}" aria-label="7iyed">×</button>`:''}</span></div><div class="bar"><i style="width:${pc2}%"></i></div></div>`}).join('')}</div></div>`:''}
+  <div class="sec"><h3>Les taches <span class="count">${p.tasks.filter(t=>t.done).length}/${p.tasks.length}</span></h3>${p.type==='team'?`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><select aria-label="Chkoun" style="width:auto;max-width:30%">${people.map(n=>`<option value="${n==='Ana'?'':esc(n)}">${esc(n)}</option>`).join('')}</select><button class="go">Zid</button></form>`:`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><button class="go">Zid</button></form>`}
+   <div class="card">${p.tasks.length?p.tasks.map(t=>`<div class="item ${t.done?'done':''}"><button class="chk" data-tog="${t.id}" aria-pressed="${!!t.done}" aria-label="Check">${t.done?'✓':''}</button><span class="t">${esc(t.t)}</span><span class="chips"><button class="kind tbtn" data-setmin="t|${p.id}|${t.id}" aria-label="Wa9t">${icHTML('i:clock')} ${t.min?fmtMin(t.min):'+'}</button>${t.min&&!t.done?playBtn('t|'+p.id+'|'+t.id):''}${p.type==='team'?`<span class="kind">${esc(t.who||(shp?'—':'Ana'))}</span>`:''}<button class="x" data-rm="tasks|${t.id}" aria-label="Msse7">×</button></span></div>`).join(''):'<div class="empty">Zid les taches. L-pourcentage kayt7seb mnhom.</div>'}</div></div>
   <div class="sec"><h3>Les problèmes w les solutions <span class="count">${p.problems.filter(x=>x.s).length}/${p.problems.length} m7loulin</span></h3>${list(0,'problems','Problème jdid')}
    <div class="card">${p.problems.length?p.problems.map(x=>`<div class="prob"><div class="p"><span class="t" style="overflow-wrap:anywhere">${esc(x.p)}</span><button class="x" data-rm="problems|${x.id}" aria-label="Msse7">×</button></div><label for="s-${x.id}">Solution</label><textarea id="s-${x.id}" data-sol="${x.id}" placeholder="Kifach ghadi t7elha?">${esc(x.s)}</textarea></div>`).join(''):'<div class="empty">Ma kayn ta problème daba.</div>'}</div></div>
   <div class="sec"><h3>Les résultats réels <span class="count">${p.results.length}</span></h3>${list(0,'results','Chno wselti lih b se7')}
@@ -466,6 +517,7 @@ async function accLogin(up){const em=document.getElementById('acc-email').value.
     if(!j.access_token){sync.msg='Compte tcréa. Chouf email dialek w confirmi, 3ad dkhol.';render();return}
     keepAuth(j);sync.msg='';sync.state='idle';render();await doSync();toast2(up?'Compte tcréa ✓':'Dkhelti ✓')}
   catch(e){sync.msg=/invalid login|invalid_credentials/i.test(e.message)?'Email wla mot de passe ghalet':/already registered|already exists/i.test(e.message)?'Had l-email 3ndo compte deja, dir Dkhol':e.message;render()}}
+app.addEventListener('submit',e=>{if(e.target.id!=='f-join')return;e.preventDefault();e.stopImmediatePropagation();const v=document.getElementById('i-join').value;if(v.trim())shJoin(v)});
 app.addEventListener('submit',e=>{if(e.target.id!=='f-acc')return;e.preventDefault();e.stopImmediatePropagation();accLogin(false)});
 app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   if(b.id==='cloud'){view={tab:'account',pid:null};sync.msg=sync.state==='err'?sync.msg:'';render();scrollTo(0,0)}
@@ -773,6 +825,10 @@ app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return
   else if(b.dataset.rm){const[k,id]=b.dataset.rm.split('|');snap();const p=cur();p[k]=p[k].filter(x=>x.id!==id);save();render();toast('Tmss7at')}
   else if(b.dataset.ptype){cur().type=b.dataset.ptype;save();render()}
   else if(b.dataset.rmm){const p=cur();snap();p.members=p.members.filter(n=>n!==b.dataset.rmm);p.tasks.forEach(t=>{if(t.who===b.dataset.rmm)t.who=''});save();render();toast('T7iyed mn l-équipe')}
+  else if(b.id==='sh-create'){shCreate(cur())}
+  else if(b.id==='sh-copy'){const c=b.dataset.code;try{navigator.clipboard.writeText(c).then(()=>toast2('Tcopia ✓'),()=>toast2(c))}catch(err){toast2(c)}}
+  else if(b.id==='sh-leave'||(b.id==='del-proj'&&cur()&&cur().shared)){const p=cur();if(p&&p.shared){const sid=p.shared.id;sbAny('rpc/dftar_leave','POST',{p_id:sid}).catch(()=>{});delete SHSNAP[sid];saveSnap();
+      if(b.id==='sh-leave'){delete p.shared;save();render();toast2('Khrejti mn l-projet partagé')}else{snap();S.projects=S.projects.filter(x=>x.id!==view.pid);view.pid=null;save();render();toast('Projet tmss7')}}}
   else if(b.id==='del-proj'){snap();S.projects=S.projects.filter(x=>x.id!==view.pid);view.pid=null;save();render();toast('Projet tmss7')}
 });
 app.addEventListener('change',e=>{const el=e.target,p=cur();if(!p)return;
