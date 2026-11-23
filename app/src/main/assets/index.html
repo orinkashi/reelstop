@@ -225,7 +225,7 @@ const I18N={
 '3ti had l-code l s7abk: f Dftar → Projets → "Dkhel code".':["Donne ce code à tes amis : Dftar → Projets → « Entrer un code ».","Give this code to your friends: Dftar → Projects → \"Enter code\"."],
 'Khrej mn l-projet partagé':["Quitter le projet partagé","Leave shared project"],'Dkhel l projet partagé':["Rejoindre un projet partagé","Join a shared project"],'Code (ex: K7F2A9)':["Code (ex : K7F2A9)","Code (e.g. K7F2A9)"],
 'Khassek compte bach tpartagi':["Il faut un compte pour partager","You need an account to share"],'Khassek compte bach tdkhol l projet':["Il faut un compte pour rejoindre","You need an account to join"],'Deja 3ndek had l-projet':["Tu as déjà ce projet","You already have this project"],
-'Dkhelti l projet ✓':["Projet rejoint ✓","Joined project ✓"],'Code ma kaynch':["Code introuvable","Code not found"],'Tcopia ✓':["Copié ✓","Copied ✓"],'Khrejti mn l-projet partagé':["Tu as quitté le projet partagé","You left the shared project"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
+'Dkhelti l projet ✓':["Projet rejoint ✓","Joined project ✓"],'Code ma kaynch':["Code introuvable","Code not found"],'Tcopia ✓':["Copié ✓","Copied ✓"],'Khrejti mn l-projet partagé':["Tu as quitté le projet partagé","You left the shared project"],'Ma b9itich f l-projet partagé':["Tu ne fais plus partie du projet partagé","You're no longer in the shared project"],'Ghir mol l-projet y9der ykhrrej chi wa7d':["Seul le créateur peut retirer quelqu'un","Only the owner can remove someone"],'Sot ma khdamch f had l-appareil':["Le son ne marche pas sur cet appareil","Sound doesn't work on this device"]};
 const I18NX=[
 [/^Ba9i (\d+) j$/,"Encore $1 j","$1 d left"],[/^Deadline fatet (\d+) j$/,"Deadline dépassée de $1 j","Deadline passed $1 d ago"],
 [/^Lyoum: (\d+)\/(\d+) kmlti$/,"Aujourd'hui : $1/$2 faites","Today: $1/$2 done"],[/^(\d+) projet(s?)$/,"$1 projet$2","$1 project$2"],
@@ -327,7 +327,7 @@ function mergeSh(local,remote,sd){if(!remote)return local;const m={};
   const rmM=sd?(sd.members||[]).filter(n=>!(local.members||[]).includes(n)):[];m.members=[...new Set([...(remote.members||[]),...(local.members||[])])].filter(n=>!rmM.includes(n));
   for(const a of SH_ARR){const map=new Map();for(const el of[...(remote[a]||[]),...(local[a]||[])]){const cur=map.get(el.id);if(!cur||(el.u||0)>(cur.u||0))map.set(el.id,el)}m[a]=[...map.values()].filter(x=>!m.dead.includes(x.id))}
   return m}
-async function shSyncOne(p){const id=p.shared.id;const rows=await sbAny('dftar_shared?select=data&id=eq.'+id,'GET');if(!rows||!rows.length)return false;const remote=rows[0].data;
+async function shSyncOne(p){const id=p.shared.id;const rows=await sbAny('dftar_shared?select=data,owner&id=eq.'+id,'GET');if(!rows||!rows.length){if(Array.isArray(rows)){delete p.shared;delete SHSNAP[id];saveSnap();toast2(tr('Ma b9itich f l-projet partagé')+': '+p.name);return true}return false}const remote=rows[0].data;p.shared.mine=rows[0].owner===AUTH.id;
   const sd=SHSNAP[id];stampLocal(p,sd);const merged=mergeSh(shPayload(p),remote,sd);
   let mem=[];try{mem=await sbAny('dftar_members?select=email&project_id=eq.'+id,'GET')||[]}catch(e){}
   merged.members=[...new Set([...(merged.members||[]),...mem.map(x=>(x.email||'').split('@')[0]).filter(Boolean)])];
@@ -342,7 +342,7 @@ async function shSyncAll(){if(!AUTH||shBusy||navigator.onLine===false)return;con
 setInterval(()=>{if(document.visibilityState!=='hidden')shSyncAll()},15000);
 async function shCreate(p){if(!AUTH){view={tab:'account',pid:null};render();return toast2('Khassek compte bach tpartagi')}
   const me=myName();p.type='team';p.members=[...new Set([me,...(p.members||[])])];for(const t of p.tasks)if(!t.who)t.who=me;
-  try{const r=await sbAny('rpc/dftar_create_shared','POST',{p_data:shPayload(p)});p.shared={id:r.id,code:r.code,emails:[AUTH.email]};SHSNAP[r.id]=shPayload(p);saveSnap();save();render();toast2('Code: '+r.code)}
+  try{const r=await sbAny('rpc/dftar_create_shared','POST',{p_data:shPayload(p)});p.shared={id:r.id,code:r.code,emails:[AUTH.email],mine:true};SHSNAP[r.id]=shPayload(p);saveSnap();save();render();toast2('Code: '+r.code)}
   catch(e){toast2('Mochkil: '+e.message)}}
 async function shJoin(code){if(!AUTH){view={tab:'account',pid:null};render();return toast2('Khassek compte bach tdkhol l projet')}
   code=code.trim().toUpperCase();if(S.projects.some(x=>x.shared&&x.shared.code===code))return toast2('Deja 3ndek had l-projet');
@@ -460,7 +460,7 @@ function renderProject(p){const shp=!!(p.shared&&p.shared.id),me=myName(),people
 
    <form class="add" id="f-member"><input id="i-member" placeholder="Smiya dial sa7bek" maxlength="40" required><button class="go">Zid</button></form>
    <div class="card">${people.map(n=>{const who=n==='Ana'?'':n,ts=p.tasks.filter(t=>(t.who||'')===who),dn=ts.filter(t=>t.done).length,pc2=ts.length?Math.round(dn/ts.length*100):0;
-    return`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n)}${shp&&n===me?' (nta)':''}</b><span class="count">${dn}/${ts.length} · ${pc2}%${n!=='Ana'&&!(shp&&n===me)?` <button class="x" data-rmm="${esc(n)}" aria-label="7iyed">×</button>`:''}</span></div><div class="bar"><i style="width:${pc2}%"></i></div></div>`}).join('')}</div></div>`:''}
+    return`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n)}${shp&&n===me?' (nta)':''}</b><span class="count">${dn}/${ts.length} · ${pc2}%${n!=='Ana'&&!(shp&&n===me)&&!(shp&&!p.shared.mine)?` <button class="x" data-rmm="${esc(n)}" aria-label="7iyed">×</button>`:''}</span></div><div class="bar"><i style="width:${pc2}%"></i></div></div>`}).join('')}</div></div>`:''}
   <div class="sec"><h3>Les taches <span class="count">${p.tasks.filter(t=>t.done).length}/${p.tasks.length}</span></h3>${p.type==='team'?`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><select aria-label="Chkoun" style="width:auto;max-width:30%">${people.map(n=>`<option value="${n==='Ana'?'':esc(n)}">${esc(n)}</option>`).join('')}</select><button class="go">Zid</button></form>`:`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><button class="go">Zid</button></form>`}
    <div class="card">${p.tasks.length?p.tasks.map(t=>`<div class="item ${t.done?'done':''}"><button class="chk" data-tog="${t.id}" aria-pressed="${!!t.done}" aria-label="Check">${t.done?'✓':''}</button><span class="t">${esc(t.t)}</span><span class="chips"><button class="kind tbtn" data-setmin="t|${p.id}|${t.id}" aria-label="Wa9t">${icHTML('i:clock')} ${t.min?fmtMin(t.min):'+'}</button>${t.min&&!t.done?playBtn('t|'+p.id+'|'+t.id):''}${p.type==='team'?`<span class="kind">${esc(t.who||(shp?'—':'Ana'))}</span>`:''}<button class="x" data-rm="tasks|${t.id}" aria-label="Msse7">×</button></span></div>`).join(''):'<div class="empty">Zid les taches. L-pourcentage kayt7seb mnhom.</div>'}</div></div>
   <div class="sec"><h3>Les problèmes w les solutions <span class="count">${p.problems.filter(x=>x.s).length}/${p.problems.length} m7loulin</span></h3>${list(0,'problems','Problème jdid')}
@@ -823,6 +823,9 @@ app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return
   else if(b.dataset.tog){const t=cur().tasks.find(x=>x.id===b.dataset.tog);t.done=t.done?0:1;save();render()}
   else if(b.dataset.rm){const[k,id]=b.dataset.rm.split('|');snap();const p=cur();p[k]=p[k].filter(x=>x.id!==id);save();render();toast('Tmss7at')}
   else if(b.dataset.ptype){cur().type=b.dataset.ptype;save();render()}
+  else if(b.dataset.rmm&&cur()&&cur().shared){const p=cur(),nm=b.dataset.rmm,em=(p.shared.emails||[]).find(x=>(x||'').split('@')[0]===nm);
+    if(!p.shared.mine){toast2(tr('Ghir mol l-projet y9der ykhrrej chi wa7d'));return}
+    (em?sbAny('rpc/dftar_kick','POST',{p_id:p.shared.id,p_email:em}):Promise.resolve()).then(()=>{p.members=p.members.filter(n=>n!==nm);p.tasks.forEach(t=>{if(t.who===nm)t.who=''});p.shared.emails=(p.shared.emails||[]).filter(x=>x!==em);save();render();toast(tr('T7iyed mn l-équipe'));shSyncAll()}).catch(err=>toast2('Mochkil: '+err.message))}
   else if(b.dataset.rmm){const p=cur();snap();p.members=p.members.filter(n=>n!==b.dataset.rmm);p.tasks.forEach(t=>{if(t.who===b.dataset.rmm)t.who=''});save();render();toast('T7iyed mn l-équipe')}
   else if(b.id==='sh-create'){shCreate(cur())}
   else if(b.id==='sh-copy'){const c=b.dataset.code;try{navigator.clipboard.writeText(c).then(()=>toast2('Tcopia ✓'),()=>toast2(c))}catch(err){toast2(c)}}
