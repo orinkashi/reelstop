@@ -303,7 +303,7 @@ async function doSync(){if(!AUTH||busy)return;if(navigator.onLine===false){setSy
     const size=x=>x?((x.habits||[]).length+(x.projects||[]).length+(x.notes||[]).length+Object.keys(x.plan||{}).length):0;
     const ls=size(S),rs=size(remote);
     const pull=remote&&rs>0&&(ls===0||rt>lt||(rt===lt&&rs>=ls));
-    if(pull){S=remote;if(!S.plan)S.plan={};if(!S.notes)S.notes=[];writeLocal();busy=false;sync.last=Date.now();setSync('ok');render();return}
+    if(pull){S=remote;if(!S.plan)S.plan={};if(!S.notes)S.notes=[];for(const p of S.projects||[])if(p.shared&&p.shared.id){SHSNAP[p.shared.id]=shPayload(p)}saveSnap();writeLocal();busy=false;sync.last=Date.now();setSync('ok');render();return}
     if(!remote||lt>rt||(rs===0&&ls>0)||(lt===rt&&ls>rs)){if(!S._t){S._t=Date.now();writeLocal()}lt=S._t;const snapS=S;await sbRest('POST','',{user_id:AUTH.id,data:snapS,updated_at:new Date().toISOString()})}
     sync.last=Date.now();sync.msg='';busy=false;setSync('ok')}
   catch(e){sync.msg=e.message;busy=false;setSync(AUTH?'err':'off')}
@@ -320,7 +320,7 @@ const stripU=o=>{const c={...o};delete c.u;return JSON.stringify(c)};
 function shPayload(p){const d={dead:[...(p.dead||[])],members:[...(p.members||[])]};for(const k of SH_SCAL)d[k]=p[k];for(const a of SH_ARR)d[a]=(p[a]||[]).map(x=>({...x}));return d}
 function stampLocal(p,sd){const now=Date.now();p.dead=p.dead||[];for(const a of SH_ARR){const prev=new Map(((sd&&sd[a])||[]).map(x=>[x.id,x]));
   for(const el of p[a]||[]){const pr=prev.get(el.id);if(!pr||stripU(pr)!==stripU(el))el.u=now}
-  if(sd)for(const id of prev.keys())if(!(p[a]||[]).some(x=>x.id===id)&&!p.dead.includes(id))p.dead.push(id)}}
+}}
 function mergeSh(local,remote,sd){if(!remote)return local;const m={};
   for(const k of SH_SCAL){const lc=sd?JSON.stringify(local[k])!==JSON.stringify(sd[k]):false;m[k]=lc?local[k]:(remote[k]!==undefined?remote[k]:local[k])}
   m.dead=[...new Set([...(remote.dead||[]),...(local.dead||[])])].slice(-800);
@@ -460,7 +460,7 @@ function renderProject(p){const shp=!!(p.shared&&p.shared.id),me=myName(),people
 
    <form class="add" id="f-member"><input id="i-member" placeholder="Smiya dial sa7bek" maxlength="40" required><button class="go">Zid</button></form>
    <div class="card">${people.map(n=>{const who=n==='Ana'?'':n,ts=p.tasks.filter(t=>(t.who||'')===who),dn=ts.filter(t=>t.done).length,pc2=ts.length?Math.round(dn/ts.length*100):0;
-    return`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n)}${shp&&n===me?' (nta)':''}</b><span class="count">${dn}/${ts.length} · ${pc2}%${n!=='Ana'&&!(shp&&n===me)&&!(shp&&!p.shared.mine)?` <button class="x" data-rmm="${esc(n)}" aria-label="7iyed">×</button>`:''}</span></div><div class="bar"><i style="width:${pc2}%"></i></div></div>`}).join('')}</div></div>`:''}
+    return`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n)}${shp&&n===me?' (nta)':''}</b><span class="count">${dn}/${ts.length} · ${pc2}%${n!=='Ana'&&!(shp&&n===me)&&!(shp&&p.shared.mine===false)?` <button class="x" data-rmm="${esc(n)}" aria-label="7iyed">×</button>`:''}</span></div><div class="bar"><i style="width:${pc2}%"></i></div></div>`}).join('')}</div></div>`:''}
   <div class="sec"><h3>Les taches <span class="count">${p.tasks.filter(t=>t.done).length}/${p.tasks.length}</span></h3>${p.type==='team'?`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><select aria-label="Chkoun" style="width:auto;max-width:30%">${people.map(n=>`<option value="${n==='Ana'?'':esc(n)}">${esc(n)}</option>`).join('')}</select><button class="go">Zid</button></form>`:`<form class="add" data-add="tasks"><input placeholder="Tache jdida" maxlength="140" required><input type="number" class="mininp" min="1" max="600" inputmode="numeric" placeholder="⏱ min" aria-label="Minutes"><button class="go">Zid</button></form>`}
    <div class="card">${p.tasks.length?p.tasks.map(t=>`<div class="item ${t.done?'done':''}"><button class="chk" data-tog="${t.id}" aria-pressed="${!!t.done}" aria-label="Check">${t.done?'✓':''}</button><span class="t">${esc(t.t)}</span><span class="chips"><button class="kind tbtn" data-setmin="t|${p.id}|${t.id}" aria-label="Wa9t">${icHTML('i:clock')} ${t.min?fmtMin(t.min):'+'}</button>${t.min&&!t.done?playBtn('t|'+p.id+'|'+t.id):''}${p.type==='team'?`<span class="kind">${esc(t.who||(shp?'—':'Ana'))}</span>`:''}<button class="x" data-rm="tasks|${t.id}" aria-label="Msse7">×</button></span></div>`).join(''):'<div class="empty">Zid les taches. L-pourcentage kayt7seb mnhom.</div>'}</div></div>
   <div class="sec"><h3>Les problèmes w les solutions <span class="count">${p.problems.filter(x=>x.s).length}/${p.problems.length} m7loulin</span></h3>${list(0,'problems','Problème jdid')}
@@ -821,10 +821,10 @@ app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return
   else if(b.dataset.open){view.pid=b.dataset.open;render();scrollTo(0,0)}
   else if(b.id==='back'){view.pid=null;render();scrollTo(0,0)}
   else if(b.dataset.tog){const t=cur().tasks.find(x=>x.id===b.dataset.tog);t.done=t.done?0:1;save();render()}
-  else if(b.dataset.rm){const[k,id]=b.dataset.rm.split('|');snap();const p=cur();p[k]=p[k].filter(x=>x.id!==id);save();render();toast('Tmss7at')}
+  else if(b.dataset.rm){const[k,id]=b.dataset.rm.split('|');snap();const p=cur();p[k]=p[k].filter(x=>x.id!==id);if(p.shared){p.dead=[...(p.dead||[]),id]}save();render();toast('Tmss7at')}
   else if(b.dataset.ptype){cur().type=b.dataset.ptype;save();render()}
   else if(b.dataset.rmm&&cur()&&cur().shared){const p=cur(),nm=b.dataset.rmm,em=(p.shared.emails||[]).find(x=>(x||'').split('@')[0]===nm);
-    if(!p.shared.mine){toast2(tr('Ghir mol l-projet y9der ykhrrej chi wa7d'));return}
+    if(p.shared.mine===false){toast2(tr('Ghir mol l-projet y9der ykhrrej chi wa7d'));return}
     (em?sbAny('rpc/dftar_kick','POST',{p_id:p.shared.id,p_email:em}):Promise.resolve()).then(()=>{p.members=p.members.filter(n=>n!==nm);p.tasks.forEach(t=>{if(t.who===nm)t.who=''});p.shared.emails=(p.shared.emails||[]).filter(x=>x!==em);save();render();toast(tr('T7iyed mn l-équipe'));shSyncAll()}).catch(err=>toast2('Mochkil: '+err.message))}
   else if(b.dataset.rmm){const p=cur();snap();p.members=p.members.filter(n=>n!==b.dataset.rmm);p.tasks.forEach(t=>{if(t.who===b.dataset.rmm)t.who=''});save();render();toast('T7iyed mn l-équipe')}
   else if(b.id==='sh-create'){shCreate(cur())}
