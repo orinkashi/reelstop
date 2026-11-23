@@ -317,11 +317,11 @@ const SNK='dftar-shsnap';let SHSNAP={};try{SHSNAP=JSON.parse(localStorage.getIte
 const saveSnap=()=>{try{localStorage.setItem(SNK,JSON.stringify(SHSNAP))}catch(e){}};
 const SH_ARR=['tasks','problems','results'],SH_SCAL=['name','goal','deadline','type','ic'];
 const stripU=o=>{const c={...o};delete c.u;return JSON.stringify(c)};
-function shPayload(p){const d={dead:[...(p.dead||[])],members:[...(p.members||[])]};for(const k of SH_SCAL)d[k]=p[k];for(const a of SH_ARR)d[a]=(p[a]||[]).map(x=>({...x}));return d}
+function shPayload(p){const d={v:2,dead:[...(p.dead||[])],members:[...(p.members||[])]};for(const k of SH_SCAL)d[k]=p[k];for(const a of SH_ARR)d[a]=(p[a]||[]).map(x=>({...x}));return d}
 function stampLocal(p,sd){const now=Date.now();p.dead=p.dead||[];for(const a of SH_ARR){const prev=new Map(((sd&&sd[a])||[]).map(x=>[x.id,x]));
   for(const el of p[a]||[]){const pr=prev.get(el.id);if(!pr||stripU(pr)!==stripU(el))el.u=now}
 }}
-function mergeSh(local,remote,sd){if(!remote)return local;const m={};
+function mergeSh(local,remote,sd){if(!remote)return local;const m={v:2};
   for(const k of SH_SCAL){const lc=sd?JSON.stringify(local[k])!==JSON.stringify(sd[k]):false;m[k]=lc?local[k]:(remote[k]!==undefined?remote[k]:local[k])}
   m.dead=[...new Set([...(remote.dead||[]),...(local.dead||[])])].slice(-800);
   const rmM=sd?(sd.members||[]).filter(n=>!(local.members||[]).includes(n)):[];m.members=[...new Set([...(remote.members||[]),...(local.members||[])])].filter(n=>!rmM.includes(n));
