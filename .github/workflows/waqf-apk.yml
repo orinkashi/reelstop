@@ -26,6 +26,19 @@ jobs:
         with:
           gradle-version: '8.9'
 
+      - name: Signing key
+        env:
+          KS_B64: ${{ secrets.OMAR_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.OMAR_KEYSTORE_PASS }}
+        run: |
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/omar.jks"
+            echo "OMAR_KS_PATH=$RUNNER_TEMP/omar.jks" >> "$GITHUB_ENV"
+            echo "OMAR_KS_PASS=$KS_PASS" >> "$GITHUB_ENV"
+          else
+            echo "::warning::No signing key secret: updates will not install over the old app"
+          fi
+
       - name: Build
         run: gradle assembleDebug
 

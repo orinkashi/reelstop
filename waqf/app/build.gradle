@@ -1,5 +1,17 @@
 plugins { id 'com.android.application' }
 android {
+    // Same key for every build, so updates install over the old version.
+    // The key is kept in the repo's GitHub secrets (OMAR_KEYSTORE_B64, OMAR_KEYSTORE_PASS), never in the code.
+    signingConfigs {
+        debug {
+            if (System.getenv('OMAR_KS_PATH')) {
+                storeFile file(System.getenv('OMAR_KS_PATH'))
+                storePassword System.getenv('OMAR_KS_PASS')
+                keyAlias 'omar'
+                keyPassword System.getenv('OMAR_KS_PASS')
+            }
+        }
+    }
     namespace 'ma.waqf.app'
     compileSdk 34
     defaultConfig { applicationId 'ma.waqf.app'; minSdk 24; targetSdk 34; versionCode 1; versionName '1.0' }
