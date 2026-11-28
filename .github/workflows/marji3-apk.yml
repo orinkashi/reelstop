@@ -1,0 +1,46 @@
+name: Build Marji3 APK
+
+on:
+  push:
+    paths: ['marji3/**', '.github/workflows/marji3-apk.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: marji3
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build
+        run: gradle assembleDebug
+
+      - name: Rename APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk Marji3.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Marji3-apk
+          path: marji3/Marji3.apk
+
+      - name: Publish release (lien direct)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: marji3-latest
+          name: Marji3 (dernière version)
+          make_latest: false
+          files: marji3/Marji3.apk
