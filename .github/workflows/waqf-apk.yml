@@ -1,0 +1,47 @@
+name: Build Waqf APK
+
+on:
+  push:
+    paths: ['waqf/**', '.github/workflows/waqf-apk.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: waqf
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build
+        run: gradle assembleDebug
+
+      - name: Rename APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk Waqf.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Waqf-apk
+          path: waqf/Waqf.apk
+
+      - name: Publish release (lien direct)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: waqf-latest
+          name: Waqf (dernière version)
+          make_latest: false
+          body: "v${{ github.run_number }}"
+          files: waqf/Waqf.apk

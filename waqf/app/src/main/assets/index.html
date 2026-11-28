@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>وقف</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: calm, firm, never shaming — a friend who walks beside you at night.
+   IDEA: the night sky before dawn: each clean day lights one more star.
+   PICTURE: a big live counter and a ring of the last 7 nights; the SOS button glows like the first light.
+   COLOUR and TYPE: deep night teal, dawn coral accent, soft mint for wins; Plex Arabic for UI, Amiri for ayat and hadith.
+   LAYOUT: one phone column, cards stacked, a fixed bottom bar with four tabs. */
+@font-face{font-family:"Amiri Quran Local";src:url(AmiriQuran.ttf) format("truetype");font-display:swap}
+:root{color-scheme:dark;--bg:#0c1416;--card:#13201f;--card2:#182a28;--ink:#e9f0ee;--mute:#93a7a2;--line:#24363a;--mint:#6fd3b4;--coral:#ff7a59;--gold:#e7c66b}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "IBM Plex Sans Arabic",system-ui,sans-serif}
+body{padding:env(safe-area-inset-top) 0 calc(80px + env(safe-area-inset-bottom));overflow-x:clip;
+ background:radial-gradient(120% 60% at 50% -10%,#173336 0%,transparent 60%),var(--bg)}
+button,input,textarea,select{font:inherit;color:inherit}
+.wrap{max-width:620px;margin:0 auto;padding:0 16px}
+header{padding:18px 0 6px;display:flex;align-items:center;gap:10px}
+header h1{margin:0;font:700 30px/1 "Amiri",serif;letter-spacing:0;flex:1}
+header small{display:block;font:400 14px "IBM Plex Sans Arabic";color:var(--mute);margin-top:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}
+.card h2{margin:0 0 8px;font-size:18px;display:flex;align-items:center;gap:8px}
+.card h2 .tag{margin-inline-start:auto;font-size:12px;color:var(--mute);font-weight:500}
+.big{font:700 clamp(40px,12vw,60px)/1 "IBM Plex Sans Arabic";color:var(--mint);display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.big small{font-size:16px;color:var(--mute);font-weight:500}
+.sub{color:var(--mute);font-size:14px;margin:6px 0 0}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{min-height:46px;padding:0 18px;border-radius:14px;border:1px solid var(--line);background:var(--card2);cursor:pointer;font-weight:500}
+.btn.main{background:var(--mint);color:#06231c;border:0;font-weight:700}
+.btn.warn{background:transparent;border-color:#5a2b22;color:#ffb3a0}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px solid var(--mint);outline-offset:2px}
+.dots{display:flex;gap:6px;margin-top:12px}
+.dot{flex:1;text-align:center;font-size:11px;color:var(--mute)}
+.dot i{display:block;height:28px;border-radius:9px;background:#1d2d2f;margin-bottom:4px}
+.dot i.ok{background:var(--mint)}.dot i.no{background:#5a2b22}
+.sos{display:block;width:100%;min-height:76px;border:0;border-radius:22px;cursor:pointer;margin:14px 0 4px;
+ background:linear-gradient(135deg,#ff8a5c,#ff5f6d);color:#fff;font:700 22px "IBM Plex Sans Arabic";box-shadow:0 10px 30px -10px #ff6a5c99}
+.sos small{display:block;font-size:13px;font-weight:500;opacity:.9}
+.breath{width:min(62vw,240px);aspect-ratio:1;border-radius:50%;margin:24px auto 10px;display:grid;place-items:center;
+ background:radial-gradient(circle,#6fd3b455 0%,#6fd3b411 70%);border:2px solid var(--mint);transform:scale(.7);transition:transform 4s ease-in-out}
+.breath b{font-size:20px}
+.txt{font:21px/2 "Amiri Quran Local","Amiri",serif;margin:0}
+.txt.h{font:19px/1.9 "Amiri",serif}
+.src{font-size:13px;color:var(--mute);margin-top:8px;display:flex;gap:10px;flex-wrap:wrap}
+.src a{color:var(--mint)}
+.list{margin:0;padding:0;list-style:none}
+.list li{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.list li:last-child{border:0}
+.list li span{flex:1}
+.x{background:none;border:0;color:var(--mute);font-size:20px;min-width:44px;min-height:44px;cursor:pointer}
+input[type=text],input[type=time],textarea{width:100%;min-height:46px;border-radius:12px;border:1px solid var(--line);background:#0f1b1c;padding:10px 12px;font-size:16px}
+textarea{min-height:90px;resize:vertical}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.chip{border:1px solid var(--line);background:#0f1b1c;border-radius:99px;padding:6px 12px;cursor:pointer;font-size:14px}
+.chip[aria-pressed=true]{background:var(--mint);color:#06231c;border-color:var(--mint)}
+.code{direction:ltr;font-family:ui-monospace,monospace;background:#0f1b1c;border:1px dashed var(--line);padding:8px 12px;border-radius:10px;display:inline-block}
+ol.steps{padding-inline-start:20px;margin:8px 0}ol.steps li{margin:4px 0}
+nav{position:fixed;bottom:0;inset-inline:0;background:#0f1a1bf2;backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+nav button{flex:1;max-width:160px;height:66px;border:0;background:none;color:var(--mute);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:13px}
+nav button svg{width:23px;height:23px}
+nav button[aria-current=true]{color:var(--mint)}
+.modal{position:fixed;inset:0;background:#000a;display:grid;place-items:end center;z-index:9}
+.modal[hidden]{display:none}
+.sheet{background:var(--card);width:min(620px,100%);border-radius:22px 22px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:10px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:10}
+.toast.on{opacity:1}
+.empty{color:var(--mute);text-align:center;padding:16px}
+@media(prefers-reduced-motion:reduce){.breath{transition:none}.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div style="flex:1"><h1>وقف</h1><small id="hello"></small></div></header>
+  <main id="main"></main>
+</div>
+<nav>
+  <button data-v="home" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9H3z"/></svg>اليوم</button>
+  <button data-v="sos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>النجدة</button>
+  <button data-v="shield"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>الحماية</button>
+  <button data-v="log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12v18H6z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>السجل</button>
+</nav>
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+{
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ar = n => String(n);
+const Android = window.WaqfAndroid || null;
+const main = $('#main');
+let TX = null;
+fetch('texts.json').then(r => r.json()).then(j => TX = j).catch(() => {});
+
+/* ---------- data (stays on this phone) ---------- */
+const KEY = 'waqf_v1';
+const fresh = () => ({start: Date.now(), best: 0, relapses: [], bed: '23:00', remind: false, nights: {}, scroll: {}, reasons: [], journal: []});
+let D;
+try { D = Object.assign(fresh(), JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) { D = fresh(); }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(D)); } catch (e) {} };
+save();
+const day = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return day(d); };
+const toast = m => { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1800); };
+
+/* ---------- helpers ---------- */
+function streak(map) { let n = 0; const d = new Date(); d.setDate(d.getDate() - 1); while (map[day(d)] === true) { n++; d.setDate(d.getDate() - 1); } return n; }
+function last7(map) {
+  const out = []; const names = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س'];
+  for (let i = 7; i >= 1; i--) { const d = new Date(); d.setDate(d.getDate() - i); const v = map[day(d)]; out.push(`<div class="dot"><i class="${v === true ? 'ok' : v === false ? 'no' : ''}"></i>${names[d.getDay()]}</div>`); }
+  return `<div class="dots">${out.join('')}</div>`;
+}
+function dur(ms) { const m = Math.floor(ms / 60000), d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60); return {d, h, m: m % 60}; }
+function untilBed() {
+  const [H, M] = D.bed.split(':').map(Number); const now = new Date(), t = new Date(); t.setHours(H, M, 0, 0);
+  let diff = t - now; if (diff < -3 * 3600e3) { t.setDate(t.getDate() + 1); diff = t - now; }
+  return diff;
+}
+function textCard(x) {
+  return `<div class="card"><p class="txt${x.q ? '' : ' h'}">${x.q ? '﴿' + esc(x.t) + '﴾' : '«' + esc(x.t) + '»'}</p>
+  <div class="src"><span>${esc(x.src)}</span><a href="${esc(x.u)}" target="_blank" rel="noopener">تحقق ↗</a></div></div>`;
+}
+const pick = k => TX && TX[k] ? TX[k][Math.floor(Math.random() * TX[k].length)] : null;
+
+/* ---------- home ---------- */
+function home() {
+  const now = Date.now(), c = dur(now - D.start), best = Math.max(D.best, now - D.start), b = dur(best);
+  const ub = untilBed(), ubm = Math.round(ub / 60000);
+  $('#hello').textContent = ub > 0 && ub < 6 * 3600e3 ? `باقي ${ar(Math.floor(ubm / 60))}س ${ar(ubm % 60)}د على وقت النعاس (${D.bed})` : ub <= 0 ? `فات وقت النعاس (${D.bed}) — سد التليفون ونعس 🌙` : 'كل نهار نقي كيزيد نجمة فالسما ✨';
+  const askSleep = D.nights[yesterday()] === undefined, askScroll = D.scroll[yesterday()] === undefined;
+  main.innerHTML = `
+  <button class="sos" data-v="sos">جاتك الرغبة؟ النجدة<small>اضغط هنا دابا، قبل ما تدير أي حاجة</small></button>
+  <div class="card"><h2>🛡️ بلا بورن <span class="tag">أحسن مدة: ${ar(b.d)} يوم</span></h2>
+    <div class="big">${ar(c.d)}<small>يوم</small> ${ar(c.h)}<small>ساعة</small> ${ar(c.m)}<small>دقيقة</small></div>
+    <p class="sub">كل دقيقة نقية هي ربح. ${c.d >= 1 ? 'راك ماشي مزيان، كمّل.' : 'البداية ديما صعيبة، والنهار الأول هو الأهم.'}</p>
+    <div class="row"><button class="btn warn" id="fell">طحت (نعاود من الصفر)</button></div></div>
+  <div class="card"><h2>🌙 النعاس بكري <span class="tag">الهدف: قبل ${esc(D.bed)}</span></h2>
+    <div class="big">${ar(streak(D.nights))}<small>ليلة متتابعة</small></div>
+    ${askSleep ? `<p class="sub" style="color:var(--ink)">البارح، نعستي قبل ${esc(D.bed)}؟</p><div class="row"><button class="btn main" data-n="1">إيه ✓</button><button class="btn" data-n="0">لا</button></div>` : '<p class="sub">سجلتي البارح ✓ رجع غدا الصباح.</p>'}
+    ${last7(D.nights)}</div>
+  <div class="card"><h2>📵 بلا سكرول</h2>
+    <div class="big">${ar(streak(D.scroll))}<small>نهار متتابع</small></div>
+    ${askScroll ? `<p class="sub" style="color:var(--ink)">البارح، بقيتي بعيد على السكرول الخاوي (reels, TikTok, shorts)؟</p><div class="row"><button class="btn main" data-s="1">إيه ✓</button><button class="btn" data-s="0">لا، سكروليت</button></div>` : '<p class="sub">سجلتي البارح ✓</p>'}
+    ${last7(D.scroll)}</div>
+  ${D.reasons.length ? `<div class="card"><h2>💭 علاش بغيت نوقف</h2><ul class="list">${D.reasons.map(r => `<li><span>${esc(r)}</span></li>`).join('')}</ul></div>` : `<div class="card"><h2>💭 علاش بغيتي توقف؟</h2><p class="sub">كتب الأسباب ديالك، وغادي يبانو ليك فوقت الرغبة. هادي من أقوى الحوايج.</p><div class="row"><button class="btn" data-v="shield">زيد الأسباب</button></div></div>`}`;
+}
+
+/* ---------- SOS ---------- */
+let breathT = null;
+function sos(kind) {
+  clearInterval(breathT);
+  if (!kind) {
+    main.innerHTML = `<div class="card" style="text-align:center"><h2 style="justify-content:center">شنو اللي جاك دابا؟</h2>
+      <p class="sub">ماشي عيب. الرغبة كتجي وكتمشي، غير صبر شوية.</p>
+      <div class="row" style="justify-content:center"><button class="btn main" data-k="porn">رغبة ف البورن</button><button class="btn main" data-k="scroll">بغيت نسكرولي</button><button class="btn main" data-k="sleep">ما بغيتش ننعس</button></div></div>`;
+    return;
+  }
+  let s = 60, phase = 0;
+  const steps = [['شهيق', 4], ['حبس', 4], ['زفير', 6]];
+  main.innerHTML = `<div class="card" style="text-align:center"><h2 style="justify-content:center">تنفس معايا دقيقة</h2>
+    <div class="breath" id="br"><b id="bt">شهيق</b></div><p class="sub" id="left">باقي ${ar(60)} ثانية</p></div>
+    <div id="after"></div>`;
+  const br = $('#br'), bt = $('#bt');
+  let t = 0;
+  const tick = () => {
+    const [name, len] = steps[phase];
+    if (t === 0) { bt.textContent = name; br.style.transition = `transform ${len}s ease-in-out`; br.style.transform = phase === 0 ? 'scale(1)' : phase === 1 ? 'scale(1)' : 'scale(.7)'; }
+    t++; s--; const L = $('#left'); if (L) L.textContent = s > 0 ? `باقي ${ar(s)} ثانية` : 'مزيان 👏';
+    if (t >= len) { t = 0; phase = (phase + 1) % 3; }
+    if (s <= 0) { clearInterval(breathT); afterSos(kind); }
+  };
+  tick(); breathT = setInterval(tick, 1000);
+  setTimeout(() => afterSos(kind, true), 300);
+}
+function afterSos(kind, early) {
+  const box = $('#after'); if (!box) return;
+  const acts = {porn: ['قوم من البلاصة اللي فيها دابا', 'دير الوضوء', 'خرج تمشى 10 دقايق', 'حط التليفون فبيت آخر', 'صلي ركعتين'],
+    scroll: ['سد التطبيق دابا', 'حط التليفون بعيد عليك', 'دير حاجة بيديك 10 دقايق', 'قرا صفحة من كتاب'],
+    sleep: ['حط التليفون يشارجي بعيد على الفراش', 'طفي الضو', 'دير الوضوء وقول أذكار النوم', 'ما تبقاش تشوف الوقت']}[kind];
+  const x = pick(kind);
+  box.innerHTML = `${D.reasons.length ? `<div class="card"><h2>💭 تفكر علاش بغيتي توقف</h2><ul class="list">${D.reasons.map(r => `<li><span>${esc(r)}</span></li>`).join('')}</ul></div>` : ''}
+    ${x ? textCard(x) : ''}
+    <div class="card"><h2>دير وحدة من هادو دابا</h2><ul class="list">${acts.map(a => `<li><span>${a}</span></li>`).join('')}</ul></div>
+    ${early ? '' : `<div class="card" style="text-align:center"><p style="margin:0 0 10px">الرغبة دازت؟</p><div class="row" style="justify-content:center"><button class="btn main" data-v="home">إيه، الحمد لله</button><button class="btn" data-k="${kind}">عاود معايا</button></div></div>`}`;
+}
+
+/* ---------- shield / settings ---------- */
+function shield() {
+  main.innerHTML = `
+  <div class="card"><h2>🌙 وقت النعاس</h2>
+    <p class="sub">حدد الساعة اللي بغيتي تنعس فيها. ${Android ? 'التطبيق غادي يفكرك 30 دقيقة قبل.' : 'التذكير كيخدم غير ف التطبيق (APK).'}</p>
+    <div class="row"><input type="time" id="bed" value="${esc(D.bed)}" style="max-width:160px">
+    ${Android ? `<button class="btn ${D.remind ? 'main' : ''}" id="rem">${D.remind ? 'التذكير خدام ✓' : 'شعل التذكير'}</button>` : ''}</div></div>
+  <div class="card"><h2>🛡️ حجب البورن من التليفون كامل</h2>
+    <p class="sub">Android فيه "Private DNS". إلا حطيتي فيه هاد العنوان ديال Cloudflare، كيحجب المواقع ديال البورن ف التليفون كامل، ف أي متصفح:</p>
+    <p><span class="code" id="dns">family.cloudflare-dns.com</span> <button class="btn" id="cp">نسخ</button></p>
+    <ol class="steps"><li>دخل للـ Paramètres</li><li>Connexions / Réseau et Internet ← <b>Private DNS</b> (DNS privé)</li><li>ختار "Nom d'hôte" ولصق العنوان، ودير Enregistrer</li></ol>
+    ${Android ? '<button class="btn main" id="net">حل الإعدادات</button>' : ''}
+    <p class="sub">باش يكون أقوى، عطي شي واحد تثيق فيه يبدل ليك قفل الإعدادات، باش ما تقدرش تحيدو بسهولة.</p></div>
+  <div class="card"><h2>📵 السكرول</h2><p class="sub">ReelStop ديالك كيبلوكي الـ Reels والـ Shorts والـ TikTok. خليه خدام.</p></div>
+  <div class="card"><h2>💭 الأسباب ديالي</h2>
+    <ul class="list">${D.reasons.map((r, i) => `<li><span>${esc(r)}</span><button class="x" data-del="${i}" aria-label="حيد">×</button></li>`).join('') || '<li class="empty">مازال ما كتبتي والو</li>'}</ul>
+    <div class="row"><input type="text" id="rs" placeholder="مثلا: بغيت نكون حاضر مع راسي ف القراية"><button class="btn main" id="addr">زيد</button></div></div>`;
+  $('#bed').onchange = e => { D.bed = e.target.value || '23:00'; save(); if (Android && D.remind) Android.setBedtime(D.bed); toast('تسجل ✓'); };
+  $('#cp').onclick = async () => { try { await navigator.clipboard.writeText('family.cloudflare-dns.com'); toast('تنسخ ✓'); } catch (e) { if (Android) { Android.copy('family.cloudflare-dns.com'); toast('تنسخ ✓'); } else toast('نسخو بيدك'); } };
+  if ($('#net')) $('#net').onclick = () => Android.openNetworkSettings();
+  if ($('#rem')) $('#rem').onclick = () => { D.remind = !D.remind; save(); D.remind ? Android.setBedtime(D.bed) : Android.cancelBedtime(); shield(); toast(D.remind ? 'غادي نفكرك 30 دقيقة قبل ✓' : 'التذكير طفا'); };
+  const add = () => { const v = $('#rs').value.trim(); if (!v) return; D.reasons.push(v.slice(0, 160)); save(); shield(); };
+  $('#addr').onclick = add; $('#rs').onkeydown = e => { if (e.key === 'Enter') add(); };
+}
+
+/* ---------- log ---------- */
+const MOODS = ['😊 مزيان', '😐 عادي', '😔 مقلق', '😤 معصب', '😴 عيان', '🥱 مملول'];
+const TRIG = ['الوحدة', 'الملل', 'الليل', 'الفراش', 'الضغط', 'السوشيال ميديا', 'بلا نعاس'];
+function log() {
+  const rel = D.relapses.slice(-10).reverse();
+  main.innerHTML = `
+  <div class="card"><h2>✍️ كيفاش داز النهار؟</h2>
+    <div class="chips" id="mood">${MOODS.map(m => `<button class="chip" aria-pressed="false">${m}</button>`).join('')}</div>
+    <p class="sub">شنو اللي كيحرك الرغبة عندك اليوم؟</p>
+    <div class="chips" id="trig">${TRIG.map(m => `<button class="chip" aria-pressed="false">${m}</button>`).join('')}</div>
+    <textarea id="jt" placeholder="كتب اللي بغيتي… هادشي غير ليك"></textarea>
+    <div class="row"><button class="btn main" id="js">سجل</button></div></div>
+  <div class="card"><h2>📖 اليوميات</h2>${D.journal.length ? `<ul class="list">${D.journal.slice(-20).reverse().map((j, i) => `<li style="display:block"><b>${esc(new Date(j.ts).toLocaleDateString('ar-MA', {weekday: 'long', day: 'numeric', month: 'long'}))}</b> · ${esc(j.mood || '')} ${j.trig && j.trig.length ? '· ' + esc(j.trig.join('، ')) : ''}<br>${esc(j.text || '')}</li>`).join('')}</ul>` : '<p class="empty">مازال ما كتبتي والو</p>'}</div>
+  <div class="card"><h2>📉 المرات اللي طحت فيها</h2>
+    <p class="sub">كل مرة تعاود تبدا، راك كتعلم. شوف واش كاين شي نمط ف الوقت ولا ف النهار.</p>
+    ${rel.length ? `<ul class="list">${rel.map(r => `<li><span>${esc(new Date(r.ts).toLocaleString('ar-MA', {weekday: 'long', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'}))}</span><span style="flex:none;color:var(--mute)">بعد ${ar(Math.floor(r.ms / 864e5))} يوم</span></li>`).join('')}</ul>` : '<p class="empty">ما كاين والو، الله يحفظك</p>'}</div>
+  <div class="card"><h2>⚙️ البيانات</h2><p class="sub">كلشي محفوظ غير ف هاد التليفون، ما كيتصيفط لحد.</p><div class="row"><button class="btn warn" id="wipe">مسح كلشي</button></div></div>`;
+  document.querySelectorAll('#mood .chip').forEach(b => b.onclick = () => { document.querySelectorAll('#mood .chip').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  document.querySelectorAll('#trig .chip').forEach(b => b.onclick = () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'));
+  $('#js').onclick = () => {
+    const mood = [...document.querySelectorAll('#mood .chip')].find(b => b.getAttribute('aria-pressed') === 'true');
+    const trig = [...document.querySelectorAll('#trig .chip')].filter(b => b.getAttribute('aria-pressed') === 'true').map(b => b.textContent);
+    const text = $('#jt').value.trim().slice(0, 2000);
+    if (!mood && !text && !trig.length) return toast('كتب شي حاجة أولا');
+    D.journal.push({ts: Date.now(), mood: mood ? mood.textContent : '', trig, text}); save(); log(); toast('تسجل ✓');
+  };
+  $('#wipe').onclick = () => confirmSheet('متأكد بغيتي تمسح كلشي؟ ما يمكنش ترجعو.', () => { D = fresh(); save(); if (Android) Android.cancelBedtime(); setView('home'); });
+}
+
+/* ---------- sheet / relapse ---------- */
+function confirmSheet(msg, ok, extra = '') {
+  $('#sheet').innerHTML = `<p style="font-size:18px;margin:0 0 6px">${msg}</p>${extra}<div class="row"><button class="btn warn" id="yes">إيه</button><button class="btn" id="no">لا، رجع</button></div>`;
+  $('#modal').hidden = false;
+  $('#yes').onclick = () => { $('#modal').hidden = true; ok(); };
+  $('#no').onclick = () => $('#modal').hidden = true;
+}
+function relapse() {
+  const x = TX && TX.porn ? TX.porn.find(t => /الزمر/.test(t.src)) : null;
+  confirmSheet('ماشي نهاية الدنيا. غادي نعاودو الحساب من الصفر، والمهم أنك ما تحبسش المحاولة.', () => {
+    const ms = Date.now() - D.start; D.best = Math.max(D.best, ms); D.relapses.push({ts: Date.now(), ms}); D.start = Date.now(); save(); home();
+    toast('بدينا من جديد. أنت قادر 💪');
+  }, x ? `<p class="txt" style="font-size:19px">﴿${esc(x.t)}﴾</p><p class="src">${esc(x.src)}</p>` : '');
+}
+
+/* ---------- nav ---------- */
+let view = 'home';
+function setView(v) {
+  view = v; clearInterval(breathT);
+  document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-current', b.dataset.v === v));
+  ({home, sos: () => sos(), shield, log})[v]();
+  scrollTo(0, 0);
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  const d = t.dataset;
+  if (d.v) setView(d.v);
+  else if (d.k) { document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-current', b.dataset.v === 'sos')); sos(d.k); scrollTo(0, 0); }
+  else if (d.n) { D.nights[yesterday()] = d.n === '1'; save(); home(); toast(d.n === '1' ? 'مزيان بزاف 🌙' : 'ماشي مشكل، الليلة غادي تكون أحسن'); }
+  else if (d.s) { D.scroll[yesterday()] = d.s === '1'; save(); home(); toast(d.s === '1' ? 'برافو 👏' : 'ماشي مشكل، اليوم فرصة جديدة'); }
+  else if (d.del) { D.reasons.splice(+d.del, 1); save(); shield(); }
+  else if (t.id === 'fell') relapse();
+});
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') $('#modal').hidden = true; });
+setInterval(() => { if (view === 'home' && $('#modal').hidden) home(); }, 60000);
+if (location.hash === '#sos') setView('sos'); else home();
+}
+</script>
+</body>
+</html>
