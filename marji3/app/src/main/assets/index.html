@@ -256,7 +256,7 @@ async function tafsirSheet(si, ai) {
 $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') $('#modal').hidden = true; });
 
 /* ---------- hadith explanation (موسوعة الأحاديث النبوية — HadeethEnc.com) ---------- */
-const CLB = {b: {file: 'fath', name: 'فتح الباري شرح صحيح البخاري', by: 'ابن حجر العسقلاني (ت 852هـ)'}, m: {file: 'nawawi', name: 'المنهاج شرح صحيح مسلم', by: 'الإمام النووي (ت 676هـ)'}};
+const CLB = {b: {file: 'fath', name: 'فتح الباري شرح صحيح البخاري', by: 'ابن حجر العسقلاني (ت 852هـ)', ed: 'الطبعة السلفية، ترقيم محمد فؤاد عبد الباقي', url: 'https://shamela.ws/book/1673'}, m: {file: 'nawawi', name: 'المنهاج شرح صحيح مسلم', by: 'الإمام النووي (ت 676هـ)', ed: 'دار إحياء التراث العربي، بيروت، الطبعة الثانية 1392هـ', url: 'https://shamela.ws/book/1711'}};
 function classicalNum(b, i) {
   const h = H[b][i]; if (!CL[b]) return null;
   for (const n of (h.n.match(/\d+/g) || []).map(Number)) if (CL[b].has(n)) return n;
@@ -288,13 +288,17 @@ async function sharhSheet(key) {
     + '<button class="ghost" data-close>إغلاق</button>';
   $('#modal').hidden = false; $('#sheet').scrollTop = 0;
   if (cn) {
-    const t = await classicalText(bk, cn); const box = $('#classic'); if (!box) return;
+    const r = await classicalText(bk, cn); const box = $('#classic'); if (!box) return;
+    const [t, vol, pg] = Array.isArray(r) ? r : [r];
     const body = esc(t || '').replace(/〔([^〕]*)〕/g, (m, h) => /باب|كتاب/.test(h) ? `<b style="color:var(--teal)">${h}</b><br>` : '').replace(/ (قوله|قال)( )/g, '<br><br>$1$2');
     box.innerHTML = `${ids.length ? '<hr style="border:0;border-top:1px solid var(--line);margin:18px 0">' : ''}
       <h3 style="font:700 19px/1.5 Amiri,serif;margin:0 0 4px">${esc(CLB[bk].name)}</h3>
-      <p class="status" style="margin:0 0 8px">${esc(CLB[bk].by)} · شرح الحديث رقم ${cn}</p>
+      <p class="status" style="margin:0 0 8px">${esc(CLB[bk].by)} · شرح الحديث رقم ${cn}${vol ? ` · <b>ج${vol} ص${pg}</b>` : ''}</p>
       <div class="ht" style="font-size:17.5px;line-height:2">${body}</div>
-      <p class="note">النص كما هو من مشروع OpenITI (نسخة المكتبة الشاملة)، دون تعديل. الشروح القديمة تشرح الإسناد واللغة والفقه، وقد تشرح الحديث في أول موضع يرد فيه فقط.</p>`;
+      <div class="src" style="border-top:1px dashed var(--line)"><b>الدليل:</b><span>${esc(CLB[bk].name)}، ${esc(CLB[bk].ed)}${vol ? `، الجزء ${vol}، الصفحة ${pg}` : ''}</span>
+        <a href="${CLB[bk].url}" target="_blank" rel="noopener">الكتاب في المكتبة الشاملة ↗</a>
+        <a href="${esc(H[bk][+ix].u)}" target="_blank" rel="noopener">الحديث في Sunnah.com ↗</a></div>
+      <p class="note">النص منقول كما هو من مشروع OpenITI (نسخة المكتبة الشاملة)، دون تعديل. الشروح القديمة تشرح الإسناد واللغة والفقه، وقد تشرح الحديث في أول موضع يرد فيه فقط.</p>`;
   }
 }
 
