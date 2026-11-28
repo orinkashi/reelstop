@@ -424,6 +424,8 @@ async function chapter(i) {
 async function sira() { return siraBook(); }
 async function siraTimeline() {
   main.innerHTML = '<p class="status">جارٍ التحميل…</p>';
+  if (!HB) HB = await load('data/hisham.json');
+  await Promise.all([pB, pM]);
   if (!S) S = await load('data/sira.json');
   await pQ;
   let era = '';
@@ -432,7 +434,9 @@ async function siraTimeline() {
   <div class="tl">${S.map((e, i) => {
     const head = e.p !== era ? `<div class="era">${esc(era = e.p)}</div>` : '';
     const n = e.q.length + e.h.length;
+    const srcs = [...(e.hc || []).map(c => HB ? `<button class="lnk" data-ch="${c}">سيرة ابن هشام: ${esc(HB[c].t.slice(0, 50))}</button>` : ''), ...e.h.map(([b, j]) => `<span>${b === 'b' ? 'صحيح البخاري' : 'صحيح مسلم'} ${esc(H[b][j].n.split('، ')[0])}</span>`), ...e.q.reduce((g, [s2, a]) => { const l = g[g.length - 1]; if (l && l[0] === s2 && l[2] === a - 1) l[2] = a; else g.push([s2, a, a]); return g; }, []).map(([s2, a, z]) => `<span>سورة ${esc(Q.s[s2 - 1].n)}: ${a}${z > a ? '–' + z : ''}</span>`)];
     return head + `<div class="ev card"><div class="when">${esc(e.d)}</div><h3>${esc(e.t)}</h3><p class="story">${esc(e.st || e.s)}</p>
+      <div class="src" style="margin:0 0 10px"><b>المصادر:</b>${srcs.join('<span>·</span>')}</div>
       <button class="ghost" data-ev="${i}">الأدلة (${ar(n)})</button><div id="ev${i}"></div></div>`;
   }).join('')}</div>`;
 }
