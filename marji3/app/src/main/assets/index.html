@@ -131,7 +131,7 @@ const $ = s => document.querySelector(s);
 const ar = n => Number(n).toLocaleString('ar-EG', {useGrouping: false});
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const BOOKS = {b:{name:'صحيح البخاري'}, m:{name:'صحيح مسلم'}};
-const CL = {b: null, m: null}, CLC = {};
+const CL = {b: null, m: null}, CLC = {}; let ALT = {};
 let Q = null, H = {b:null, m:null}, ready = false, view = 'search', lastSearch = null, reqId = 0;
 const main = $('#main'), st = $('#st');
 
@@ -143,7 +143,8 @@ const pM = load('data/muslim.json').then(d => H.m = d);
 let SH = null; const pSH = Promise.all([
   load('data/sharh.json').then(d => SH = d),
   load('data/sharh/fath-index.json').then(a => CL.b = new Set(a)),
-  load('data/sharh/nawawi-index.json').then(a => CL.m = new Set(a))
+  load('data/sharh/nawawi-index.json').then(a => CL.m = new Set(a)),
+  load('data/sharh/alt.json').then(a => ALT = a)
 ]).catch(() => null);
 const worker = new Worker('worker.js');
 const pending = new Map();
@@ -261,7 +262,8 @@ function classicalNum(b, i) {
   for (const n of (h.n.match(/\d+/g) || []).map(Number)) if (CL[b].has(n)) return n;
   return null;
 }
-const hasSharh = (b, i) => !!((SH && SH.map[b + ':' + i]) || classicalNum(b, i));
+const hasDirect = (b, i) => !!((SH && SH.map[b + ':' + i]) || classicalNum(b, i));
+const hasSharh = (b, i) => hasDirect(b, i) || !!ALT[b + ':' + i];
 async function classicalText(b, n) {
   const k = `${CLB[b].file}-${Math.floor(n / 250)}`;
   if (!CLC[k]) CLC[k] = load(`data/sharh/${k}.json`);
@@ -269,10 +271,12 @@ async function classicalText(b, n) {
 }
 const para = t => esc(t || '').replace(/\n/g, '<br>');
 async function sharhSheet(key) {
+  let altNote = '';
+  { const [b0, i0] = key.split(':'); if (!hasDirect(b0, +i0) && ALT[key]) { const [b1, i1] = ALT[key]; altNote = `<p class="note">هذا الحديث مشروح في موضع آخر رواه بنفس المعنى: <b>${BOOKS[b1].name}، رقم ${esc(H[b1][i1].n)}</b>. الشرح أدناه لذلك الموضع.</p>`; key = b1 + ':' + i1; } }
   const ids = (SH && SH.map[key]) || [];
   const [bk, ix] = key.split(':'); const cn = classicalNum(bk, +ix);
   const seen = new Set();
-  $('#sheet').innerHTML = ids.filter(id => { const k = SH.h[id].exp; if (seen.has(k)) return false; seen.add(k); return true; }).map(id => { const x = SH.h[id]; return `
+  $('#sheet').innerHTML = altNote + ids.filter(id => { const k = SH.h[id].exp; if (seen.has(k)) return false; seen.add(k); return true; }).map(id => { const x = SH.h[id]; return `
     <h3 style="font:700 19px/1.5 Amiri,serif;margin:0 0 6px">${esc(x.title)}</h3>
     <p class="ht" style="font-size:18px">${esc(x.text)}</p>
     ${x.grade ? `<p style="margin:4px 0"><span class="badge">${esc(x.grade)}</span></p>` : ''}
