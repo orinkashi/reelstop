@@ -1,0 +1,251 @@
+kdoub,kdob,kdeb,kdb,kadib,mensonge,mentir,menteur,lie,lying,liar,الكذب,كذب,الكذاب,كدوب,تكدب|الكذب,كذب,يكذب,كذاب,الصدق,الزور,شهادة الزور
+sdq,sedq,sidq,verite,honnetete,honest,honesty,truth,الصدق,صادق,المعقول|الصدق,صدق,الصادقين,يصدق,صديقا,البر
+ghach,ghech,ghchach,triche,tricher,fraude,cheat,cheating,fraud,الغش,غش,تغشش,كيغش,limti7an,imti7an,examen,exam|غش,غشنا,الغش,غشنا فليس منا,غشه,التطفيف,المطففين
+s9a,sar9a,ser9a,sriq,vol,voler,voleur,steal,stealing,theft,thief,السرقة,سرقة,شفار,الشفرة,chfar,chefra|السارق,السارقة,سرق,سرقت,يسرق,اقطعوا,القطع
+walidin,lwalidin,walidine,lwalidine,bir,birr,parents,mere et pere,parent,mother,father,الوالدين,الواليدين,الوالدين,ماما,بابا,mama,baba,lwalida,lwalid,mere,pere|الوالدين,بالوالدين,بر,امك,ابوك,عقوق,والديه,الام,امه,والدته
+l3o9o9,3o9o9,ingratitude envers les parents,disobedience to parents,العقوق|عقوق,العقوق,الوالدين
+sila,silat rahim,rahim,lfamilia,famille,family,relatives,kinship,صلة الرحم,الرحم,العائلة,الفاميلا,l3a2ila|الرحم,يصل,وصل,قاطع,قطيعة,الارحام,رحمه
+jar,jiran,jira,voisin,voisins,neighbor,neighbour,neighbors,الجار,الجيران,الجيرة|الجار,جاره,جارك,الجيران,يؤذي جاره
+yatim,ytim,lyatama,orphelin,orphan,orphans,اليتيم,اليتامى,يتيم|اليتيم,اليتامى,يتيما,كافل,كافل اليتيم
+miskin,msakn,fo9ara,pauvre,pauvres,poor,poverty,الفقراء,المساكين,الفقر,مسكين,الفقير|المساكين,المسكين,الفقراء,الفقير,الفقر,اطعام
+sadaqa,sada9a,sd9a,charite,aumone,charity,donation,الصدقة,الصدقات,صدقة|الصدقة,صدقة,تصدق,يتصدق,انفقوا,ينفقون,المتصدقين
+zakat,zaka,zakate,الزكاة,زكاة|الزكاة,الزكاه,زكاة,يؤتون الزكاة,اتوا الزكاة,الصدقات
+sala,salat,sla,salah,salate,priere,prayer,pray,الصلاة,صلاة,الصلا,نصلي,كنصلي|الصلاة,الصلوات,صلى,يصلي,اقيموا,المصلين,صلاته
+fajr,sob7,sbah,lfajr,subh,الفجر,الصبح|الفجر,الصبح,ركعتي الفجر,صلاة الصبح
+jom3a,jum3a,joumou3a,vendredi,friday,الجمعة,جمعة|الجمعة,يوم الجمعة,الخطبة,الامام يخطب
+wudu,wodo2,wdou,lwdou,ablutions,ablution,الوضوء,وضوء,الوضو|الوضوء,توضا,يتوضا,توضؤوا,الطهور,طهور
+ghosl,ghusl,lghosl,douche rituelle,bath,الغسل,غسل|الغسل,اغتسل,يغتسل,الجنابة,غسل
+masjid,jame3,ljame3,mosquee,mosque,المسجد,الجامع,المساجد|المسجد,المساجد,مسجد,دخل المسجد
+syam,siyam,sawm,ramadan,rmadan,jeune,fasting,fast,الصيام,الصوم,رمضان,الصيام|الصيام,الصوم,صام,يصوم,رمضان,الصائم,صوموا,افطر,السحور
+s7or,s7our,suhur,sohour,السحور|السحور,تسحروا,سحور
+iftar,ftour,lftour,الفطور,الافطار|الفطر,افطر,يفطر,الصائم,عجلوا الفطر
+3id,l3id,eid,fete,العيد,عيد|العيد,الفطر,الاضحى,عيد,الاضحية
+hajj,l7aj,7aj,7ajj,pelerinage,pilgrimage,الحج,حج|الحج,حج,يحج,العمرة,مكة,الكعبة,البيت,عرفة,الطواف
+3omra,omra,umrah,العمرة|العمرة,اعتمر,يعتمر,الحج
+quran,l9ur2an,9oran,9ra2a,coran,koran,القرآن,القران,قراءة|القران,القرآن,اقرؤوا,يقرا,تلاوة,سورة,حافظ
+doaa,do3a,du3a,dua,prière d'invocation,invocation,supplication,الدعاء,دعاء,دعوة|الدعاء,دعا,ادعوا,يدعو,دعوة,استجاب,ادعوني
+dikr,dhikr,dikre,thikr,zikr,الذكر,ذكر|الذكر,اذكروا,ذكر الله,سبحان الله,تسبيح,يذكر الله
+istighfar,tawba,toba,repentir,repentance,forgiveness,الاستغفار,التوبة|استغفر,الاستغفار,التوبة,تاب,توبوا,يتوب,غفر,المغفرة
+sabr,sbr,sber,patience,patient,الصبر,صبر|الصبر,صبر,اصبروا,الصابرين,يصبر,صبرا
+bala,l3bala,mosiba,mosib,epreuve,malheur,calamity,trial,hardship,البلاء,مصيبة,المصيبة,الابتلاء|البلاء,ابتلى,مصيبة,المصيبة,يبتلى,اشد الناس بلاء,الصبر
+mard,lmrd,mrid,maladie,malade,sick,sickness,illness,disease,المرض,مريض|المرض,مريض,مرض,عيادة,عاد,شفاء,يشفي,الطاعون
+dwa,dwaa,medicament,remede,medicine,cure,الدواء,دوا|الدواء,داء,شفاء,تداووا,الحبة السوداء,العسل
+mot,lmout,mowt,mort,death,die,dead,الموت,موت,الميت|الموت,الميت,مات,يموت,الجنازة,القبر,الاموات
+janaza,jnaza,funerailles,funeral,الجنازة|الجنازة,الجنائز,صلى على,الميت,يتبع الجنازة
+9bar,9ber,9obour,tombe,grave,cemetery,القبر,القبور,المقبرة|القبر,القبور,عذاب القبر,زيارة القبور
+jenna,jana,janna,paradis,paradise,heaven,الجنة,جنة|الجنة,جنات,الفردوس,ادخل الجنة,اهل الجنة,نعيم
+nar,jahannam,jahanam,enfer,hell,النار,جهنم|النار,جهنم,عذاب,اهل النار,السعير
+9iyama,lqiyama,yawm l9iyama,jugement dernier,judgment day,resurrection,القيامة,يوم القيامة|القيامة,يوم القيامة,الساعة,البعث,الحساب,الميزان
+dajjal,ddajjal,antechrist,الدجال|الدجال,المسيح الدجال,فتنة الدجال
+3alamat,signes de la fin,signs of the hour,علامات الساعة,اشراط|الساعة,اشراط الساعة,تقوم الساعة,الفتن
+fitna,fitan,epreuves,trials,الفتنة,الفتن|الفتنة,الفتن,فتنة,القاعد فيها
+niya,nia,niyya,intention,النية,نية|النية,النيات,بالنيات,الاعمال بالنيات,نوى
+ikhlas,sincerite,sincerity,الاخلاص|الاخلاص,مخلصين,خالصا,وجه الله
+riya,riyaa,ostentation,showing off,الرياء,رياء|الرياء,يرائي,يراؤون,سمع سمع الله به,الشرك الاصغر
+ghiba,lghiba,ghiba,medisance,backbiting,gossip,الغيبة,غيبة,التبركيك,tberguig,tbergig|الغيبة,يغتب,اغتاب,ذكرك اخاك بما يكره,النميمة
+namima,nmima,calomnie,talebearing,النميمة|النميمة,نمام,قتات,يمشي بالنميمة
+hasad,7asad,l7asad,l7sad,jalousie,envie,envy,jealousy,الحسد,الحسد,الحاسد,العين|الحسد,حسد,تحاسدوا,حاسد,الحاسد,يحسدون
+3in,l3in,mauvais oeil,evil eye,العين,عين|العين حق,العين,استرقوا,رقية
+ro9ya,ruqya,ro9ia,الرقية|الرقية,رقى,الرقى,يرقي,المعوذتين
+sihr,s7or,s7oura,ssi7r,sorcellerie,magie,magic,witchcraft,السحر,سحر|السحر,الساحر,سحر,السحرة,اجتنبوا السبع الموبقات
+kibr,takabbor,ta3alli,orgueil,arrogance,pride,الكبر,التكبر|الكبر,متكبر,المتكبرين,كبر,مثقال ذرة من كبر,بطر الحق
+tawado3,tawadu3,humilite,humility,التواضع|التواضع,تواضع,رفعه الله
+ghadab,ghdab,lghdeb,colere,anger,angry,الغضب,غضب|الغضب,لا تغضب,غضب,الشديد,يملك نفسه عند الغضب,كظم
+hilm,rif9,douceur,gentleness,kindness,الرفق,الحلم|الرفق,رفيق,يحب الرفق,الحلم,حليم,العنف
+akhla9,akhlaq,lakhla9,morale,bonnes manieres,good character,manners,الاخلاق,الخلق,حسن الخلق|الخلق,حسن الخلق,اخلاقا,مكارم الاخلاق,احسنكم
+haya,l7ya,7ya2,pudeur,modesty,shyness,الحياء,الحيا|الحياء,شعبة من الايمان,يستحي
+salam,ssalam,salutations,greeting,السلام,التحية|السلام,افشوا السلام,سلم,يسلم,رد السلام
+ibtisam,dhik,sourire,smile,laugh,الابتسامة,الضحك|تبسم,يضحك,ضحك,تبسمك
+mizah,nokta,blague,joke,humour,المزاح,الضحك|يمزح,المزاح,يضحك
+loghw,lhdra,paroles,speech,tongue,talking,الكلام,اللسان|اللسان,لسانه,فليقل خيرا او ليصمت,الصمت,الكلمة
+sab,sebb,l3an,insulte,insult,curse,cursing,swearing,السب,الشتم,اللعن,السبان|سباب,السب,لعن,اللعان,الفاحش,البذيء,سب
+dolm,dhulm,dolm,injustice,oppression,الظلم,ظلم|الظلم,ظلمات,الظالمين,ظلم,المظلوم,دعوة المظلوم
+3adl,justice,fair,العدل|العدل,اعدلوا,القسط,المقسطين,عدل
+qadi,9adi,lmahkama,juge,tribunal,judge,court,القاضي,المحكمة|القاضي,القضاء,حكم,الحاكم,قضى
+rashwa,rchwa,corruption,bribe,الرشوة,رشوة|الرشوة,الراشي,المرتشي
+riba,rba,lfa2ida,interet,usure,usury,interest,الربا,الفايدة,الكريدي,credit|الربا,ربا,اكل الربا,اكل الربا وموكله
+day,dayn,dyoun,ldin,dette,dettes,debt,loan,الدين,القرض,الكريدي|الدين,دين,القرض,اقترض,المدين,مطل الغني ظلم,غريم
+tijara,bi3,chra,commerce,vente,achat,business,trade,selling,buying,التجارة,البيع,الشراء|البيع,البيعان,التجارة,اشترى,باع,التاجر,الصدوق
+khdma,lkhedma,3amal,travail,work,job,الخدمة,العمل,الشغل|العمل,عمل يده,كسب,اجيرا,الاجير,اجره
+flous,lflous,mal,argent,richesse,money,wealth,rich,الفلوس,المال,الغنى|المال,الغنى,الغني,اموالهم,الدنيا,ليس الغنى عن كثرة العرض
+dunya,ddunya,dounia,monde,world,worldly,الدنيا|الدنيا,زهد,الزهد,متاع,عابر سبيل,غريب
+zuhd,zohd,ascetisme,asceticism,الزهد|الزهد,ازهد,الدنيا,عابر سبيل
+9ana3a,qana3a,contentement,contentment,القناعة|القناعة,قنع,الغنى غنى النفس,كفافا
+tama3,cupidite,greed,الطمع,الجشع|الحرص,ملء,ابن ادم,واديا,التكاثر
+bokhl,bukhl,avarice,stingy,stinginess,البخل,الشح|البخل,الشح,بخل,البخيل
+karam,lkaram,generosite,generosity,الكرم|الكرم,اكرم,كريم,الجود,اجود الناس
+dif,diyafa,dyafa,invite,hospitalite,guest,hospitality,الضيف,الضيافة|الضيف,ضيفه,فليكرم ضيفه,الضيافة
+akl,makla,manger,nourriture,food,eating,الاكل,الماكلة,الطعام|الطعام,اكل,كلوا,ياكل,بيمينك,سم الله
+chrab,charab,boire,eau,drink,water,الشرب,الما,الماء|الشراب,شرب,الماء,ثلاثة انفاس,قائما
+khmr,lkhmr,shrab,alcool,vin,alcohol,wine,الخمر,الشراب|الخمر,المسكر,مسكر,شارب,الميسر
+mokhadirat,drogue,drugs,المخدرات,الحشيش,lhchich,hchich|مسكر,خمر,المسكر,كل مسكر حرام
+khinzir,hallouf,porc,pork,pig,الخنزير,الحلوف|الخنزير,لحم الخنزير,الميتة,الدم
+~halal,7lal,7aram,lhalal,l7aram,licite,illicite,lawful,forbidden,الحلال,الحرام|الحلال,الحرام,المشتبهات,الشبهات,حرم,احل
+dbi7a,dbe7,sacrifice,slaughter,الذبيحة,الذبح,الحولي,7wli|الذبح,ذبح,الاضحية,ضحى,الذبيحة,سم الله
+hayawan,7ayawan,lbhayem,animaux,animal,animals,الحيوان,الحيوانات,البهائم,mouch,lmech,9ett,chat,cat,kalb,klab,chien,dog|البهائم,بهيمة,الهرة,هرة,كلب,الكلب,الدواب,دابة,كبد رطبة
+nadafa,ndafa,proprete,cleanliness,hygiene,النظافة,الطهارة|الطهور,الطهارة,النظافة,السواك,الفطرة
+siwak,swak,miswak,السواك|السواك,يستاك,مطهرة للفم
+fitra,الفطرة,cha3r,cheveux,hair,اللحية,lli7ya,lhya,barbe,beard,الشارب,moustache|الفطرة,اللحية,اللحى,الشارب,احفوا,اعفوا,قص,الشعر
+sbagh,sabgh,sbgh,tinture,teinture,dye,hair dye,henna,7enna,l7enna,الصبغة,الحناء,الصباغة|يصبغون,اصبغوا,الخضاب,خضب,الحناء,الكتم,الشيب,غيروا,السواد
+libas,lbas,hwayj,vetements,habits,clothes,clothing,dress,اللباس,الحوايج,الثياب|اللباس,الثوب,ثيابه,لبس,ازار,الحرير,الاسبال,خيلاء
+hijab,7ijab,voile,veil,headscarf,الحجاب,الخمار|الحجاب,الخمار,خمرهن,جلابيبهن,النساء,العورة
+3awra,nudite,awrah,العورة|العورة,عورة,عورته
+dahab,dheb,or,gold,الذهب|الذهب,الحرير,لبس الذهب,خاتم
+khatem,bague,ring,الخاتم|الخاتم,خاتم,خاتما
+tatouage,tattoo,wcham,الوشم|الواشمة,الوشم,المستوشمة,النامصات,المتفلجات
+nams,epilation,sourcils,eyebrows,النمص|النامصات,المتنمصات,النمص
+musiqa,mousi9a,lmusi9a,musique,music,songs,الموسيقى,الغناء,المعازف|المعازف,الغناء,المزامير,مزمار,الدف
+sora,tsawer,photos,images,pictures,statues,الصور,التصاوير,التماثيل|الصور,المصورين,صورة,التماثيل,تصاوير
+zina,zna,fornication,adultery,الزنا,زنا|الزنا,زنى,الزاني,الزانية,الفاحشة,فرجه,حفظ الفرج
+zawaj,zwaj,tzwej,mariage,marier,marriage,marry,wedding,الزواج,النكاح,العرس,l3ers|النكاح,تزوج,تزوجوا,الزواج,الباءة,المهر,الصداق,الوليمة
+mra,lmra,zawja,epouse,femme,wife,women,woman,المراة,الزوجة,النساء,lmrat|النساء,المراة,زوجته,استوصوا بالنساء,خيركم لاهله
+rajl,zawj,mari,husband,الراجل,الزوج|زوجها,الزوج,اطاعت زوجها,حق الزوج
+tala9,tlaq,divorce,الطلاق|الطلاق,طلق,طلقها,العدة,الخلع
+wlad,drari,lwlad,enfants,children,kids,son,daughter,الاولاد,الدراري,الابناء,البنات,lbnat|الولد,اولادكم,البنات,ابنته,الصبيان,ارحموا الصغير
+tarbiya,education,parenting,raising children,التربية|راع,مسؤول عن رعيته,ادب,مروهم بالصلاة
+3ilm,l3ilm,9raya,science,savoir,knowledge,learning,study,studying,العلم,القراية,الدراسة|العلم,علم,طلب العلم,العلماء,تعلموا,يفقهه في الدين,فقه
+mo3allim,ostad,professeur,teacher,المعلم,الاستاد|معلم,المعلم,العلماء,ورثة الانبياء,علمه
+wa9t,lwa9t,temps,time,وقت,الوقت|الفراغ,الصحة,الوقت,ساعة,اغتنم
+nom,n3as,ncas,sommeil,dormir,sleep,النعاس,النوم,نعس|النوم,نام,ينام,فراشه,مضجعه
+sbah,matin,morning,الصباح,lmsa,soir,evening|الصباح,المساء,اصبحنا,امسينا,غدوة,البكور
+safar,lsafar,voyage,travel,trip,السفر|السفر,مسافر,سافر,قطعة من العذاب,الدعاء في السفر
+tri9,trik,route,road,path,الطريق,الزنقة|الطريق,حق الطريق,اماطة الاذى,الجلوس في الطرقات
+jihad,ljihad,combat,war,fighting,الجهاد,الحرب|الجهاد,جاهدوا,المجاهد,في سبيل الله,القتال,الغزو
+chahid,chahada,martyr,martyrdom,الشهيد,الشهادة|الشهيد,الشهداء,الشهادة,قتل في سبيل الله
+9atl,qatl,meurtre,murder,killing,القتل,قتل|القتل,قتل النفس,الدماء,القاتل,المقتول,لا ترجعوا بعدي كفارا
+intihar,suicide,الانتحار|قتل نفسه,من قتل نفسه,تردى,بحديدة
+amana,lamana,confiance,trust,honesty in trust,الامانة|الامانة,امانة,خان,الخيانة,اؤتمن
+khiyana,trahison,betrayal,الخيانة|الخيانة,خان,خائن,الغدر,غدر
+wa3d,lwa3d,promesse,promise,الوعد,العهد|وعد,اخلف,العهد,الوفاء,اوفوا
+nifa9,nifaq,hypocrisie,hypocrite,hypocrisy,النفاق,المنافق|المنافق,المنافقين,النفاق,اية المنافق,ثلاث
+iman,limane,foi,faith,belief,الايمان|الايمان,امن,المؤمن,شعبة,يؤمن,المؤمنين
+islam,lislam,الاسلام|الاسلام,اركان,بني الاسلام,المسلم,اسلم
+tawhid,allah,dieu,god,التوحيد,الله|التوحيد,لا اله الا الله,وحده لا شريك له,الشرك
+chirk,shirk,polytheisme,idolatry,الشرك|الشرك,يشرك,المشركين,اشرك
+kofr,kufr,mécréance,disbelief,الكفر|الكفر,كفر,الكافرين,كافر
+nabi,rasoul,lprophete,prophete,prophet,mohammed,mo7ammad,النبي,الرسول,محمد|رسول الله,النبي,محمد,صفة النبي,خلقه
+sira,sirat,lsira,biographie,biography,السيرة|المدينة,هاجر,الهجرة,الوحي,غار حراء,غزوة
+salat 3la nabi,salawat,صلاة على النبي,الصلاة على النبي|صلى علي,صلوا علي,الصلاة على النبي,صلى الله عليه
+sahaba,s7aba,compagnons,companions,الصحابة|اصحابي,الصحابة,ابو بكر,عمر,عثمان,علي
+malaika,mala2ika,anges,angels,الملائكة|الملائكة,الملك,جبريل,ملائكة
+jin,jnoun,jnun,djinn,jinn,الجن,الجنون|الجن,الشيطان,الشياطين,ابليس
+chitan,chaytan,diable,satan,devil,الشيطان|الشيطان,الشياطين,ابليس,اعوذ بالله,الوسوسة
+waswas,wasswas,obsession,whispers,doubt,الوسواس,الوسوسة|الوسوسة,يوسوس,الشيطان,يجد في نفسه
+9adar,qadar,destin,destiny,fate,القدر,المكتوب,lmktoub|القدر,قدر,كتب,مقادير,القضاء
+tawakkol,tawakkul,confiance en dieu,reliance,التوكل|التوكل,توكل,المتوكلين,حسبنا الله
+rizq,rez9,subsistance,provision,sustenance,الرزق|الرزق,رزق,يرزق,الرزاق,ارزاقكم
+chokr,choukr,gratitude,thankfulness,الشكر,الحمد|الشكر,شكر,الشاكرين,الحمد لله,يحمد
+khawf,khof,peur,fear,الخوف,الخشية|خشية الله,يخاف,الخوف,الخشية,خشيته
+amal,raja,espoir,hope,الرجاء,الامل|الرجاء,رحمة الله,لا تقنطوا,حسن الظن
+rahma,ra7ma,misericorde,mercy,compassion,الرحمة|الرحمة,رحمة,ارحموا,يرحم,الراحمون,الرحمن
+afw,smah,pardon,forgive,forgiving,العفو,المسامحة,السماح|العفو,عفا,اعفوا,اصفحوا,يعفو,غفر
+mosalaha,sol7,reconciliation,الصلح,المصالحة|الصلح,اصلحوا,اصلاح ذات البين,هجر,فوق ثلاث
+hajr,khasam,lkhsam,dispute,quarrel,الهجر,الخصام,المخاصمة|يهجر,هجر,فوق ثلاث,الخصومة,الجدال,المراء
+sohba,s7ab,amitie,ami,friend,friends,friendship,الصحبة,الاصحاب,الصحاب|الجليس,جليس,الصالح,خليله,المرء على دين
+oukhowwa,khout,fraternite,brotherhood,الاخوة|اخوانا,المسلم اخو المسلم,اخيه,لاخيه ما يحب لنفسه
+ta3awon,mousa3ada,aide,help,helping,التعاون,المساعدة,المعاونة|في عون اخيه,فرج,كربة,يسر على معسر,تعاونوا
+takhfif,taysir,tysir,facilite,simplicity,ease,easy,التخفيف,التيسير,الساهل|يسروا,تعسروا,اليسر,يخفف,خفف,رخصة,حرج,وسعها
+ta3b,9alaq,stress,anxiete,anxiety,depression,sadness,7zen,l7zn,triste,sad,الحزن,القلق,الهم,lhem|الهم,الحزن,حزن,الغم,الكرب,لا تحزن,يحزن
+sa3ada,far7a,bonheur,happiness,joy,السعادة,الفرح|فرح,يفرح,الفرح,السرور,طوبى
+naseeha,nasi7a,conseil,advice,النصيحة|النصيحة,الدين النصيحة,نصح,ينصح
+amr bil ma3rouf,le bien,enjoin good,الامر بالمعروف,المنكر|المعروف,المنكر,فليغيره,تامرون
+dda3wa,da3wa,predication,call to islam,الدعوة|ادع,الدعوة,بلغوا عني,دعا
+hokm,7akim,lmalik,gouvernement,ruler,leader,government,الحاكم,الملك,السلطة,الحكم|الامير,الامام,السمع والطاعة,اطيعوا,اولي الامر,الامارة
+chura,choura,consultation,الشورى|الشورى,شاورهم,امرهم شورى
+mas2oulia,responsabilite,responsibility,المسؤولية|راع,مسؤول,رعيته,كلكم راع
+ard,lard,terre,land,الارض|الارض,ارضا,شبر,احيا ارضا
+zra3a,fla7a,agriculture,farming,planting,trees,الزراعة,الفلاحة,الشجر,الشجرة|غرس,يغرس,زرعا,الزرع,شجرة,النخلة,فسيلة
+ma2,lma,isrâf,gaspillage,waste,wasting,الاسراف,التبذير|الاسراف,تسرفوا,المسرفين,المبذرين,اضاعة المال
+nadar,lghad dial lbsar,regard,gaze,lowering gaze,غض البصر,النظر|غض البصر,يغضوا,النظر,النظرة,الفجاة
+ikhtilat,mixite,mixing,الاختلاط,الخلوة|يخلون,خلا,بامراة,المحرم,ذي محرم
+wasiya,wasiyya,testament,will,الوصية|الوصية,اوصى,وصية,الثلث,الثلث كثير
+irth,mirath,wirth,heritage,inheritance,الارث,الميراث,الورث|الفرائض,الميراث,ورثته,يرث,الورثة
+3abd,3bid,esclave,slave,slavery,العبد,العبيد|العبد,مملوك,اعتق,عتق,رقبة,الرقيق
+khadim,lkhdam,domestique,servant,employee,الخادم,الخدام|خادمه,خدمت,الاجير,اخوانكم خولكم
+ri7,lkhla,toilettes,toilet,bathroom,الخلاء,المرحاض|الخلاء,الغائط,البول,استنجى,دخل الخلاء
+3ats,3atsa,ternuer,sneeze,العطس|عطس,العاطس,يرحمك الله,التثاؤب
+istikhara,استخارة,الاستخارة|الاستخارة,استخير,اذا هم احدكم
+witr,qiyam,tahajjud,priere de nuit,night prayer,الوتر,قيام الليل,التهجد|الوتر,قيام الليل,صلاة الليل,التهجد,اوتروا
+nafila,sunna,sonna,priere surerogatoire,voluntary,النافلة,السنة,السنن|النوافل,التطوع,ركعتين,الرواتب
+ism,asma2,noms,names,naming,الاسماء,التسمية|اسماءكم,سموا,احب الاسماء,عبد الله
+~ra2s,amal salih,good deeds,bonnes actions,الاعمال الصالحة,الحسنات|احب الاعمال,الحسنات,عمل صالح,اي العمل افضل
+dnoub,dhonoub,peches,sins,sin,الذنوب,المعاصي,الذنب|الذنوب,الكبائر,المعاصي,الموبقات,خطايا,ذنب
+kaba2ir,major sins,peches majeurs,الكبائر|الكبائر,اكبر الكبائر,السبع الموبقات
+3isa,3issa,jesus,isa,عيسى,المسيح|عيسى,ابن مريم,المسيح,ينزل
+mousa,moussa,moise,moses,موسى|موسى,فرعون,بني اسرائيل
+ibrahim,abraham,ابراهيم|ابراهيم,خليل,ملة ابراهيم
+nouh,noe,noah,نوح|نوح,قومه,الطوفان,السفينة
+youssef,yusuf,joseph,يوسف|يوسف,اخوته,العزيز
+maryam,mariam,marie,mary,مريم|مريم,ابنة عمران,عيسى
+yahud,lihoud,nasara,juifs,chretiens,jews,christians,اليهود,النصارى,اهل الكتاب|اليهود,النصارى,اهل الكتاب,خالفوهم
+3arab,les arabes,arabs,العرب|العرب,العجم,عربي,اعجمي,لا فضل
+3onsoriya,racisme,racism,العنصرية|لا فضل لعربي,ابيض,اسود,التقوى,الناس سواسية
+taqwa,ta9wa,piete,piety,god-consciousness,التقوى|التقوى,اتقوا,المتقين,اتق الله,ههنا
+~sbor 3la l9ahr,ghina,riche,الغني|الغنى,الغني,اغنياء
+~klam lkhayr,bonne parole,kind word,الكلمة الطيبة|الكلمة الطيبة,صدقة,قول معروف
+nazafat lqalb,coeur,heart,القلب|القلب,قلب,مضغة,صلح,فسد,القلوب
+3a9l,raison,intelligence,mind,العقل|يعقلون,اولي الالباب,تفكروا,يتفكرون
+tafakkur,reflexion,reflection,التفكر|يتفكرون,تفكروا,خلق السماوات,ايات
+sama,smawat,ciel,sky,heaven,stars,السماء,النجوم|السماء,السماوات,النجوم,الشمس,القمر
+chams,9amar,soleil,lune,sun,moon,eclipse,الشمس,القمر,الكسوف|الشمس,القمر,الكسوف,ينكسفان,خسف
+mtar,chta,pluie,rain,المطر,الشتا|المطر,الغيث,استسقى,الاستسقاء,السحاب
+ri7,rya7,vent,wind,الريح,الرياح|الريح,الرياح,عاصف
+zalzal,tremblement de terre,earthquake,الزلزال,الزلزلة|زلزلت,الزلازل,الزلزلة
+~nar,l3afiya,feu,fire,النار|النار,اطفئوا,السراج
+khayl,خيل,chevaux,horses|الخيل,فرس,معقود في نواصيها
+riyada,sport,exercise,الرياضة|المؤمن القوي,الرمي,ارموا,سابق,القوة
+9owa,force,strength,القوة|المؤمن القوي,القوة,الشديد,اعدوا
+kasal,paresse,laziness,lazy,الكسل|الكسل,العجز,اعوذ بك,كسالى
+waqt lfaragh,ldi3,perte de temps,wasting time,الفراغ|الفراغ,الصحة,مغبون,نعمتان
+sa77a,se77a,sante,health,الصحة|الصحة,العافية,الفراغ,نعمتان
+3afiya,bien-etre,wellbeing,العافية|العافية,سلوا الله العافية
+khatar,soudfa,accident,danger,الخطر|المصيبة,قدر الله,ما شاء فعل
+ghina2,istighna2,independence,الاستغناء|اليد العليا,خير من اليد السفلى,المسالة,يسال الناس
+sou2al,talab,mendicite,begging,asking people,المسالة,السعاية,ltalab|المسالة,يسال الناس,يسال,تكثرا
+3ayb,sitr,cacher les defauts,covering faults,الستر|ستر,ستره الله,عورة,المجاهرين
+tajassos,espionnage,spying,التجسس|تجسسوا,تحسسوا,الظن,اكذب الحديث
+dhann,soup,soupcon,suspicion,الظن,سوء الظن|الظن,اياكم والظن,اكذب الحديث
+mozah,istihza2,moquerie,mockery,mocking,السخرية,الاستهزاء|يسخر,تستهزئون,السخرية,لا يسخر قوم
+fakhr,ta3azum,vantardise,boasting,الفخر,التفاخر|الفخر,يفخر,التفاخر,خيلاء,يختال
+3ujb,vanite,vanity,self-admiration,العجب|العجب,اعجب,خيلاء,يجر ثوبه
+lajal,deadline,procrastination,tasweef,التسويف|اغتنم,خمسا قبل خمس,بادروا
+~dakhla,lbit,maison,house,home,الدار,البيت,الدار|البيت,بيته,دخل,الاستئذان,السكن
+isti2dan,demander permission,asking permission,الاستئذان|الاستئذان,استاذن,ثلاثا,فليرجع
+majlis,jalsa,assemblee,gathering,sitting,المجلس,الجلسة|المجلس,المجالس,حلق الذكر,جلسوا
+kalb,kelb,chien,dog,الكلب,الكلاب|كلب,الكلب,الكلاب,كلب صيد,ولغ
+sayd,chasse,hunting,الصيد|الصيد,صاد,كلب صيد,المعلم
+bahr,lb7ar,mer,sea,البحر|البحر,الطهور ماؤه,ميتته
+khobz,khubz,pain,bread,الخبز|الخبز,الشعير,خبز
+3asal,l3asal,miel,honey,العسل|العسل,شفاء,اسق اخاك عسلا
+tamr,tmer,dattes,dates,التمر|التمر,تمرات,الرطب,عجوة
+habba sawda,sanouj,nigelle,black seed,الحبة السوداء,السانوج|الحبة السوداء,شفاء من كل داء
+lban,lhlib,lait,milk,الحليب,اللبن|اللبن,الفطرة,حليب
+l7ayd,regles,menstruation,period,الحيض,العادة|الحيض,الحائض,حاضت,المستحاضة
+7aml,grossesse,pregnancy,pregnant,الحمل,الولادة,birth,naissance|حملته,وضعت,الولد,ولد,المولود,العقيقة
+3a9i9a,sbou3,aqiqa,العقيقة,السبوع|العقيقة,عق,شاتان,المولود
+khitan,circoncision,circumcision,الختان,الطهارة|الختان,الفطرة,اختتن
+koura,jeux,games,play,gaming,اللعب,الالعاب|اللعب,يلعب,لهو,النرد,الشطرنج
+nard,lmaysir,qimar,pari,jeux de hasard,gambling,betting,القمار,الميسر,الرهان|الميسر,النرد,القمار,الازلام
+taswir,camera,selfie,image,photo|الصور,المصورين,صورة
+~twitter,facebook,instagram,tiktok,reseaux sociaux,social media,phone,telephone,talifon,lportable|اللسان,الكلمة,بكل ما سمع,كفى بالمرء كذبا,فليقل خيرا,ما لا يعنيه
+ma la ya3nih,se meler,meddling,ما لا يعنيه|ما لا يعنيه,حسن اسلام المرء,تركه
+~wajh,lwjeh,visage,face,الوجه|الوجه,وجهه,بوجه طلق
+~nas,nnas,les gens,people,humanity,الناس|الناس,خير الناس,انفعهم للناس,احب الناس
+infa3,naf3,utilite,benefit,helping people,النفع|انفعهم للناس,ينفع,نفع
+rab7,ribh,profit,الربح|البيع,بارك,البركة,الكسب
+baraka,lbaraka,benediction,blessing,البركة|البركة,بارك,بورك,مبارك
+istiqama,sta9ama,droiture,steadfastness,الاستقامة|استقم,استقاموا,قل امنت بالله
+khatima,fin de vie,good ending,الخاتمة,حسن الخاتمة|بالخواتيم,الخواتيم,خاتمة,اخر كلامه
+shahada,chahadatan,شهادة,الشهادتين|لا اله الا الله,اشهد ان,محمدا رسول الله
+3ibada,ibada,adoration,worship,العبادة|العبادة,اعبدوا,يعبدون,عبادة
+shafa3a,chafa3a,intercession,الشفاعة|الشفاعة,شفاعتي,يشفع,اشفعوا
+hawd,lkawtar,الحوض,الكوثر|الحوض,الكوثر,حوضي
+sirat,pont,bridge,الصراط|الصراط,جسر,يمر
+mizan,balance,scale,الميزان|الميزان,ثقيلتان,الموازين,ثقلت
+hijra,lhijra,emigration,الهجرة|الهجرة,هاجر,المهاجر,هجرته
+badr,uhud,o7od,khandaq,ghazwa,battle,bataille,غزوة,بدر,احد,الخندق|بدر,احد,الخندق,غزوة,يوم بدر,خيبر
+makka,mekka,mecque,mecca,مكة|مكة,البيت الحرام,الحرم,الكعبة
+madina,lmdina,medine,medina,المدينة|المدينة,طيبة,حرم,مسجدي
+9uds,lqods,jerusalem,al-aqsa,القدس,الاقصى|المسجد الاقصى,بيت المقدس,ايلياء
+isra2,mi3raj,isra,miraj,الاسراء,المعراج|الاسراء,المعراج,اسري,البراق,السماء
+wahy,revelation,الوحي|الوحي,جبريل,نزل,اقرا,غار حراء

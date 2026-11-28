@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مرجع</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: calm, reverent, exact — a reference book, not an app shouting for attention.
+   IDEA: the page behaves like a well-bound mushaf and hadith volume: text first, source stamped under every passage.
+   PICTURE: the search field and the passages themselves; a gilded frame line around each Quran card.
+   COLOUR and TYPE: paper white, deep tile-teal, a gold rule; Amiri Quran for the Quran, Amiri for hadith, Plex Arabic for UI.
+   LAYOUT: one column up to 760px, sticky search on top, three-tab bar at the bottom like a phone app. */
+@font-face{font-family:"Amiri Quran Local";src:url(AmiriQuran.ttf) format("truetype");font-display:swap}
+:root{color-scheme:light dark;
+--bg:light-dark(#fbfaf7,#0e1615);--card:light-dark(#ffffff,#15211f);--ink:light-dark(#1a1f1e,#e8ece9);
+--mute:light-dark(#5d6866,#9fb0ab);--line:light-dark(#e4e2dc,#26332f);--teal:light-dark(#0c5b4f,#5fc5ad);
+--teal-bg:light-dark(#e6f1ee,#123a33);--gold:light-dark(#a87a1c,#d8ad55);--mark:light-dark(#fbe7a6,#5a4510)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "IBM Plex Sans Arabic",system-ui,sans-serif;overflow-x:clip;padding-bottom:84px}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0 12px}
+h1{font:700 26px/1.1 "Amiri",serif;margin:0 0 10px;color:var(--teal)}
+h1 small{font:400 13px "IBM Plex Sans Arabic",sans-serif;color:var(--mute);margin-inline-start:8px}
+form{display:flex;gap:8px}
+input[type=search]{flex:1;height:48px;border:1.5px solid var(--line);border-radius:12px;padding:0 14px;background:var(--card);font-size:16px}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:2.5px solid var(--teal);outline-offset:2px}
+.btn{height:48px;min-width:48px;padding:0 18px;border:0;border-radius:12px;background:var(--teal);color:#fff;font-weight:700;cursor:pointer}
+:root .btn{color:light-dark(#fff,#062420)}
+.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink);height:40px;border-radius:10px;padding:0 14px;cursor:pointer}
+.status{font-size:14px;color:var(--mute);margin:10px 0 0;min-height:22px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-size:13px;padding:3px 10px;border-radius:99px;background:var(--teal-bg);color:var(--teal)}
+.chip.on{background:var(--teal);color:light-dark(#fff,#062420)}
+main{padding-top:14px}
+h2{font:700 20px/1.2 "Amiri",serif;margin:22px 0 10px;display:flex;align-items:baseline;gap:8px}
+h2 span{font:500 13px "IBM Plex Sans Arabic";color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.card.q{border-color:color-mix(in srgb,var(--gold) 45%,var(--line));box-shadow:inset 0 0 0 3px var(--card),inset 0 0 0 4px color-mix(in srgb,var(--gold) 30%,transparent)}
+.qt{font:26px/2.05 "Amiri Quran Local","Amiri",serif;margin:0}
+.ht{font:19px/1.95 "Amiri",serif;margin:0;white-space:normal}
+.ht.clip{display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical;overflow:hidden}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+.src{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:14px;color:var(--mute)}
+.src b{color:var(--ink);font-weight:500}
+.badge{font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--teal-bg);color:var(--teal)}
+.src a{color:var(--teal);font-weight:500;text-decoration:none;padding:6px 0}
+.src .sp{flex:1}
+.lnk{background:none;border:0;color:var(--teal);font-weight:500;cursor:pointer;padding:6px 0;font-size:14px}
+.empty{text-align:center;color:var(--mute);padding:40px 10px}
+.empty p{margin:6px 0}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.item{display:flex;align-items:center;gap:10px;text-align:start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-height:52px;cursor:pointer}
+.item i{font-style:normal;font-size:12px;color:var(--mute);width:28px;height:28px;flex:none;display:grid;place-items:center;border:1px solid var(--gold);border-radius:50%}
+.item b{font:700 18px "Amiri",serif}
+.item small{display:block;color:var(--mute);font-size:12px}
+.reader .qt{font-size:27px;line-height:2.2}
+.num{font-family:"Amiri Quran Local","Amiri",serif;color:var(--gold);margin:0 2px}
+.bar{display:flex;align-items:center;gap:10px;margin:6px 0 10px}
+.bar h2{margin:0;flex:1}
+nav{position:fixed;bottom:0;inset-inline:0;z-index:6;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;max-width:220px;height:64px;border:0;background:none;color:var(--mute);font-weight:500;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+nav button svg{width:22px;height:22px}
+nav button[aria-current=true]{color:var(--teal)}
+.note{font-size:13px;color:var(--mute);border-inline-start:3px solid var(--gold);padding:4px 10px;margin:14px 0}
+.toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.toast{transition:none}}
+@media(max-width:600px){.qt{font-size:23px}.reader .qt{font-size:24px}.ht{font-size:18px}h1{font-size:23px}}
+</style>
+<script src="search.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>مرجع <small>القرآن الكريم وصحيح البخاري وصحيح مسلم</small></h1>
+  <form id="f" role="search">
+    <input id="q" type="search" placeholder="ابحث عن موضوع: التخفيف، بر الوالدين، الصبر…" autocomplete="off" aria-label="بحث">
+    <button class="btn" aria-label="ابحث">بحث</button>
+  </form>
+  <div class="status" id="st">جارٍ تحميل النصوص…</div>
+  <div class="chips" id="chips"></div>
+</div></header>
+<main class="wrap" id="main"></main>
+<nav>
+  <button data-v="search" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>بحث</button>
+  <button data-v="quran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5c3-1.5 6-1.5 8 0v15c-2-1.5-5-1.5-8 0zM20 5c-3-1.5-6-1.5-8 0v15c2-1.5 5-1.5 8 0z"/></svg>القرآن</button>
+  <button data-v="hadith"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h10l3 3v15H6z"/><path d="M9 9h7M9 13h7M9 17h4"/></svg>الحديث</button>
+</nav>
+<div class="toast" id="toast"></div>
+<script>
+{
+const $ = s => document.querySelector(s);
+const ar = n => Number(n).toLocaleString('ar-EG', {useGrouping: false});
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const BOOKS = {b:{name:'صحيح البخاري'}, m:{name:'صحيح مسلم'}};
+let Q = null, H = {b:null, m:null}, ready = false, view = 'search', lastSearch = null, reqId = 0;
+const main = $('#main'), st = $('#st');
+
+/* ---------- data ---------- */
+const load = f => fetch(f).then(r => { if (!r.ok) throw new Error(f); return r.json(); });
+const pQ = load('data/quran.json').then(d => Q = d);
+const pB = load('data/bukhari.json').then(d => H.b = d);
+const pM = load('data/muslim.json').then(d => H.m = d);
+const worker = new Worker('worker.js');
+const pending = new Map();
+worker.onmessage = e => {
+  const d = e.data;
+  if (d.type === 'progress') st.textContent = `جارٍ تحميل النصوص… ${d.done}/${d.total}`;
+  else if (d.type === 'ready') { ready = true; st.textContent = 'جاهز. اكتب موضوعًا بأي لغة.'; }
+  else if (d.type === 'error') st.textContent = 'تعذّر تحميل النصوص. أعد فتح الصفحة.';
+  else if (d.type === 'result') { const f = pending.get(d.id); pending.delete(d.id); f && f(d); }
+};
+const ask = (terms, text) => new Promise(res => { const id = ++reqId; pending.set(id, res); worker.postMessage({id, terms, text}); });
+
+/* ---------- smart query: Claude only turns the question into Arabic search words ---------- */
+let samplerP = null;
+const getSampler = () => samplerP || (samplerP = (window.claude && window.claude.use) ? window.claude.use('sample').catch(() => null) : Promise.resolve(null));
+let ai = {on: null, why: ''};
+async function expand(text) {
+  const sampler = await getSampler();
+  if (!sampler) { ai = {on: false, why: 'غير متاح في هذه النافذة'}; return null; }
+  const prompt = `أنت مساعد بحث في نصوص القرآن الكريم وصحيح البخاري وصحيح مسلم.
+المستخدم كتب سؤالاً أو موضوعاً (قد يكون بالدارجة المغربية بحروف لاتينية أو عربية، أو بالفرنسية أو الإنجليزية أو العربية):
+"""${text}"""
+مهمتك فقط: أن تحوّل الموضوع إلى كلمات بحث عربية فصيحة تظهر حرفياً في نصوص القرآن والحديث.
+- أعطِ من 8 إلى 16 كلمة مفردة، بصيغ مختلفة (فعل، مصدر، جمع، أمر، نهي) كما ترد في النصوص، مثل: يسروا، تعسروا، اليسر، يخفف، رخصة.
+- لا تكتب أي آية أو حديث أو جزء منهما، ولا تشرح.
+- أعطِ أيضاً عنواناً عربياً قصيراً للموضوع.
+أجب بـ JSON فقط بهذا الشكل: {"topic":"...","words":["...","..."]}`;
+  let r;
+  try { r = await sampler(prompt, {modelTier: 'quick'}); }
+  catch (e) { ai = {on: false, why: e && e.code === 'not_granted' ? 'لم تُعطَ الموافقة' : e && e.code === 'rate_limited' ? 'كثرة الطلبات، أعد بعد قليل' : 'تعذّر الاتصال'}; return null; }
+  ai = {on: true, why: ''};
+  const m = r.text.match(/\{[\s\S]*\}/);
+  const j = JSON.parse(m ? m[0] : r.text);
+  const words = (j.words || []).map(w => String(w).replace(/[^ء-يً-ْ ]/g, '').trim()).filter(w => w.length > 1).slice(0, 18);
+  return {topic: String(j.topic || '').slice(0, 60), words};
+}
+
+const MARKS_RE = /[ؐ-ًؚ-ٰٟۖ-ۭ࣓-ࣿـ‏‎]/g;
+function snippet(x) {
+  if (x[0] === 'q') return Q.q[x[1]][x[2]].replace(MARKS_RE, '');
+  const t = H[x[0]][x[1]].t.replace(MARKS_RE, '');
+  const q = t.match(/"[^"]+"/g);
+  return (q ? q.join(' … ') : t.slice(-320)).slice(0, 380);
+}
+async function rerank(text, items) {
+  const sampler = await getSampler(); if (!sampler || !ai.on) return null;
+  const pick = k => items.filter(x => x[0] === k).slice(0, k === 'q' ? 20 : 25);
+  const cands = [...pick('q'), ...pick('b'), ...pick('m')];
+  if (!cands.length) return null;
+  const list = cands.map((x, i) => `[${i + 1}] ${snippet(x)}`).join('\n');
+  const prompt = `المستخدم يبحث عن هذا الموضوع (قد يكون بالدارجة أو الفرنسية أو العربية): «${text}»
+هذه نصوص مرقّمة من القرآن والصحيحين. اختر أرقام النصوص التي تتكلم فعلاً عن هذا الموضوع فقط، مرتبة من الأقرب إلى الأبعد، وأهمل ما تشابهت فيه الكلمة فقط دون المعنى.
+لا تكتب أي نص ولا شرح. أجب بـ JSON فقط: {"ids":[...]} (حتى 15 رقماً، أو قائمة فارغة إن لم يوجد شيء مناسب).
+
+${list}`;
+  try {
+    const r = await sampler(prompt, {modelTier: 'default'});
+    const m = r.text.match(/\{[\s\S]*\}/); const j = JSON.parse(m ? m[0] : r.text);
+    const seen = new Set();
+    return (j.ids || []).map(n => cands[(+n) - 1]).filter(x => x && !seen.has(x) && seen.add(x));
+  } catch (e) { return null; }
+}
+
+/* ---------- rendering helpers ---------- */
+function highlight(text, wordSet) {
+  return text.split(/(\s+)/).map(w => {
+    if (!w.trim()) return w;
+    const k = tokens(w)[0];
+    return k && wordSet.has(k) ? `<mark>${esc(w)}</mark>` : esc(w);
+  }).join('');
+}
+function quranCard(si, ai, ws) {
+  const s = Q.s[si], t = Q.a[si][ai];
+  return `<article class="card q"><p class="qt">${ws ? highlight(t, ws) : esc(t)} <span class="num">﴿${ar(ai + 1)}﴾</span></p>
+  <div class="src"><b>سورة ${esc(s.n)}</b><span>الآية ${ai + 1}</span><span class="sp"></span>
+  <button class="lnk" data-copy="q:${si}:${ai}">نسخ</button><a href="https://quran.com/${si + 1}/${ai + 1}" target="_blank" rel="noopener">تحقق في Quran.com ↗</a></div></article>`;
+}
+function hadithCard(b, i, ws) {
+  const h = H[b][i], long = h.t.length > 700;
+  const num = h.c ? `طريق آخر للحديث رقم ${esc(h.n)}` : `رقم ${esc(h.n)}`;
+  return `<article class="card"><p class="ht${long ? ' clip' : ''}">${ws ? highlight(h.t, ws) : esc(h.t)}</p>
+  ${long ? '<button class="lnk" data-more>اقرأ الحديث كاملاً</button>' : ''}
+  <div class="src"><span class="badge">صحيح</span><b>${BOOKS[b].name}</b><span>${num}</span><span>${esc(h.k)}</span><span class="sp"></span>
+  <button class="lnk" data-copy="${b}:${i}">نسخ</button><a href="${esc(h.u)}" target="_blank" rel="noopener">تحقق في Sunnah.com ↗</a></div></article>`;
+}
+const toast = m => { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1600); };
+
+/* ---------- search view ---------- */
+function home() {
+  main.innerHTML = `<div class="empty"><p style="font:700 22px Amiri,serif;color:var(--ink)">عمّا تبحث اليوم؟</p>
+  <p>اكتب موضوعاً، وتظهر لك الآيات والأحاديث الصحيحة مع مصدر كل نص.</p>
+  <div class="chips" style="justify-content:center;margin-top:14px">${['التخفيف والتيسير','بر الوالدين','الصبر على البلاء','حسن الخلق','لا تحاسدوا','المرور بين يدي المصلي'].map(x => `<button class="chip ghost" style="height:auto;padding:6px 12px" data-ex="${x}">${x}</button>`).join('')}</div></div>
+  <p class="note">النصوص منقولة كما هي من مصادرها، وتمت مقارنتها بمصدر ثانٍ حرفاً بحرف. البحث الذكي لا يكتب أي نص؛ هو فقط يقترح كلمات البحث.</p>`;
+}
+async function runSearch(text) {
+  text = text.trim(); if (!text) return;
+  setView('search', true);
+  if (!ready) { st.textContent = 'انتظر قليلاً، النصوص ما زالت تُحمَّل…'; await new Promise(r => { const i = setInterval(() => ready && (clearInterval(i), r()), 200); }); }
+  st.textContent = 'جارٍ البحث…'; $('#chips').innerHTML = ''; main.innerHTML = '';
+  const own = text.match(/[\u0621-\u064A\u064B-\u0652]+|[a-zA-Z0-9]{2,}/g) || [];
+  let ex = null;
+  try { ex = await expand(text); } catch (e) { ex = null; console.warn('expand failed', e); }
+  if (ex && !ex.words.length) ex = null;
+  if (!ex && !own.length) { st.textContent = 'اكتب كلمة للبحث.'; return; }
+  const terms = [...own.map(w => ({w, wt: 1.2})), ...((ex && ex.words) || []).map(w => ({w, wt: 1}))];
+  const res = await ask(terms, text);
+  const ws = new Set(res.words);
+  lastSearch = {text, ex, res, ws, picked: null, ranking: !!ex};
+  renderResults();
+  if (ex) {
+    const mine = lastSearch, picked = await rerank(text, res.items);
+    if (lastSearch !== mine) return;
+    mine.picked = picked || []; mine.ranking = false; mine.failed = !picked;
+    renderResults();
+  }
+}
+function renderResults() {
+  const {ex, res, ws} = lastSearch;
+  const lim = lastSearch.lim || 15;
+  const top = res.items.length ? res.items[0][res.items[0].length - 2] : 0;
+  const sc = x => x[x.length - 2];
+  const all = k => { const a = res.items.filter(x => x[0] === k); if (!a.length || sc(a[0]) < top * 0.2) return []; return a.filter(x => sc(x) >= sc(a[0]) * 0.35); };
+  const q = all('q').slice(0, lim), b = all('b').slice(0, lim), m = all('m').slice(0, lim);
+  const more = ['q', 'b', 'm'].some(k => all(k).length > lim);
+  st.textContent = ex ? `بحث ذكي ✓ ${ex.topic ? '· ' + ex.topic : ''}${lastSearch.ranking ? ' · الذكاء الاصطناعي يختار الأقرب…' : ''}`
+    : (res.topicWords && res.topicWords.length ? 'فهمت الموضوع، وبحثت بهذه الكلمات:' : `لم أتعرف على الموضوع، فبحثت بكلماتك. جرّب كلمة أخرى أو اكتب بالعربية.`);
+  const shown = ex ? ex.words : (res.topicWords && res.topicWords.length ? res.topicWords : [...new Set(res.words)]).slice(0, 14);
+  $('#chips').innerHTML = shown.map(w => `<span class="chip">${esc(w)}</span>`).join('');
+  if (!res.items.length) { main.innerHTML = '<div class="empty"><p>لم أجد نصوصاً لهذه الكلمات. جرّب كلمة أخرى.</p></div>'; return; }
+  const card = x => x[0] === 'q' ? quranCard(x[1], x[2], ws) : hadithCard(x[0], x[1], ws);
+  const pk = lastSearch.picked;
+  let head = '';
+  if (pk && pk.length) head = `<h2>الأقرب للموضوع<span>اختارها الذكاء الاصطناعي من النصوص</span></h2>${pk.map(card).join('')}<h2 style="margin-top:30px;color:var(--mute)">نتائج أخرى بالكلمات</h2>`;
+  else if (pk && !pk.length && !lastSearch.failed) head = '<p class="note">الذكاء الاصطناعي لم يجد نصاً يتكلم مباشرة عن هذا الموضوع في القرآن والصحيحين. هذه نتائج البحث بالكلمات:</p>';
+  const sec = (title, arr, f) => arr.length ? `<h2>${title}<span>${arr.length}</span></h2>${arr.map(f).join('')}` : '';
+  main.innerHTML = head + sec('القرآن الكريم', q, x => quranCard(x[1], x[2], ws)) + sec('صحيح البخاري', b, x => hadithCard('b', x[1], ws)) + sec('صحيح مسلم', m, x => hadithCard('m', x[1], ws))
+    + (more ? '<button class="ghost" style="width:100%;height:48px" data-moreres>عرض نتائج أكثر</button>' : '')
+    + '<p class="note">هذه نتائج بحث في النصوص، وليست فتوى. لفهم الحكم الشرعي ارجع إلى أهل العلم.</p>';
+  if (!lastSearch.lim) scrollTo(0, 0);
+}
+
+/* ---------- quran view ---------- */
+async function quranList(filter = '') {
+  await pQ;
+  const f = norm(filter).replace(/\s/g, '');
+  const items = Q.s.filter(s => !f || norm(s.n).includes(f) || s.tr.toLowerCase().includes(filter.toLowerCase()) || String(s.i) === filter.trim());
+  main.innerHTML = `<div class="bar"><h2>سور القرآن الكريم</h2></div>
+  <input type="search" id="sf" placeholder="ابحث عن سورة" value="${esc(filter)}" style="width:100%;height:44px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--card);margin-bottom:12px">
+  <div class="list">${items.map(s => `<button class="item" data-sura="${s.i - 1}"><i>${s.i}</i><span><b>${esc(s.n)}</b><small>${s.c} آية · ${s.ty === 'meccan' ? 'مكية' : 'مدنية'}</small></span></button>`).join('')}</div>`;
+  const sf = $('#sf'); sf.oninput = () => { const v = sf.value; quranList(v).then(() => { const n = $('#sf'); n.focus(); n.setSelectionRange(v.length, v.length); }); };
+}
+async function sura(si) {
+  await pQ; const s = Q.s[si];
+  const basm = si !== 0 && si !== 8 ? `<p class="qt" style="text-align:center;color:var(--teal)">${esc(Q.a[0][0])}</p>` : '';
+  main.innerHTML = `<div class="bar"><button class="ghost" data-back="quran">→ السور</button><h2>سورة ${esc(s.n)}<span>${s.c} آية</span></h2></div>
+  <article class="card q reader">${basm}<p class="qt">${Q.a[si].map((t, i) => `${esc(t)} <span class="num">﴿${ar(i + 1)}﴾</span>`).join(' ')}</p>
+  <div class="src"><b>النص: مصحف المدينة (مجمع الملك فهد)، رواية حفص عن عاصم</b><span class="sp"></span><a href="https://quran.com/${si + 1}" target="_blank" rel="noopener">قارن في Quran.com ↗</a></div></article>
+  <div class="bar">${si > 0 ? `<button class="ghost" data-sura="${si - 1}">→ ${esc(Q.s[si - 1].n)}</button>` : ''}<span style="flex:1"></span>${si < 113 ? `<button class="ghost" data-sura="${si + 1}">${esc(Q.s[si + 1].n)} ←</button>` : ''}</div>`;
+  scrollTo(0, 0);
+}
+
+/* ---------- hadith view ---------- */
+async function hadithHome() {
+  main.innerHTML = `<div class="bar"><h2>كتب الحديث</h2></div><div class="list">
+  <button class="item" data-book="b"><i>١</i><span><b>صحيح البخاري</b><small>الإمام محمد بن إسماعيل البخاري</small></span></button>
+  <button class="item" data-book="m"><i>٢</i><span><b>صحيح مسلم</b><small>الإمام مسلم بن الحجاج</small></span></button></div>
+  <p class="note">كل أحاديث الصحيحين صحيحة عند أهل العلم. النص من Sunnah.com وتمت مقارنته بمصدر ثانٍ.</p>`;
+}
+async function bookIndex(b) {
+  main.innerHTML = '<p class="status">جارٍ التحميل…</p>';
+  await (b === 'b' ? pB : pM);
+  const ks = []; H[b].forEach((h, i) => { if (!ks.length || ks[ks.length - 1].k !== h.k) ks.push({k: h.k, i, n: 0}); ks[ks.length - 1].n++; });
+  main.innerHTML = `<div class="bar"><button class="ghost" data-back="hadith">→ الكتب</button><h2>${BOOKS[b].name}<span>${ks.length} كتاباً</span></h2></div>
+  <div class="list" style="grid-template-columns:1fr">${ks.map((k, j) => `<button class="item" data-kitab="${b}:${k.i}:${k.n}"><i>${j + 1}</i><span><b>${esc(k.k)}</b><small>${k.n} حديثاً</small></span></button>`).join('')}</div>`;
+  scrollTo(0, 0);
+}
+function kitab(b, start, n, shown = 25) {
+  const hs = H[b].slice(start, start + n);
+  main.innerHTML = `<div class="bar"><button class="ghost" data-book="${b}">→ ${BOOKS[b].name}</button><h2>${esc(hs[0].k)}<span>${n}</span></h2></div>
+  ${hs.slice(0, shown).map((h, j) => hadithCard(b, start + j)).join('')}
+  ${shown < n ? `<button class="ghost" style="width:100%;height:48px" data-kitab="${b}:${start}:${n}:${shown + 25}">عرض المزيد (${n - shown})</button>` : ''}`;
+}
+
+/* ---------- navigation and events ---------- */
+function setView(v, keep) {
+  view = v;
+  st.hidden = $('#chips').hidden = v !== 'search';
+  document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-current', b.dataset.v === v));
+  if (keep) return;
+  if (v === 'search') lastSearch ? renderResults() : home();
+  if (v === 'quran') quranList();
+  if (v === 'hadith') hadithHome();
+  scrollTo(0, 0);
+}
+document.addEventListener('click', async e => {
+  const t = e.target.closest('button,[data-ex]'); if (!t) return;
+  const d = t.dataset;
+  if (d.v) setView(d.v);
+  else if (d.ex) { $('#q').value = d.ex; runSearch(d.ex); }
+  else if (d.sura) { setView('quran', true); sura(+d.sura); }
+  else if (d.back) setView(d.back);
+  else if (d.book) { setView('hadith', true); bookIndex(d.book); }
+  else if (d.kitab) { const [b, s, n, sh] = d.kitab.split(':'); setView('hadith', true); kitab(b, +s, +n, sh ? +sh : 25); if (!sh) scrollTo(0, 0); }
+  else if ('moreres' in d) { lastSearch.lim = (lastSearch.lim || 15) + 15; renderResults(); }
+  else if ('more' in d) { t.previousElementSibling.classList.remove('clip'); t.remove(); }
+  else if (d.copy) {
+    const [k, a, c] = d.copy.split(':'); let txt;
+    if (k === 'q') txt = `${Q.a[+a][+c]}\n[سورة ${Q.s[+a].n}: ${+c + 1}]`;
+    else { const h = H[k][+a]; txt = `${h.t}\n[${BOOKS[k].name}، رقم ${h.n}]\n${h.u}`; }
+    try { await navigator.clipboard.writeText(txt); toast('تم النسخ مع المصدر'); } catch (_) { toast('لم يسمح المتصفح بالنسخ'); }
+  }
+});
+$('#f').addEventListener('submit', e => { e.preventDefault(); $('#q').blur(); runSearch($('#q').value); });
+home();
+}
+</script>
+</body>
+</html>
