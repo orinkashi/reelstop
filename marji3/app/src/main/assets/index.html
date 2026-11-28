@@ -33,6 +33,7 @@ input:focus-visible,button:focus-visible,a:focus-visible{outline:2.5px solid var
 .ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink);height:40px;border-radius:10px;padding:0 14px;cursor:pointer}
 .status{font-size:14px;color:var(--mute);margin:10px 0 0;min-height:22px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip.on{background:var(--teal);color:light-dark(#fff,#062420)}
 .chip{font-size:13px;padding:3px 10px;border-radius:99px;background:var(--teal-bg);color:var(--teal)}
 .chip.on{background:var(--teal);color:light-dark(#fff,#062420)}
 main{padding-top:14px}
@@ -388,12 +389,42 @@ function kitab(b, start, n, shown = 25) {
 
 /* ---------- seerah view ---------- */
 let S = null;
-async function sira() {
+let HB = null;
+const BOOK_NOTE = 'السيرة النبوية لابن هشام (ت 213هـ)، تحقيق: مصطفى السقا وإبراهيم الأبياري وعبد الحفيظ الشلبي، الطبعة الثانية 1955م. النص من مشروع OpenITI (نسخة المكتبة الشاملة 23833). تنبيه: كتب السيرة تجمع الروايات بأسانيدها كما وصلت لمؤلفيها، وفيها الصحيح وغيره، والأحاديث الصحيحة في «الخط الزمني» وقسم الحديث.';
+function siraTabs(active) {
+  return `<div class="chips" style="margin:6px 0 4px"><button class="chip ${active === 'book' ? 'on' : ''}" data-sv="book" style="border:0;cursor:pointer">📖 الكتاب الكامل</button><button class="chip ${active === 'tl' ? 'on' : ''}" data-sv="tl" style="border:0;cursor:pointer">🕰️ الخط الزمني مع الأدلة</button></div>`;
+}
+async function siraBook(filter = '') {
+  main.innerHTML = siraTabs('book') + '<p class="status">جارٍ تحميل الكتاب…</p>';
+  if (!HB) HB = await load('data/hisham.json');
+  const last = +store.get('hisham_last') || 0;
+  const f = norm(filter).replace(/\s/g, '');
+  const list = HB.map((c, i) => [c, i]).filter(([c]) => !f || norm(c.t + ' ' + c.s.map(x => x.t || '').join(' ')).replace(/\s/g, '').includes(f));
+  main.innerHTML = siraTabs('book') + `<div class="bar"><h2>السيرة النبوية لابن هشام<span>${ar(HB.length)} باباً</span></h2></div>
+  <p class="note">${esc(BOOK_NOTE)}</p>
+  ${last ? `<button class="btn" data-ch="${last}" style="width:100%;margin-bottom:10px">أكمل القراءة: ${esc(HB[last].t.slice(0, 60))}</button>` : ''}
+  <input type="search" id="cf" placeholder="ابحث عن باب: الهجرة، بدر، خديجة…" value="${esc(filter)}" style="width:100%;height:44px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--card);margin-bottom:12px">
+  <div class="list" style="grid-template-columns:1fr">${list.map(([c, i]) => `<button class="item" data-ch="${i}"><i>${ar(i + 1)}</i><span><b style="font-size:17px">${esc(c.t)}</b></span></button>`).join('')}</div>`;
+  const cf = $('#cf'); cf.oninput = () => { const v = cf.value; siraBook(v).then(() => { const n = $('#cf'); n.focus(); n.setSelectionRange(v.length, v.length); }); };
+}
+async function chapter(i) {
+  if (!HB) HB = await load('data/hisham.json');
+  store.set('hisham_last', String(i));
+  const c = HB[i];
+  main.innerHTML = siraTabs('book') + `<div class="bar"><button class="ghost" data-sv="book">→ الفهرس</button><span style="flex:1"></span><span class="status" style="margin:0">${ar(i + 1)} / ${ar(HB.length)}</span></div>
+  <article class="card"><h2 style="font-size:24px;margin-top:0">${esc(c.t)}</h2>
+  ${c.s.map(sec => `${sec.t ? `<h3 style="font:700 19px/1.5 Amiri,serif;color:var(--teal);margin:20px 0 6px">${esc(sec.t)}</h3>` : ''}${sec.p.map(p => `<p class="ht" style="margin:0 0 12px">${esc(p)}</p>`).join('')}`).join('')}
+  <p class="note">${esc(BOOK_NOTE)}</p></article>
+  <div class="bar">${i > 0 ? `<button class="ghost" data-ch="${i - 1}">→ السابق</button>` : ''}<span style="flex:1"></span>${i < HB.length - 1 ? `<button class="ghost" data-ch="${i + 1}">التالي ←</button>` : ''}</div>`;
+  scrollTo(0, 0);
+}
+async function sira() { return siraBook(); }
+async function siraTimeline() {
   main.innerHTML = '<p class="status">جارٍ التحميل…</p>';
   if (!S) S = await load('data/sira.json');
   await pQ;
   let era = '';
-  main.innerHTML = `<div class="bar"><h2>السيرة النبوية<span>${ar(S.length)} حدثاً من قبل المولد إلى الوفاة</span></h2></div>
+  main.innerHTML = siraTabs('tl') + `<div class="bar"><h2>السيرة النبوية<span>${ar(S.length)} حدثاً من قبل المولد إلى الوفاة</span></h2></div>
   <p class="note">القصة مكتوبة بأسلوب مبسّط اعتماداً على الأحاديث الصحيحة والمشهور عند أهل السيرة، كتبها الذكاء الاصطناعي (Claude)، فراجعها مع أهل العلم. الحجة هي الأدلة تحت كل حدث، من القرآن الكريم وصحيح البخاري ومسلم. والتواريخ الهجرية على المشهور.</p>
   <div class="tl">${S.map((e, i) => {
     const head = e.p !== era ? `<div class="era">${esc(era = e.p)}</div>` : '';
@@ -451,6 +482,8 @@ document.addEventListener('click', async e => {
   else if (d.sura) { setView('quran', true); sura(+d.sura); }
   else if (d.back) setView(d.back);
   else if (d.ev) evidence(+d.ev);
+  else if (d.sv) { setView('sira', true); d.sv === 'book' ? siraBook() : siraTimeline(); }
+  else if (d.ch) { setView('sira', true); chapter(+d.ch); }
   else if (d.tf) { const [a, b] = d.tf.split(':').map(Number); const card = t.closest('article'); const ex = card.querySelector('.tf'); if (ex) ex.remove(); else { t.textContent = '…'; card.querySelector('.src').insertAdjacentHTML('beforebegin', await tafsirHTML(a, b)); t.textContent = 'التفسير'; } }
   else if (d.tfs) { const [a, b] = d.tfs.split(':').map(Number); tafsirSheet(a, b); }
   else if ('close' in d) $('#modal').hidden = true;
