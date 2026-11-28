@@ -308,7 +308,7 @@ async function runSearch(text) {
   if (ex && !ex.words.length) ex = null;
   if (!ex && !own.length) { st.textContent = 'اكتب كلمة للبحث.'; return; }
   const terms = [...own.map(w => ({w, wt: 1.2})), ...((ex && ex.words) || []).map(w => ({w, wt: 1}))];
-  const res = await ask(terms, text);
+  const res = await ask(terms, text); await pSH;
   const ws = new Set(res.words);
   lastSearch = {text, ex, res, ws, picked: null, ranking: !!ex};
   renderResults();
@@ -377,10 +377,11 @@ async function hadithHome() {
 }
 async function bookIndex(b) {
   main.innerHTML = '<p class="status">جارٍ التحميل…</p>';
-  await (b === 'b' ? pB : pM);
+  await Promise.all([b === 'b' ? pB : pM, pSH]);
   const ks = []; H[b].forEach((h, i) => { if (!ks.length || ks[ks.length - 1].k !== h.k) ks.push({k: h.k, i, n: 0}); ks[ks.length - 1].n++; });
   main.innerHTML = `<div class="bar"><button class="ghost" data-back="hadith">→ الكتب</button><h2>${BOOKS[b].name}<span>${ks.length} كتاباً</span></h2></div>
-  <div class="list" style="grid-template-columns:1fr">${ks.map((k, j) => `<button class="item" data-kitab="${b}:${k.i}:${k.n}"><i>${j + 1}</i><span><b>${esc(k.k)}</b><small>${k.n} حديثاً</small></span></button>`).join('')}</div>`;
+  <p class="note">الأحاديث اللي عندها شرح فيها زر «الشرح» (من موسوعة الأحاديث النبوية، HadeethEnc.com). عدد الأبواب اللي فيها شرح مكتوب تحت كل باب.</p>
+  <div class="list" style="grid-template-columns:1fr">${ks.map((k, j) => { let sh = 0; if (SH) for (let x = k.i; x < k.i + k.n; x++) if (SH.map[b + ':' + x]) sh++; return `<button class="item" data-kitab="${b}:${k.i}:${k.n}"><i>${j + 1}</i><span><b>${esc(k.k)}</b><small>${k.n} حديثاً${sh ? ` · ${sh} مشروح` : ''}</small></span></button>`; }).join('')}</div>`;
   scrollTo(0, 0);
 }
 function kitab(b, start, n, shown = 25) {
@@ -425,7 +426,7 @@ async function sira() { return siraBook(); }
 async function siraTimeline() {
   main.innerHTML = '<p class="status">جارٍ التحميل…</p>';
   if (!HB) HB = await load('data/hisham.json');
-  await Promise.all([pB, pM]);
+  await Promise.all([pB, pM, pSH]);
   if (!S) S = await load('data/sira.json');
   await pQ;
   let era = '';
@@ -443,7 +444,7 @@ async function siraTimeline() {
 async function evidence(i) {
   const box = $('#ev' + i);
   if (box.innerHTML) { box.innerHTML = ''; return; }
-  await Promise.all([pB, pM]);
+  await Promise.all([pB, pM, pSH]);
   const e = S[i];
   box.innerHTML = '<div style="margin-top:10px">' + e.q.map(([s, a]) => quranCard(s - 1, a - 1)).join('') + e.h.map(([b, j]) => hadithCard(b, j, null, true)).join('') + '</div>';
 }
