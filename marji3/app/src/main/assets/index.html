@@ -131,6 +131,7 @@ const $ = s => document.querySelector(s);
 const ar = n => Number(n).toLocaleString('ar-EG', {useGrouping: false});
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const BOOKS = {b:{name:'صحيح البخاري'}, m:{name:'صحيح مسلم'}};
+const CL = {b: null, m: null}, CLC = {};
 let Q = null, H = {b:null, m:null}, ready = false, view = 'search', lastSearch = null, reqId = 0;
 const main = $('#main'), st = $('#st');
 
@@ -139,7 +140,11 @@ const load = f => fetch(f).then(r => { if (!r.ok) throw new Error(f); return r.j
 const pQ = load('data/quran.json').then(d => Q = d);
 const pB = load('data/bukhari.json').then(d => H.b = d);
 const pM = load('data/muslim.json').then(d => H.m = d);
-let SH = null; const pSH = load('data/sharh.json').then(d => SH = d).catch(() => null);
+let SH = null; const pSH = Promise.all([
+  load('data/sharh.json').then(d => SH = d),
+  load('data/sharh/fath-index.json').then(a => CL.b = new Set(a)),
+  load('data/sharh/nawawi-index.json').then(a => CL.m = new Set(a))
+]).catch(() => null);
 const worker = new Worker('worker.js');
 const pending = new Map();
 worker.onmessage = e => {
@@ -250,9 +255,22 @@ async function tafsirSheet(si, ai) {
 $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') $('#modal').hidden = true; });
 
 /* ---------- hadith explanation (موسوعة الأحاديث النبوية — HadeethEnc.com) ---------- */
+const CLB = {b: {file: 'fath', name: 'فتح الباري شرح صحيح البخاري', by: 'ابن حجر العسقلاني (ت 852هـ)'}, m: {file: 'nawawi', name: 'المنهاج شرح صحيح مسلم', by: 'الإمام النووي (ت 676هـ)'}};
+function classicalNum(b, i) {
+  const h = H[b][i]; if (!CL[b]) return null;
+  for (const n of (h.n.match(/\d+/g) || []).map(Number)) if (CL[b].has(n)) return n;
+  return null;
+}
+const hasSharh = (b, i) => !!((SH && SH.map[b + ':' + i]) || classicalNum(b, i));
+async function classicalText(b, n) {
+  const k = `${CLB[b].file}-${Math.floor(n / 250)}`;
+  if (!CLC[k]) CLC[k] = load(`data/sharh/${k}.json`);
+  return (await CLC[k])[n];
+}
 const para = t => esc(t || '').replace(/\n/g, '<br>');
-function sharhSheet(key) {
-  const ids = SH.map[key] || [];
+async function sharhSheet(key) {
+  const ids = (SH && SH.map[key]) || [];
+  const [bk, ix] = key.split(':'); const cn = classicalNum(bk, +ix);
   const seen = new Set();
   $('#sheet').innerHTML = ids.filter(id => { const k = SH.h[id].exp; if (seen.has(k)) return false; seen.add(k); return true; }).map(id => { const x = SH.h[id]; return `
     <h3 style="font:700 19px/1.5 Amiri,serif;margin:0 0 6px">${esc(x.title)}</h3>
@@ -262,8 +280,18 @@ function sharhSheet(key) {
     ${x.words && x.words.trim() && x.words.trim() !== '....' ? `<h4 style="margin:14px 0 4px">معاني الكلمات</h4><div class="tf" style="white-space:normal">${para(x.words)}</div>` : ''}
     ${x.ben ? `<h4 style="margin:14px 0 4px">من فوائد الحديث</h4><div class="tf" style="white-space:normal">${para(x.ben)}</div>` : ''}
     <p class="note">المصدر: موسوعة الأحاديث النبوية — HadeethEnc.com (الإصدار ${esc(SH.v)})، منقول كما هو دون تعديل. ${/^https:\/\//.test(x.link) ? `<a href="${esc(x.link)}" target="_blank" rel="noopener" style="color:var(--teal)">افتح في الموسوعة ↗</a>` : ''}</p>`; }).join('<hr style="border:0;border-top:1px solid var(--line);margin:18px 0">')
+    + (cn ? `<div id="classic"><p class="status">جارٍ تحميل ${esc(CLB[bk].name)}…</p></div>` : '')
     + '<button class="ghost" data-close>إغلاق</button>';
   $('#modal').hidden = false; $('#sheet').scrollTop = 0;
+  if (cn) {
+    const t = await classicalText(bk, cn); const box = $('#classic'); if (!box) return;
+    const body = esc(t || '').replace(/〔([^〕]*)〕/g, (m, h) => /باب|كتاب/.test(h) ? `<b style="color:var(--teal)">${h}</b><br>` : '').replace(/ (قوله|قال)( )/g, '<br><br>$1$2');
+    box.innerHTML = `${ids.length ? '<hr style="border:0;border-top:1px solid var(--line);margin:18px 0">' : ''}
+      <h3 style="font:700 19px/1.5 Amiri,serif;margin:0 0 4px">${esc(CLB[bk].name)}</h3>
+      <p class="status" style="margin:0 0 8px">${esc(CLB[bk].by)} · شرح الحديث رقم ${cn}</p>
+      <div class="ht" style="font-size:17.5px;line-height:2">${body}</div>
+      <p class="note">النص كما هو من مشروع OpenITI (نسخة المكتبة الشاملة)، دون تعديل. الشروح القديمة تشرح الإسناد واللغة والفقه، وقد تشرح الحديث في أول موضع يرد فيه فقط.</p>`;
+  }
 }
 
 /* ---------- rendering helpers ---------- */
@@ -286,7 +314,7 @@ function hadithCard(b, i, ws, full) {
   return `<article class="card"><p class="ht${long ? ' clip' : ''}">${ws ? highlight(h.t, ws) : esc(h.t)}</p>
   ${long ? '<button class="lnk" data-more>اقرأ الحديث كاملاً</button>' : ''}
   <div class="src"><span class="badge">صحيح</span><b>${BOOKS[b].name}</b><span>${num}</span><span>${esc(h.k)}</span><span class="sp"></span>
-  ${SH && SH.map[b + ':' + i] ? `<button class="lnk" data-sh="${b}:${i}">الشرح</button>` : ''}<button class="lnk" data-copy="${b}:${i}">نسخ</button><a href="${esc(h.u)}" target="_blank" rel="noopener">تحقق في Sunnah.com ↗</a></div></article>`;
+  ${hasSharh(b, i) ? `<button class="lnk" data-sh="${b}:${i}">الشرح</button>` : ''}<button class="lnk" data-copy="${b}:${i}">نسخ</button><a href="${esc(h.u)}" target="_blank" rel="noopener">تحقق في Sunnah.com ↗</a></div></article>`;
 }
 const toast = m => { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1600); };
 
@@ -381,7 +409,7 @@ async function bookIndex(b) {
   const ks = []; H[b].forEach((h, i) => { if (!ks.length || ks[ks.length - 1].k !== h.k) ks.push({k: h.k, i, n: 0}); ks[ks.length - 1].n++; });
   main.innerHTML = `<div class="bar"><button class="ghost" data-back="hadith">→ الكتب</button><h2>${BOOKS[b].name}<span>${ks.length} كتاباً</span></h2></div>
   <p class="note">الأحاديث اللي عندها شرح فيها زر «الشرح» (من موسوعة الأحاديث النبوية، HadeethEnc.com). عدد الأبواب اللي فيها شرح مكتوب تحت كل باب.</p>
-  <div class="list" style="grid-template-columns:1fr">${ks.map((k, j) => { let sh = 0; if (SH) for (let x = k.i; x < k.i + k.n; x++) if (SH.map[b + ':' + x]) sh++; return `<button class="item" data-kitab="${b}:${k.i}:${k.n}"><i>${j + 1}</i><span><b>${esc(k.k)}</b><small>${k.n} حديثاً${sh ? ` · ${sh} مشروح` : ''}</small></span></button>`; }).join('')}</div>`;
+  <div class="list" style="grid-template-columns:1fr">${ks.map((k, j) => { let sh = 0; for (let x = k.i; x < k.i + k.n; x++) if (hasSharh(b, x)) sh++; return `<button class="item" data-kitab="${b}:${k.i}:${k.n}"><i>${j + 1}</i><span><b>${esc(k.k)}</b><small>${k.n} حديثاً${sh ? ` · ${sh} مشروح` : ''}</small></span></button>`; }).join('')}</div>`;
   scrollTo(0, 0);
 }
 function kitab(b, start, n, shown = 25) {
