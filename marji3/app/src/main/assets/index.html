@@ -79,6 +79,14 @@ nav button[aria-current=true]{color:var(--teal)}
 .era{font:700 16px "IBM Plex Sans Arabic";color:var(--teal);margin:22px 0 10px;padding:4px 12px;background:var(--teal-bg);border-radius:8px;display:inline-block}
 .upd{display:flex;align-items:center;gap:10px;background:var(--teal);color:light-dark(#fff,#062420);padding:10px 14px;border-radius:12px;margin:10px 0}
 .upd a{color:inherit;font-weight:700}
+
+.ay{cursor:pointer;border-radius:6px;transition:background .15s}.ay:hover,.ay:active,.ay:focus-visible{background:var(--teal-bg);outline:0}
+.tf{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--teal-bg);font-size:16px;line-height:1.9;white-space:pre-line}
+.tf small{display:block;color:var(--mute);font-size:12.5px;margin-top:6px;white-space:normal}
+button.num{background:none;border:0;padding:0 2px;cursor:pointer;font-size:inherit;line-height:inherit}
+.modal{position:fixed;inset:0;background:#0008;display:grid;place-items:end center;z-index:9}
+.modal[hidden]{display:none}
+.sheet{background:var(--card);width:min(760px,100%);max-height:85vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
 @media(prefers-reduced-motion:reduce){.toast{transition:none}}
 @media(max-width:600px){.qt{font-size:23px}.reader .qt{font-size:24px}.ht{font-size:18px}h1{font-size:23px}}
 </style>
@@ -112,6 +120,7 @@ nav button[aria-current=true]{color:var(--teal)}
   <button data-v="hadith"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h10l3 3v15H6z"/><path d="M9 9h7M9 13h7M9 17h4"/></svg>الحديث</button>
 </nav>
 <div class="toast" id="toast"></div>
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet"></div></div>
 <script>
 {
 const $ = s => document.querySelector(s);
@@ -216,6 +225,25 @@ ${list}`;
   } catch (e) { return null; }
 }
 
+/* ---------- tafsir (التفسير الميسر) ---------- */
+let TF = null;
+const tfLoad = () => TF || (TF = load('data/tafsir.json'));
+async function tafsirHTML(si, ai) {
+  const T = await tfLoad();
+  const g = T.t[si].find(([a, b]) => ai + 1 >= a && ai + 1 <= b);
+  if (!g) return '';
+  const range = g[1] > g[0] ? ` · تفسير الآيات ${ar(g[0])}–${ar(g[1])} معاً` : '';
+  return `<div class="tf">${esc(g[2])}<small>التفسير الميسر (نخبة من العلماء، مجمع الملك فهد)${range} · المصدر: QUL (Tarteel)</small></div>`;
+}
+async function tafsirSheet(si, ai) {
+  $('#sheet').innerHTML = `<p class="qt" style="font-size:24px">${esc(Q.a[si][ai])} <span class="num">﴿${ar(ai + 1)}﴾</span></p>
+  <div class="src" style="border:0;padding:0;margin:0 0 4px"><b>سورة ${esc(Q.s[si].n)}</b><span>الآية ${ai + 1}</span></div>
+  ${await tafsirHTML(si, ai)}<div style="margin-top:12px;display:flex;gap:8px"><button class="ghost" data-close>إغلاق</button>
+  ${ai > 0 ? `<button class="ghost" data-tfs="${si}:${ai - 1}">→ السابقة</button>` : ''}${ai < Q.a[si].length - 1 ? `<button class="ghost" data-tfs="${si}:${ai + 1}">التالية ←</button>` : ''}</div>`;
+  $('#modal').hidden = false; $('#sheet').scrollTop = 0;
+}
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') $('#modal').hidden = true; });
+
 /* ---------- rendering helpers ---------- */
 function highlight(text, wordSet) {
   return text.split(/(\s+)/).map(w => {
@@ -228,7 +256,7 @@ function quranCard(si, ai, ws) {
   const s = Q.s[si], t = Q.a[si][ai];
   return `<article class="card q"><p class="qt">${ws ? highlight(t, ws) : esc(t)} <span class="num">﴿${ar(ai + 1)}﴾</span></p>
   <div class="src"><b>سورة ${esc(s.n)}</b><span>الآية ${ai + 1}</span><span class="sp"></span>
-  <button class="lnk" data-copy="q:${si}:${ai}">نسخ</button><a href="https://quran.com/${si + 1}/${ai + 1}" target="_blank" rel="noopener">تحقق في Quran.com ↗</a></div></article>`;
+  <button class="lnk" data-tf="${si}:${ai}">التفسير</button><button class="lnk" data-copy="q:${si}:${ai}">نسخ</button><a href="https://quran.com/${si + 1}/${ai + 1}" target="_blank" rel="noopener">تحقق في Quran.com ↗</a></div></article>`;
 }
 function hadithCard(b, i, ws, full) {
   const h = H[b][i], long = !full && h.t.length > 700;
@@ -308,10 +336,13 @@ async function sura(si) {
   await pQ; const s = Q.s[si];
   const basm = si !== 0 && si !== 8 ? `<p class="qt" style="text-align:center;color:var(--teal)">${esc(Q.a[0][0])}</p>` : '';
   main.innerHTML = `<div class="bar"><button class="ghost" data-back="quran">→ السور</button><h2>سورة ${esc(s.n)}<span>${s.c} آية</span></h2></div>
-  <article class="card q reader">${basm}<p class="qt">${Q.a[si].map((t, i) => `${esc(t)} <span class="num">﴿${ar(i + 1)}﴾</span>`).join(' ')}</p>
+  <details class="card" id="intro"><summary style="cursor:pointer;font-weight:700">عن السورة</summary><div class="tf" id="introt">…</div></details>
+  <p class="note">اضغط على أي آية باش يبان ليك تفسيرها.</p>
+  <article class="card q reader">${basm}<p class="qt">${Q.a[si].map((t, i) => `<span class="ay" data-tfs="${si}:${i}" role="button" tabindex="0">${esc(t)} <span class="num">﴿${ar(i + 1)}﴾</span></span>`).join(' ')}</p>
   <div class="src"><b>النص: مصحف المدينة (مجمع الملك فهد)، رواية حفص عن عاصم</b><span class="sp"></span><a href="https://quran.com/${si + 1}" target="_blank" rel="noopener">قارن في Quran.com ↗</a></div></article>
   <div class="bar">${si > 0 ? `<button class="ghost" data-sura="${si - 1}">→ ${esc(Q.s[si - 1].n)}</button>` : ''}<span style="flex:1"></span>${si < 113 ? `<button class="ghost" data-sura="${si + 1}">${esc(Q.s[si + 1].n)} ←</button>` : ''}</div>`;
   scrollTo(0, 0);
+  tfLoad().then(T => { const el = $('#introt'); if (el) el.innerHTML = T.i[si] ? esc(T.i[si]) + '<small>تعريف بالسورة · المصدر: QUL (Tarteel)</small>' : 'لا يوجد تعريف.'; }).catch(() => {});
 }
 
 /* ---------- hadith view ---------- */
@@ -394,13 +425,16 @@ function setView(v, keep) {
   scrollTo(0, 0);
 }
 document.addEventListener('click', async e => {
-  const t = e.target.closest('button,[data-ex]'); if (!t) return;
+  const t = e.target.closest('button,[data-ex],.ay'); if (!t) return;
   const d = t.dataset;
   if (d.v) setView(d.v);
   else if (d.ex) { $('#q').value = d.ex; runSearch(d.ex); }
   else if (d.sura) { setView('quran', true); sura(+d.sura); }
   else if (d.back) setView(d.back);
   else if (d.ev) evidence(+d.ev);
+  else if (d.tf) { const [a, b] = d.tf.split(':').map(Number); const card = t.closest('article'); const ex = card.querySelector('.tf'); if (ex) ex.remove(); else { t.textContent = '…'; card.querySelector('.src').insertAdjacentHTML('beforebegin', await tafsirHTML(a, b)); t.textContent = 'التفسير'; } }
+  else if (d.tfs) { const [a, b] = d.tfs.split(':').map(Number); tafsirSheet(a, b); }
+  else if ('close' in d) $('#modal').hidden = true;
   else if (d.book) { setView('hadith', true); bookIndex(d.book); }
   else if (d.kitab) { const [b, s, n, sh] = d.kitab.split(':'); setView('hadith', true); kitab(b, +s, +n, sh ? +sh : 25); if (!sh) scrollTo(0, 0); }
   else if ('moreres' in d) { lastSearch.lim = (lastSearch.lim || 15) + 15; renderResults(); }
