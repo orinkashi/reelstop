@@ -76,6 +76,7 @@ nav button[aria-current=true]{color:var(--teal)}
 .ev .when{font-size:13px;font-weight:700;color:var(--gold)}
 .ev h3{font:700 20px/1.3 "Amiri",serif;margin:2px 0 4px}
 .ev p.s{margin:0 0 8px;font-size:15px}
+.ev p.story{margin:4px 0 10px;font:18px/2 "Amiri",serif}
 .era{font:700 16px "IBM Plex Sans Arabic";color:var(--teal);margin:22px 0 10px;padding:4px 12px;background:var(--teal-bg);border-radius:8px;display:inline-block}
 .upd{display:flex;align-items:center;gap:10px;background:var(--teal);color:light-dark(#fff,#062420);padding:10px 14px;border-radius:12px;margin:10px 0}
 .upd a{color:inherit;font-weight:700}
@@ -135,6 +136,7 @@ const load = f => fetch(f).then(r => { if (!r.ok) throw new Error(f); return r.j
 const pQ = load('data/quran.json').then(d => Q = d);
 const pB = load('data/bukhari.json').then(d => H.b = d);
 const pM = load('data/muslim.json').then(d => H.m = d);
+let SH = null; const pSH = load('data/sharh.json').then(d => SH = d).catch(() => null);
 const worker = new Worker('worker.js');
 const pending = new Map();
 worker.onmessage = e => {
@@ -244,6 +246,23 @@ async function tafsirSheet(si, ai) {
 }
 $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') $('#modal').hidden = true; });
 
+/* ---------- hadith explanation (موسوعة الأحاديث النبوية — HadeethEnc.com) ---------- */
+const para = t => esc(t || '').replace(/\n/g, '<br>');
+function sharhSheet(key) {
+  const ids = SH.map[key] || [];
+  const seen = new Set();
+  $('#sheet').innerHTML = ids.filter(id => { const k = SH.h[id].exp; if (seen.has(k)) return false; seen.add(k); return true; }).map(id => { const x = SH.h[id]; return `
+    <h3 style="font:700 19px/1.5 Amiri,serif;margin:0 0 6px">${esc(x.title)}</h3>
+    <p class="ht" style="font-size:18px">${esc(x.text)}</p>
+    ${x.grade ? `<p style="margin:4px 0"><span class="badge">${esc(x.grade)}</span></p>` : ''}
+    <h4 style="margin:14px 0 4px">الشرح</h4><div class="tf" style="white-space:normal">${para(x.exp)}</div>
+    ${x.words && x.words.trim() && x.words.trim() !== '....' ? `<h4 style="margin:14px 0 4px">معاني الكلمات</h4><div class="tf" style="white-space:normal">${para(x.words)}</div>` : ''}
+    ${x.ben ? `<h4 style="margin:14px 0 4px">من فوائد الحديث</h4><div class="tf" style="white-space:normal">${para(x.ben)}</div>` : ''}
+    <p class="note">المصدر: موسوعة الأحاديث النبوية — HadeethEnc.com (الإصدار ${esc(SH.v)})، منقول كما هو دون تعديل. ${/^https:\/\//.test(x.link) ? `<a href="${esc(x.link)}" target="_blank" rel="noopener" style="color:var(--teal)">افتح في الموسوعة ↗</a>` : ''}</p>`; }).join('<hr style="border:0;border-top:1px solid var(--line);margin:18px 0">')
+    + '<button class="ghost" data-close>إغلاق</button>';
+  $('#modal').hidden = false; $('#sheet').scrollTop = 0;
+}
+
 /* ---------- rendering helpers ---------- */
 function highlight(text, wordSet) {
   return text.split(/(\s+)/).map(w => {
@@ -264,7 +283,7 @@ function hadithCard(b, i, ws, full) {
   return `<article class="card"><p class="ht${long ? ' clip' : ''}">${ws ? highlight(h.t, ws) : esc(h.t)}</p>
   ${long ? '<button class="lnk" data-more>اقرأ الحديث كاملاً</button>' : ''}
   <div class="src"><span class="badge">صحيح</span><b>${BOOKS[b].name}</b><span>${num}</span><span>${esc(h.k)}</span><span class="sp"></span>
-  <button class="lnk" data-copy="${b}:${i}">نسخ</button><a href="${esc(h.u)}" target="_blank" rel="noopener">تحقق في Sunnah.com ↗</a></div></article>`;
+  ${SH && SH.map[b + ':' + i] ? `<button class="lnk" data-sh="${b}:${i}">الشرح</button>` : ''}<button class="lnk" data-copy="${b}:${i}">نسخ</button><a href="${esc(h.u)}" target="_blank" rel="noopener">تحقق في Sunnah.com ↗</a></div></article>`;
 }
 const toast = m => { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1600); };
 
@@ -375,11 +394,11 @@ async function sira() {
   await pQ;
   let era = '';
   main.innerHTML = `<div class="bar"><h2>السيرة النبوية<span>${ar(S.length)} حدثاً من قبل المولد إلى الوفاة</span></h2></div>
-  <p class="note">كل حدث معه أدلته من القرآن الكريم وصحيح البخاري ومسلم، من النصوص الموجودة في التطبيق. السطر القصير تحت العنوان تلخيص للحدث، والتواريخ الهجرية على المشهور عند أهل السيرة.</p>
+  <p class="note">القصة مكتوبة بأسلوب مبسّط اعتماداً على الأحاديث الصحيحة والمشهور عند أهل السيرة، كتبها الذكاء الاصطناعي (Claude)، فراجعها مع أهل العلم. الحجة هي الأدلة تحت كل حدث، من القرآن الكريم وصحيح البخاري ومسلم. والتواريخ الهجرية على المشهور.</p>
   <div class="tl">${S.map((e, i) => {
     const head = e.p !== era ? `<div class="era">${esc(era = e.p)}</div>` : '';
     const n = e.q.length + e.h.length;
-    return head + `<div class="ev card"><div class="when">${esc(e.d)}</div><h3>${esc(e.t)}</h3><p class="s">${esc(e.s)}</p>
+    return head + `<div class="ev card"><div class="when">${esc(e.d)}</div><h3>${esc(e.t)}</h3><p class="story">${esc(e.st || e.s)}</p>
       <button class="ghost" data-ev="${i}">الأدلة (${ar(n)})</button><div id="ev${i}"></div></div>`;
   }).join('')}</div>`;
 }
@@ -435,6 +454,7 @@ document.addEventListener('click', async e => {
   else if (d.tf) { const [a, b] = d.tf.split(':').map(Number); const card = t.closest('article'); const ex = card.querySelector('.tf'); if (ex) ex.remove(); else { t.textContent = '…'; card.querySelector('.src').insertAdjacentHTML('beforebegin', await tafsirHTML(a, b)); t.textContent = 'التفسير'; } }
   else if (d.tfs) { const [a, b] = d.tfs.split(':').map(Number); tafsirSheet(a, b); }
   else if ('close' in d) $('#modal').hidden = true;
+  else if (d.sh) sharhSheet(d.sh);
   else if (d.book) { setView('hadith', true); bookIndex(d.book); }
   else if (d.kitab) { const [b, s, n, sh] = d.kitab.split(':'); setView('hadith', true); kitab(b, +s, +n, sh ? +sh : 25); if (!sh) scrollTo(0, 0); }
   else if ('moreres' in d) { lastSearch.lim = (lastSearch.lim || 15) + 15; renderResults(); }
