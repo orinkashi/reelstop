@@ -232,7 +232,7 @@ function quranCard(si, ai, ws) {
 }
 function hadithCard(b, i, ws, full) {
   const h = H[b][i], long = !full && h.t.length > 700;
-  const num = h.c ? `طريق آخر للحديث رقم ${esc(h.n)}` : `رقم ${esc(h.n)}`;
+  const num = h.L ? esc(h.L) : h.c ? `طريق آخر للحديث رقم ${esc(h.n)}` : `رقم ${esc(h.n)}`;
   return `<article class="card"><p class="ht${long ? ' clip' : ''}">${ws ? highlight(h.t, ws) : esc(h.t)}</p>
   ${long ? '<button class="lnk" data-more>اقرأ الحديث كاملاً</button>' : ''}
   <div class="src"><span class="badge">صحيح</span><b>${BOOKS[b].name}</b><span>${num}</span><span>${esc(h.k)}</span><span class="sp"></span>
