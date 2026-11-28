@@ -75,7 +75,15 @@ nav button[aria-current=true]{color:var(--teal)}
 </head>
 <body>
 <header><div class="wrap">
-  <h1>مرجع <small>القرآن الكريم وصحيح البخاري وصحيح مسلم</small></h1>
+  <div style="display:flex;align-items:flex-start;gap:8px"><h1 style="flex:1">مرجع <small>القرآن الكريم وصحيح البخاري وصحيح مسلم</small></h1>
+  <button class="ghost" id="gear" aria-label="إعدادات الذكاء الاصطناعي" style="width:44px;height:44px;padding:0;font-size:20px">⚙</button></div>
+  <div id="setp" hidden class="card" style="margin:0 0 10px">
+    <b>الذكاء الاصطناعي (Gemini)</b>
+    <p style="margin:6px 0;font-size:14px;color:var(--mute)">يجعل البحث يفهم أي موضوع بأي لغة. خذ مفتاحاً مجانياً من <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style="color:var(--teal)">aistudio.google.com/apikey</a> والصقه هنا. المفتاح يبقى في هاتفك فقط. الذكاء الاصطناعي لا يكتب أي نص: هو فقط يختار من النصوص الموجودة.</p>
+    <div style="display:flex;gap:8px"><input id="gk" type="password" placeholder="الصق المفتاح هنا" autocomplete="off" style="flex:1;height:44px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--card);direction:ltr">
+    <button class="btn" id="gsave" style="height:44px">حفظ</button></div>
+    <p id="gmsg" style="margin:8px 0 0;font-size:14px"></p>
+  </div>
   <form id="f" role="search">
     <input id="q" type="search" placeholder="ابحث عن موضوع: التخفيف، بر الوالدين، الصبر…" autocomplete="off" aria-label="بحث">
     <button class="btn" aria-label="ابحث">بحث</button>
@@ -117,11 +125,39 @@ const ask = (terms, text) => new Promise(res => { const id = ++reqId; pending.se
 
 /* ---------- smart query: Claude only turns the question into Arabic search words ---------- */
 let samplerP = null;
-const getSampler = () => samplerP || (samplerP = (window.claude && window.claude.use) ? window.claude.use('sample').catch(() => null) : Promise.resolve(null));
+const claudeSampler = () => samplerP || (samplerP = (window.claude && window.claude.use) ? window.claude.use('sample').catch(() => null) : Promise.resolve(null));
+/* Gemini (free key from Google AI Studio) for the APK, where Claude is not available. The key stays on this phone only. */
+const store = { get: k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set: (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch (e) {} } };
+async function gemini(prompt) {
+  const key = store.get('gemini_key'); if (!key) throw {code: 'no_key'};
+  for (const model of ['gemini-flash-lite-latest', 'gemini-flash-latest', 'gemini-2.5-flash-lite']) {
+    let r;
+    try {
+      r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        method: 'POST', headers: {'Content-Type': 'application/json', 'x-goog-api-key': key},
+        body: JSON.stringify({contents: [{parts: [{text: prompt}]}], generationConfig: {temperature: 0, responseMimeType: 'application/json'}})
+      });
+    } catch (e) { throw {code: 'offline'}; }
+    if (r.status === 404) continue;
+    if (r.status === 429) throw {code: 'rate_limited'};
+    if (r.status === 400 || r.status === 401 || r.status === 403) throw {code: 'bad_key'};
+    if (!r.ok) throw {code: 'error'};
+    const j = await r.json();
+    return {text: ((j.candidates || [])[0]?.content?.parts || []).map(p => p.text || '').join('')};
+  }
+  throw {code: 'error'};
+}
+let usingGemini = false;
+async function getSampler() {
+  const c = await claudeSampler();
+  if (c) { usingGemini = false; return c; }
+  if (store.get('gemini_key')) { usingGemini = true; return gemini; }
+  return null;
+}
 let ai = {on: null, why: ''};
 async function expand(text) {
   const sampler = await getSampler();
-  if (!sampler) { ai = {on: false, why: 'غير متاح في هذه النافذة'}; return null; }
+  if (!sampler) { ai = {on: false, why: 'no_key'}; return null; }
   const prompt = `أنت مساعد بحث في نصوص القرآن الكريم وصحيح البخاري وصحيح مسلم.
 المستخدم كتب سؤالاً أو موضوعاً (قد يكون بالدارجة المغربية بحروف لاتينية أو عربية، أو بالفرنسية أو الإنجليزية أو العربية):
 """${text}"""
@@ -132,7 +168,7 @@ async function expand(text) {
 أجب بـ JSON فقط بهذا الشكل: {"topic":"...","words":["...","..."]}`;
   let r;
   try { r = await sampler(prompt, {modelTier: 'quick'}); }
-  catch (e) { ai = {on: false, why: e && e.code === 'not_granted' ? 'لم تُعطَ الموافقة' : e && e.code === 'rate_limited' ? 'كثرة الطلبات، أعد بعد قليل' : 'تعذّر الاتصال'}; return null; }
+  catch (e) { const c = e && e.code; ai = {on: false, why: c === 'not_granted' ? 'لم تُعطَ الموافقة' : c === 'rate_limited' ? 'كثرة الطلبات، أعد بعد قليل' : c === 'bad_key' ? 'مفتاح Gemini غير صحيح' : c === 'offline' ? 'لا يوجد اتصال بالإنترنت' : 'تعذّر الاتصال'}; return null; }
   ai = {on: true, why: ''};
   const m = r.text.match(/\{[\s\S]*\}/);
   const j = JSON.parse(m ? m[0] : r.text);
@@ -227,8 +263,8 @@ function renderResults() {
   const all = k => { const a = res.items.filter(x => x[0] === k); if (!a.length || sc(a[0]) < top * 0.2) return []; return a.filter(x => sc(x) >= sc(a[0]) * 0.35); };
   const q = all('q').slice(0, lim), b = all('b').slice(0, lim), m = all('m').slice(0, lim);
   const more = ['q', 'b', 'm'].some(k => all(k).length > lim);
-  st.textContent = ex ? `بحث ذكي ✓ ${ex.topic ? '· ' + ex.topic : ''}${lastSearch.ranking ? ' · الذكاء الاصطناعي يختار الأقرب…' : ''}`
-    : (res.topicWords && res.topicWords.length ? 'فهمت الموضوع، وبحثت بهذه الكلمات:' : `لم أتعرف على الموضوع، فبحثت بكلماتك. جرّب كلمة أخرى أو اكتب بالعربية.`);
+  st.textContent = ex ? `بحث ذكي ✓${usingGemini ? ' (Gemini)' : ''} ${ex.topic ? '· ' + ex.topic : ''}${lastSearch.ranking ? ' · الذكاء الاصطناعي يختار الأقرب…' : ''}`
+    : (ai.why && ai.why !== 'no_key' ? `الذكاء الاصطناعي: ${ai.why}. ` : '') + (res.topicWords && res.topicWords.length ? 'فهمت الموضوع، وبحثت بهذه الكلمات:' : `لم أتعرف على الموضوع، فبحثت بكلماتك. جرّب كلمة أخرى، أو فعّل الذكاء الاصطناعي من ⚙.`);
   const shown = ex ? ex.words : (res.topicWords && res.topicWords.length ? res.topicWords : [...new Set(res.words)]).slice(0, 14);
   $('#chips').innerHTML = shown.map(w => `<span class="chip">${esc(w)}</span>`).join('');
   if (!res.items.length) { main.innerHTML = '<div class="empty"><p>لم أجد نصوصاً لهذه الكلمات. جرّب كلمة أخرى.</p></div>'; return; }
@@ -315,6 +351,14 @@ document.addEventListener('click', async e => {
     try { await navigator.clipboard.writeText(txt); toast('تم النسخ مع المصدر'); } catch (_) { toast('لم يسمح المتصفح بالنسخ'); }
   }
 });
+$('#gear').onclick = () => { if (window.claude) { toast('داخل Claude، الذكاء الاصطناعي يعمل تلقائياً'); return; } const p = $('#setp'); p.hidden = !p.hidden; $('#gk').value = store.get('gemini_key'); $('#gmsg').textContent = store.get('gemini_key') ? 'المفتاح محفوظ ✓' : ''; };
+$('#gsave').onclick = async () => {
+  const k = $('#gk').value.trim(); store.set('gemini_key', k); const m = $('#gmsg');
+  if (!k) { m.textContent = 'تم حذف المفتاح.'; return; }
+  m.textContent = 'جارٍ التجربة…';
+  try { const r = await gemini('أجب بـ JSON فقط: {"ok":true}'); m.textContent = /ok/.test(r.text) ? 'يعمل ✓ البحث صار ذكياً.' : 'وصل الرد لكن بشكل غريب، جرّب البحث.'; }
+  catch (e) { m.textContent = e.code === 'bad_key' ? 'المفتاح غير صحيح.' : e.code === 'offline' ? 'لا يوجد إنترنت، المفتاح محفوظ وسيعمل عند الاتصال.' : e.code === 'rate_limited' ? 'المفتاح صحيح لكن الحد اليومي انتهى.' : 'تعذّر الاتصال الآن.'; }
+};
 $('#f').addEventListener('submit', e => { e.preventDefault(); $('#q').blur(); runSearch($('#q').value); });
 home();
 }
