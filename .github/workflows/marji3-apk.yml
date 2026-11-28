@@ -35,9 +35,11 @@ jobs:
           KS_PASS: ${{ secrets.OMAR_KEYSTORE_PASS }}
         run: |
           if [ -n "$KS_B64" ]; then
-            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/omar.jks"
+            printf '%s' "$KS_B64" | tr -d ' \n\r\t' | base64 -d > "$RUNNER_TEMP/omar.jks"
+            echo "key file size: $(wc -c < "$RUNNER_TEMP/omar.jks") bytes (expected 2628)"
+            keytool -list -keystore "$RUNNER_TEMP/omar.jks" -storepass "$(printf '%s' "$KS_PASS" | tr -d ' \n\r\t')" -alias omar > /dev/null
             echo "OMAR_KS_PATH=$RUNNER_TEMP/omar.jks" >> "$GITHUB_ENV"
-            echo "OMAR_KS_PASS=$KS_PASS" >> "$GITHUB_ENV"
+            echo "OMAR_KS_PASS=$(printf '%s' "$KS_PASS" | tr -d ' \n\r\t')" >> "$GITHUB_ENV"
           else
             echo "::warning::No signing key secret: updates will not install over the old app"
           fi
