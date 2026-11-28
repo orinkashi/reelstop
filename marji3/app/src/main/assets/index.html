@@ -68,6 +68,17 @@ nav button[aria-current=true]{color:var(--teal)}
 .note{font-size:13px;color:var(--mute);border-inline-start:3px solid var(--gold);padding:4px 10px;margin:14px 0}
 .toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.on{opacity:1}
+
+.tl{position:relative;padding-inline-start:26px}
+.tl::before{content:"";position:absolute;inset-block:6px;inset-inline-start:9px;width:2px;background:color-mix(in srgb,var(--gold) 55%,var(--line))}
+.ev{position:relative;margin-bottom:14px}
+.ev::before{content:"";position:absolute;inset-inline-start:-22px;top:20px;width:12px;height:12px;border-radius:50%;background:var(--card);border:2.5px solid var(--gold)}
+.ev .when{font-size:13px;font-weight:700;color:var(--gold)}
+.ev h3{font:700 20px/1.3 "Amiri",serif;margin:2px 0 4px}
+.ev p.s{margin:0 0 8px;font-size:15px}
+.era{font:700 16px "IBM Plex Sans Arabic";color:var(--teal);margin:22px 0 10px;padding:4px 12px;background:var(--teal-bg);border-radius:8px;display:inline-block}
+.upd{display:flex;align-items:center;gap:10px;background:var(--teal);color:light-dark(#fff,#062420);padding:10px 14px;border-radius:12px;margin:10px 0}
+.upd a{color:inherit;font-weight:700}
 @media(prefers-reduced-motion:reduce){.toast{transition:none}}
 @media(max-width:600px){.qt{font-size:23px}.reader .qt{font-size:24px}.ht{font-size:18px}h1{font-size:23px}}
 </style>
@@ -76,7 +87,9 @@ nav button[aria-current=true]{color:var(--teal)}
 <body>
 <header><div class="wrap">
   <div style="display:flex;align-items:flex-start;gap:8px"><h1 style="flex:1">مرجع <small>القرآن الكريم وصحيح البخاري وصحيح مسلم</small></h1>
+  <button class="ghost" id="theme" aria-label="الوضع الليلي" style="width:44px;height:44px;padding:0;font-size:19px">☾</button>
   <button class="ghost" id="gear" aria-label="إعدادات الذكاء الاصطناعي" style="width:44px;height:44px;padding:0;font-size:20px">⚙</button></div>
+  <div id="upd"></div>
   <div id="setp" hidden class="card" style="margin:0 0 10px">
     <b>الذكاء الاصطناعي (Gemini)</b>
     <p style="margin:6px 0;font-size:14px;color:var(--mute)">يجعل البحث يفهم أي موضوع بأي لغة. خذ مفتاحاً مجانياً من <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style="color:var(--teal)">aistudio.google.com/apikey</a> والصقه هنا. المفتاح يبقى في هاتفك فقط. الذكاء الاصطناعي لا يكتب أي نص: هو فقط يختار من النصوص الموجودة.</p>
@@ -95,6 +108,7 @@ nav button[aria-current=true]{color:var(--teal)}
 <nav>
   <button data-v="search" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>بحث</button>
   <button data-v="quran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5c3-1.5 6-1.5 8 0v15c-2-1.5-5-1.5-8 0zM20 5c-3-1.5-6-1.5-8 0v15c2-1.5 5-1.5 8 0z"/></svg>القرآن</button>
+  <button data-v="sira"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><path d="M6 8v8M11 6h9M11 18h9M11 12h6"/><circle cx="6" cy="12" r="2"/></svg>السيرة</button>
   <button data-v="hadith"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h10l3 3v15H6z"/><path d="M9 9h7M9 13h7M9 17h4"/></svg>الحديث</button>
 </nav>
 <div class="toast" id="toast"></div>
@@ -216,8 +230,8 @@ function quranCard(si, ai, ws) {
   <div class="src"><b>سورة ${esc(s.n)}</b><span>الآية ${ai + 1}</span><span class="sp"></span>
   <button class="lnk" data-copy="q:${si}:${ai}">نسخ</button><a href="https://quran.com/${si + 1}/${ai + 1}" target="_blank" rel="noopener">تحقق في Quran.com ↗</a></div></article>`;
 }
-function hadithCard(b, i, ws) {
-  const h = H[b][i], long = h.t.length > 700;
+function hadithCard(b, i, ws, full) {
+  const h = H[b][i], long = !full && h.t.length > 700;
   const num = h.c ? `طريق آخر للحديث رقم ${esc(h.n)}` : `رقم ${esc(h.n)}`;
   return `<article class="card"><p class="ht${long ? ' clip' : ''}">${ws ? highlight(h.t, ws) : esc(h.t)}</p>
   ${long ? '<button class="lnk" data-more>اقرأ الحديث كاملاً</button>' : ''}
@@ -322,6 +336,51 @@ function kitab(b, start, n, shown = 25) {
   ${shown < n ? `<button class="ghost" style="width:100%;height:48px" data-kitab="${b}:${start}:${n}:${shown + 25}">عرض المزيد (${n - shown})</button>` : ''}`;
 }
 
+/* ---------- seerah view ---------- */
+let S = null;
+async function sira() {
+  main.innerHTML = '<p class="status">جارٍ التحميل…</p>';
+  if (!S) S = await load('data/sira.json');
+  await pQ;
+  let era = '';
+  main.innerHTML = `<div class="bar"><h2>السيرة النبوية<span>${ar(S.length)} حدثاً من قبل المولد إلى الوفاة</span></h2></div>
+  <p class="note">كل حدث معه أدلته من القرآن الكريم وصحيح البخاري ومسلم، من النصوص الموجودة في التطبيق. السطر القصير تحت العنوان تلخيص للحدث، والتواريخ الهجرية على المشهور عند أهل السيرة.</p>
+  <div class="tl">${S.map((e, i) => {
+    const head = e.p !== era ? `<div class="era">${esc(era = e.p)}</div>` : '';
+    const n = e.q.length + e.h.length;
+    return head + `<div class="ev card"><div class="when">${esc(e.d)}</div><h3>${esc(e.t)}</h3><p class="s">${esc(e.s)}</p>
+      <button class="ghost" data-ev="${i}">الأدلة (${ar(n)})</button><div id="ev${i}"></div></div>`;
+  }).join('')}</div>`;
+}
+async function evidence(i) {
+  const box = $('#ev' + i);
+  if (box.innerHTML) { box.innerHTML = ''; return; }
+  await Promise.all([pB, pM]);
+  const e = S[i];
+  box.innerHTML = '<div style="margin-top:10px">' + e.q.map(([s, a]) => quranCard(s - 1, a - 1)).join('') + e.h.map(([b, j]) => hadithCard(b, j, null, true)).join('') + '</div>';
+}
+
+/* ---------- theme ---------- */
+function applyTheme(t) { if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; $('#theme').textContent = isDark() ? '☀' : '☾'; }
+const isDark = () => (document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
+applyTheme(store.get('theme'));
+$('#theme').onclick = () => { const t = isDark() ? 'light' : 'dark'; store.set('theme', t); applyTheme(t); };
+
+/* ---------- update check (APK only) ---------- */
+(async () => {
+  if (location.host !== 'appassets.androidplatform.net') return;
+  try {
+    const mine = (await (await fetch('version.txt')).text()).trim();
+    const r = await fetch('https://api.github.com/repos/orinkashi/reelstop/releases/tags/marji3-latest');
+    if (!r.ok) return;
+    const j = await r.json(); const latest = String(j.body || '').match(/v(\d+)/);
+    if (latest && +latest[1] > +mine) {
+      const a = (j.assets || []).find(x => /\.apk$/.test(x.name));
+      if (a) $('#upd').innerHTML = `<div class="upd">نسخة جديدة متاحة <span style="flex:1"></span><a href="${esc(a.browser_download_url)}" target="_blank" rel="noopener">تحميل ↓</a></div>`;
+    }
+  } catch (e) {}
+})();
+
 /* ---------- navigation and events ---------- */
 function setView(v, keep) {
   view = v;
@@ -331,6 +390,7 @@ function setView(v, keep) {
   if (v === 'search') lastSearch ? renderResults() : home();
   if (v === 'quran') quranList();
   if (v === 'hadith') hadithHome();
+  if (v === 'sira') sira();
   scrollTo(0, 0);
 }
 document.addEventListener('click', async e => {
@@ -340,6 +400,7 @@ document.addEventListener('click', async e => {
   else if (d.ex) { $('#q').value = d.ex; runSearch(d.ex); }
   else if (d.sura) { setView('quran', true); sura(+d.sura); }
   else if (d.back) setView(d.back);
+  else if (d.ev) evidence(+d.ev);
   else if (d.book) { setView('hadith', true); bookIndex(d.book); }
   else if (d.kitab) { const [b, s, n, sh] = d.kitab.split(':'); setView('hadith', true); kitab(b, +s, +n, sh ? +sh : 25); if (!sh) scrollTo(0, 0); }
   else if ('moreres' in d) { lastSearch.lim = (lastSearch.lim || 15) + 15; renderResults(); }
