@@ -36,9 +36,9 @@ jobs:
         run: |
           if [ -n "$KS_B64" ]; then
             C=$(printf '%s' "$KS_B64" | tr -d ' \n\r\t')
-            echo "secret length: ${#C} (expected 3504); starts with MIIK: $([ "${C:0:4}" = MIIK ] && echo yes || echo no); bad characters: $(printf '%s' "$C" | tr -d 'A-Za-z0-9+/=' | wc -c)"
+            echo "secret length: ${#C} (expected 1324); starts with MIIK: $([ "${C:0:4}" = MIIK ] && echo yes || echo no); bad characters: $(printf '%s' "$C" | tr -d 'A-Za-z0-9+/=' | wc -c)"
             printf '%s' "$KS_B64" | tr -d ' \n\r\t' | base64 -d > "$RUNNER_TEMP/omar.jks"
-            echo "key file size: $(wc -c < "$RUNNER_TEMP/omar.jks") bytes (expected 2628)"
+            echo "key file size: $(wc -c < "$RUNNER_TEMP/omar.jks") bytes (expected 992)"
             keytool -list -keystore "$RUNNER_TEMP/omar.jks" -storepass "$(printf '%s' "$KS_PASS" | tr -d ' \n\r\t')" -alias omar > /dev/null
             echo "OMAR_KS_PATH=$RUNNER_TEMP/omar.jks" >> "$GITHUB_ENV"
             echo "OMAR_KS_PASS=$(printf '%s' "$KS_PASS" | tr -d ' \n\r\t')" >> "$GITHUB_ENV"
